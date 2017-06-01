@@ -1,0 +1,59 @@
+* Given Starting Reference sites
+** Oauth Starting Point
+- http://searchmicroservices.techtarget.com/definition/OAuth
+
+** Good Article to refer, HIGHLY Relevant
+-https://medium.facilelogin.com/securing-microservices-with-oauth-2-0-jwt-and-xacml-d03770a9a838
+
+** Mobile related
+- https://digitalleaves.com/blog/2014/05/building-your-own-rest-api-with-oauth-2-0-i-the-basics/
+
+* Major methods of Approach
+- https://gist.github.com/andineck/0ed33faf686560f71234
+
+- The project as described identifies with Approach 1: creating an independent
+  unit that can authorize and authenticate between micro-services (?)
+
+* Articles to Refer to
+** Snippets of Code
+- https://medium.com/technology-learning/how-we-solved-authentication-and-authorization-in-our-microservice-architecture-994539d1b6e6
+
+- They used a combination of JWT(user logs in, JWT given. Subsequent requests
+  carry the token)
+
+- Permissions are placed in the token
+
+* Analysis So far
+** JWT
+- We need to use JSON Web Tokens (JWT) to create this service.
+
+- This can be used concurrently with Oauth2.0, which is a security
+  framework.(not required to do so though)
+
+- Can put all user information especially permissions in each token, and pass
+  the token between services.
+
+*** Advantages 
+- Usage of JWT instead will help create a RESTful service(stateless). It would
+  remove the use of sessions and the overheads attached.
+
+- JWT are JSON so take up very little space.
+
+- JWT can hold user data and expiry time 
+
+*** References
+- https://float-middle.com/json-web-tokens-jwt-vs-sessions/
+
+* Separate Ideas
+- Can we have a JWT for the login session globally rather than pass it around,
+  and have a check between each of the microservices. This style of
+  implementation would be similar to the use of session.
+
+
+* Questions
+** Authentication System
+- Current Auth System?
+
+- Do we want to have oauth style authentication? Allowing login through other
+  accounts essentially. If so, scope of the project needs to be changed.
+- 
