@@ -1,0 +1,45 @@
+#+TITLE: 1st Milestone
+#+AUTHOR: Projit Bandyopadhyay
+
+* Requirements
+
+** Diagrams
+
+[[./normalAuthFlow.jpg][Normal Authentication Flow]]
+
+[[./jwtAuthFlow.jpg][Proposed Authentication Flow via JWT]]
+
+
+
+
+
+
+** Description
+
+- Create a Sample system using jwt to provide authorization.
+
+- Will involve a single micro-service, simple html "dashboard", and auth
+  system(main thing to be created). It's based on the second diagram.
+
+- *Aim*: To test the creation and passing of a jwt token with limited
+  information. 
+
+
+** TODO Needed
+
+*** Micro-service
+
+- Needed to experiment with. The decryption of the JWT must take place at the
+  microservice itself thus a sample is needed for testing.
+
+- 
+
+** Additional Information Still Needed
+
+- What level of security needs to be maintained.
+
+- How much information will be needed to be sent in the packets, and currently
+  where are the microservices receiving the information from(for the sake of
+  emulation)
+
+
