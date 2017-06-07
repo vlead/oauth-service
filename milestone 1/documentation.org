@@ -1,0 +1,52 @@
+#+TITLE: Documentation for Discovery and Work Towards Milestone 1
+#+AUTHOR: Projit Bandyopadhyay
+
+* Documentation
+
+** Resources
+
+- Oauth Documentation: https://oauth.net/2/
+
+- Oauth implementation http://www.swisspush.org/security/2016/10/17/oauth2-in-depth-introduction-for-enterprises
+
+- Example Test http://www.hascode.com/2016/03/setting-up-an-oauth2-authorization-server-and-resource-provider-with-spring-boot/
+
+- Flask way http://flask-oauthlib.readthedocs.io/en/latest/oauth2.html
+
+- Django http://oauthlib.readthedocs.io/en/latest/oauth2/server.html
+
+- Consolidated Java Implementations
+https://stackoverflow.com/questions/10296681/is-there-an-oauth-2-0-provider-implementation-in-java-not-oauth-client
+
+- YES YES YES YES
+  https://django-oauth-toolkit.readthedocs.io/en/latest/tutorial/tutorial_01.html
+
+- Node https://github.com/jaredhanson/oauth2orize
+
+
+** Explanation
+
+[[./diagrams/abstract_flow.png][Flow of Information]]
+
+4 Components : 
+
+*** Resource Owner
+
+- This is the User. The user wants to interact with the client(application)
+
+*** Client
+
+- Client is the Application that wants access to the user's account. Before it
+  receives access, the user must authorize it to do so.
+
+*** Resource / Authorization Server
+
+- Protects the User's data and verifies the authenticity of the user. It then
+  issues access tokens to the client.
+
+
+
+
+* References
+- To create Sign in + Registration
+https://simpleisbetterthancomplex.com/tutorial/2017/02/18/how-to-create-user-sign-up-view.html

@@ -1,0 +1,34 @@
+* Minutes
+** Take-Aways
+- Need to make authorization between micro-services.
+- Should build a sample auth system with JWT?
+- Scope of the project has been redefined to revamping the whole authorization
+  system, not only to building a small microservice.
+
+** Requirements from the system
+- To provide authorization between services, so that one service can make a
+  call to another and get proper response based on permissions.
+
+** Architecture
+*** Modeling
+- Shall create a prototype of the system with authorization at a microservice
+  level rather than through an auth system. This will be implemented using JWT
+  tokens that will propogate through the system.
+
+- Currently not going with Oauth kind of system, though it can be implemented
+  concurrently with the JWT system(I think)
+
+*** Paths
+- User inputs authentication information. Validation occurs and token is
+  generated. The token is passed in the headers and will be validated by a
+  microservice before granting permission. The token should carry permissions
+  allotted to the user.
+
+** Current Todos
+- Created first two milestones, one by the end of this week itself of creating
+  a working prototype to show the usage of JWT in a small system with the
+  outreach portal(Friday).
+
+- Second milestone is also integrating this with an analytics dashboard
+
+- Need to speak with someone for reference on security of the authentication system.(Akash?)

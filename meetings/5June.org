@@ -1,5 +1,0 @@
-* Minutes
-- Need to make authorization between micro-services.
-- Should build a sample auth system with JWT?
-
-

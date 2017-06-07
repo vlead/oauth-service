@@ -1,0 +1,8 @@
+* Milestone 1
+** Friday [2017-06-09 Fri]
+- Installing oauth server, and trying to integrate it with our current
+  architecture in outreach Portal. Should try to test login.
+
+* Milestone 2
+- Analytics dashboard integration with outreach Portal via auth service
+

@@ -1,39 +1,36 @@
 #+TITLE: 1st Milestone
 #+AUTHOR: Projit Bandyopadhyay
 
-* Requirements
+* CANCELED Requirements
 
 ** Diagrams
 
-[[./normalAuthFlow.jpg][Normal Authentication Flow]]
+[[./diagrams/normalAuthFlow.jpg][Normal Authentication Flow]]
 
-[[./jwtAuthFlow.jpg][Proposed Authentication Flow via JWT]]
-
-
-
-
+[[./diagrams/jwtAuthFlow.jpg][Proposed Authentication Flow via JWT]]
 
 
 ** Description
 
 - Create a Sample system using jwt to provide authorization.
 
-- Will involve a single micro-service, simple html "dashboard", and auth
+- Will involve a single micro-service, the outreach portal, and auth
   system(main thing to be created). It's based on the second diagram.
 
 - *Aim*: To test the creation and passing of a jwt token with limited
   information. 
 
-
-** TODO Needed
+  
+** DONE Needed
 
 *** Micro-service
 
 - Needed to experiment with. The decryption of the JWT must take place at the
   microservice itself thus a sample is needed for testing.
 
-- 
+- Dashboard?
 
+  
 ** Additional Information Still Needed
 
 - What level of security needs to be maintained.
@@ -42,4 +39,25 @@
   where are the microservices receiving the information from(for the sake of
   emulation)
 
+- Security Analysis of using only JWT, vs Oauth also inside.
 
+ 
+
+
+
+
+* TODO Update on Requirements
+** Creating oauth service(login with vlabs)
+- Using open source software / building own, we should be able to create a
+  login with vlabs feature(currently outreach uses login with google)
+
+* TODO Work Now 
+
+** TODO Create a diagram for flow of data
+
+** TODO Get the outreach portal repository and analyze the application's current auth system to see where I can insert my own.
+
+** TODO Make changes in outreach portal to integrate it with a new auth system
+
+* TODO Things to look in to 
+** SAML key
