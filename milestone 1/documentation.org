@@ -25,7 +25,7 @@ https://stackoverflow.com/questions/10296681/is-there-an-oauth-2-0-provider-impl
 
 
 ** Explanation
-
+   
 [[./diagrams/abstract_flow.png][Flow of Information]]
 
 4 Components : 
@@ -47,6 +47,12 @@ https://stackoverflow.com/questions/10296681/is-there-an-oauth-2-0-provider-impl
 
 
 
+* Other Possibilities
+https://github.com/jaredhanson/oauth2orize
+
 * References
 - To create Sign in + Registration
 https://simpleisbetterthancomplex.com/tutorial/2017/02/18/how-to-create-user-sign-up-view.html
+
+id = hhsBocuFl7EGCCU9zHLmHppTkdpQI5HwfITMCJld
+secret = dAilKMAig6F22zaSVOyyyMVQANjGWRseO6fAgobteJN3Q5Op2VQTLbr8x9SvZUGt3n9MuwpUxiCKJov7rnwtWV58rm7cVpANLJtdyUhYmM8VRY2Sc71MhU1KxuubD9wZ
