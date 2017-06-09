@@ -8,10 +8,26 @@
 
 
 * Aim
-- To Build a 
+- To Build a Oauth Service to that allows authorization between microservices
+  and to have an authentication service for the user.
 
+* Problem
+- There are multiple services sitting on different servers. As a result
+  authorization is required between the services. 
 
+* Solution
+In a nutshell: Be able to create a system where you can  "Login with VLABS
+Account" for each of the services.
+
+* Process
+
+** Implementing it on a small scale.
+- Trying to create a small version of an oauth service. (Looking for open
+  source solutions)
+** 
 
 1. [[./requirements/index.org][Requirements]]
 2. [[./design/index.org][Design]]
-3. [[./project/documentation.org][Documentation So Far]]
+3. [[./project/findings/survey.org][Findings]]
+4. [[./project/documentation.org][Documentation So Far]]
+5. Current Plans: https://github.com/OAuth-Apis/apis

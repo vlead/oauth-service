@@ -13,17 +13,12 @@
 ** Design
   Below image briefly describes the various methods of Authentication
 
-#+BEGIN_HTML
-<img src="./diagrams/normalAuthFlow.jpg">
-<p align="center"> Normal Auth Flow </p>
+[[./diagrams/normalAuthFlow.jpg][Normal Authentication Flow]]
 
-<img src="./diagrams/jwtAuthFlow.jpg">
-<p align="center"> Proposed Authentication Flow via JWT </p>
-#+END_HTML
+[[./diagrams/jwtAuthFlow.jpg][Proposed Authentication Flow via JWT]]
+
+
 
 * Current Solution
-#+BEGIN_HTML
-<img src="./diagrams/abstract_flow.png">
-<p align="center"> Normal Auth Flow </p>
-#+END_HTML
 
+[[./diagrams/abstract_flow.png][Current Oauth Flow]]

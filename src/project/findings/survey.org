@@ -1,3 +1,13 @@
+#+TITLE: Design of Oauth Serivce
+#+AUTHOR: Projit Bandyopadhyay
+#+DATE: [2017-06-08 Thursday]
+#+SETUPFILE: ../../org-templates/level-2.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+
+
 * Given Starting Reference sites
 ** Oauth Starting Point
 - http://searchmicroservices.techtarget.com/definition/OAuth
@@ -62,6 +72,7 @@
 
 - Data overhead, as the token needs to be passed around.
 
+- Logout is Unreliable. It comes up to the same number of calls.
 *** References
 - https://float-middle.com/json-web-tokens-jwt-vs-sessions/
 

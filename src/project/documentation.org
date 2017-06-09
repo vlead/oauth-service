@@ -1,5 +1,10 @@
-#+TITLE: Documentation for Discovery and Work Towards Milestone 1
+#+TITLE: Documentation Currently Oauth Serivce
 #+AUTHOR: Projit Bandyopadhyay
+#+DATE: [2017-06-08 Thursday]
+#+SETUPFILE: ../org-templates/level-1.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
 
 * Documentation
 
@@ -18,7 +23,7 @@
 - Consolidated Java Implementations
 https://stackoverflow.com/questions/10296681/is-there-an-oauth-2-0-provider-implementation-in-java-not-oauth-client
 
-- YES YES YES YES
+- Django Good Implementation
   https://django-oauth-toolkit.readthedocs.io/en/latest/tutorial/tutorial_01.html
 
 - Node https://github.com/jaredhanson/oauth2orize
@@ -48,6 +53,7 @@ https://stackoverflow.com/questions/10296681/is-there-an-oauth-2-0-provider-impl
 
 * Other Possibilities
 https://github.com/jaredhanson/oauth2orize
+
 
 * References
 - To create Sign in + Registration
