@@ -1,8 +1,13 @@
-#+TITLE: 1st Milestone
+#+TITLE: Oauth Service
 #+AUTHOR: Projit Bandyopadhyay
+#+DATE: [2017-06-07 Mon]
+#+SETUPFILE: ./org-templates/level-1.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
 
 * CANCELED Requirements
-
+  
 ** Diagrams
 
 [[./diagrams/normalAuthFlow.jpg][Normal Authentication Flow]]

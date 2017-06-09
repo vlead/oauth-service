@@ -1,0 +1,15 @@
+#+TITLE: Oauth Service
+#+AUTHOR: Projit Bandyopadhyay
+#+DATE: [2017-06-07 Mon]
+#+SETUPFILE: ./org-templates/level-0.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+
+* Context 
+
+Building a service which will allow authorization between microservices. The
+user should be able to logi 
+
+
