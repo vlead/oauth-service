@@ -23,10 +23,9 @@ https://stackoverflow.com/questions/10296681/is-there-an-oauth-2-0-provider-impl
 
 - Node https://github.com/jaredhanson/oauth2orize
 
-
+  
 ** Explanation
-   
-[[./diagrams/abstract_flow.png][Flow of Information]]
+[[../design/diagrams/abstract_flow.png][Flow of Information]]
 
 4 Components : 
 

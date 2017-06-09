@@ -1,1 +1,29 @@
-* Talk about design and diagrams
+#+TITLE: Design of Oauth Serivce
+#+AUTHOR: Projit Bandyopadhyay
+#+DATE: [2017-06-08 Thursday]
+#+SETUPFILE: ../org-templates/level-1.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+* Introduction 
+  The =design= of the =Oauth Service= is captured here.
+
+* Origin Ideas
+** Design
+  Below image briefly describes the various methods of Authentication
+
+#+BEGIN_HTML
+<img src="./diagrams/normalAuthFlow.jpg">
+<p align="center"> Normal Auth Flow </p>
+
+<img src="./diagrams/jwtAuthFlow.jpg">
+<p align="center"> Proposed Authentication Flow via JWT </p>
+#+END_HTML
+
+* Current Solution
+#+BEGIN_HTML
+<img src="./diagrams/abstract_flow.png">
+<p align="center"> Normal Auth Flow </p>
+#+END_HTML
+
