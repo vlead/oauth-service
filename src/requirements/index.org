@@ -76,6 +76,7 @@
 
 ** TODO Make changes in outreach portal to integrate it with a new auth system
 
+** TODO gitlab is open source, find the authentication and authorization component.
 
 * TODO Things to look in to 
 

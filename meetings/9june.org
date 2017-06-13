@@ -1,0 +1,12 @@
+#+TITLE: Project Demo
+
+* Things to Work On
+
+- Read Up Further on oauth documentation
+
+- Arrange further meetings with Maruthi  and Thirumal Sir to discuss
+  implementation and architecture for the project.
+
+- Decide exact implementation style(node.js is preferred)
+
+- Read further specification and documentation of oauth2.
