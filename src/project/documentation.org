@@ -6,6 +6,7 @@
 #+EXCLUDE_TAGS: boilerplate
 #+OPTIONS: ^:nil
 
+
 * Documentation
 
 ** Resources
@@ -83,6 +84,18 @@ secret = dAilKMAig6F22zaSVOyyyMVQANjGWRseO6fAgobteJN3Q5Op2VQTLbr8x9SvZUGt3n9Muwp
 - Must be an absolute URI
 ** Authorization Flow
    [[../design/diagrams/Authorization_Flow.png][Auth Flow]]
+   
+This can be edited [[https://docs.google.com/drawings/d/1YDC4WZBj1nn7w9u9UFQ4s6OT_GGkiF-v7Mo-3ccxD8E/edit][here]]
+
+[[https://docs.google.com/drawings/d/1YDC4WZBj1nn7w9u9UFQ4s6OT_GGkiF-v7Mo-3ccxD8E/pub?w=960&h=720][Authorization Flow]]
+
+#+BEGIN_HTML
+<img src="https://docs.google.com/drawings/d/1YDC4WZBj1nn7w9u9UFQ4s6OT_GGkiF-v7Mo-3ccxD8E/pub?w=960&h=720">
+<p align="center"> Authorization Flow </p>
+#+END_HTML
+
+
+
 
 * gitlab is open source, find the authentication and authorization component.
 
