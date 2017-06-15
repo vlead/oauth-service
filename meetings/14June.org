@@ -1,0 +1,6 @@
+* Meeting with Maruthi Sir
+
+** Talked about user Flows and how to conceptualize oauth and where it came from.
+
+** Told me to look at: https://github.com/babelouest/glewlwyd
+It is an example of an oauth system built using C.

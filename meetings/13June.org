@@ -1,0 +1,7 @@
+* Meeting Notes
+
+** Discussed different possibilities of implementation of auth server.
+- Looking at gitlab source code to see what they've done and try to emulate
+  that.
+- looking at flask implementations found online which seem doable. Try taking
+  the given servers and getting them to work.
