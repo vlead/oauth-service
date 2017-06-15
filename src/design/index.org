@@ -9,16 +9,113 @@
 * Introduction 
   The =design= of the =Oauth Service= is captured here.
 
-* Origin Ideas
-** Design
+* Original Ideas
+** Design With JWT
   Below image briefly describes the various methods of Authentication
+  [[https://drive.google.com/open?id=0B4yIMMwkgfVYR0tUdnhzZzU4ekU][JWT]]
+  [[https://drive.google.com/open?id=0B4yIMMwkgfVYYWdiOVoxT21yckE][Normal]]
 
-[[./diagrams/normalAuthFlow.jpg][Normal Authentication Flow]]
+* Oauth Design
+** Abstract
+- Describes the Abstract Flow of information between the various parts of the system
+  [[https://drive.google.com/open?id=0B4yIMMwkgfVYbHdjMjZIcHI0aTg][Abstract Flow]]
 
-[[./diagrams/jwtAuthFlow.jpg][Proposed Authentication Flow via JWT]]
+   (A)  The client requests authorization from the resource owner.  The
+        authorization request can be made directly to the resource owner
+        (as shown), or preferably indirectly via the authorization
+        server as an intermediary.
+
+   (B)  The client receives an authorization grant, which is a
+        credential representing the resource owner's authorization,
+        expressed using one of four grant types defined in this
+        specification or using an extension grant type.  The
+        authorization grant type depends on the method used by the
+        client to request authorization and the types supported by the
+        authorization server.
+
+   (C)  The client requests an access token by authenticating with the
+        authorization server and presenting the authorization grant.
+
+   (D)  The authorization server authenticates the client and validates
+        the authorization grant, and if valid, issues an access token.
+
+   (E)  The client requests the protected resource from the resource
+        server and authenticates by presenting the access token.
+
+   (F)  The resource server validates the access token, and if valid,
+        serves the request.
+** Authorization
+- Describes how Authorization is handled   
+
+This can be edited [[https://docs.google.com/drawings/d/1YDC4WZBj1nn7w9u9UFQ4s6OT_GGkiF-v7Mo-3ccxD8E/edit][here]]
+
+[[http://docs.google.com/drawings/d/1YDC4WZBj1nn7w9u9UFQ4s6OT_GGkiF-v7Mo-3ccxD8E/pub?w=960&amp;h=720
+][Authorization Flow]]
+
+   (A)  The client initiates the flow by directing the resource owner's
+        user-agent to the authorization endpoint.  The client includes
+        its client identifier, requested scope, local state, and a
+        redirection URI to which the authorization server will send the
+        user-agent back once access is granted (or denied).
+     
+   (B)  The authorization server authenticates the resource owner (via
+        the user-agent) and establishes whether the resource owner
+        grants or denies the client's access request.
+   
+   (C)  Assuming the resource owner grants access, the authorization
+        server redirects the user-agent back to the client using the
+        redirection URI provided earlier (in the request or during
+        client registration).  The redirection URI includes an
+        authorization code and any local state provided by the client
+        earlier.
+   
+   (D)  The client requests an access token from the authorization
+        server's token endpoint by including the authorization code
+        received in the previous step.  When making the request, the
+        client authenticates with the authorization server.  The client
+        includes the redirection URI used to obtain the authorization
+        code for verification.
+   
+   (E)  The authorization server authenticates the client, validates the
+        authorization code, and ensures that the redirection URI
+        received matches the URI used to redirect the client in
+        step (C).  If valid, the authorization server responds back with
+        an access token and, optionally, a refresh token.
+   
+** TODO Grant Flow   
+
+   [[https://docs.google.com/drawings/d/1evFcqKv9UIO8nIft5BRnEfVeb_XPEYo5CjHgOY4TbCA/pub?w=960&h=720][Implicit Grant Flow]]
+
+   (A)  The client initiates the flow by directing the resource owner's
+        user-agent to the authorization endpoint.  The client includes
+        its client identifier, requested scope, local state, and a
+        redirection URI to which the authorization server will send the
+        user-agent back once access is granted (or denied).
+
+   (B)  The authorization server authenticates the resource owner (via
+        the user-agent) and establishes whether the resource owner
+        grants or denies the client's access request.
+
+   (C)  Assuming the resource owner grants access, the authorization
+        server redirects the user-agent back to the client using the
+        redirection URI provided earlier.  The redirection URI includes
+        the access token in the URI fragment.
+
+   (D)  The user-agent follows the redirection instructions by making a
+        request to the web-hosted client resource (which does not
+        include the fragment per [RFC2616]).  The user-agent retains the
+        fragment information locally.
+
+   (E)  The web-hosted client resource returns a web page (typically an
+        HTML document with an embedded script) capable of accessing the
+        full redirection URI including the fragment retained by the
+        user-agent, and extracting the access token (and other
+        parameters) contained in the fragment.
+
+   (F)  The user-agent executes the script provided by the web-hosted
+        client resource locally, which extracts the access token.
+
+   (G)  The user-agent passes the access token to the client.
 
 
 
-* Current Solution
-
-[[./diagrams/abstract_flow.png][Current Oauth Flow]]

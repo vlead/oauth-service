@@ -60,9 +60,6 @@ https://github.com/jaredhanson/oauth2orize
 - To create Sign in + Registration
 https://simpleisbetterthancomplex.com/tutorial/2017/02/18/how-to-create-user-sign-up-view.html
 
-id = hhsBocuFl7EGCCU9zHLmHppTkdpQI5HwfITMCJld
-secret = dAilKMAig6F22zaSVOyyyMVQANjGWRseO6fAgobteJN3Q5Op2VQTLbr8x9SvZUGt3n9MuwpUxiCKJov7rnwtWV58rm7cVpANLJtdyUhYmM8VRY2Sc71MhU1KxuubD9wZ
-
 
 * Oauth Info
 
@@ -76,6 +73,7 @@ secret = dAilKMAig6F22zaSVOyyyMVQANjGWRseO6fAgobteJN3Q5Op2VQTLbr8x9SvZUGt3n9Muwp
 - Needs some form of authentication with the auth server. may have a client
   password or some form of public/private key security measure. The degree of
   security is to be determined by the needs of the auth server.
+
 ** Protocol Endpoints
 *** Authorization Endpoint
 - Where the resource is interacted with to get authorization grant.
@@ -83,21 +81,11 @@ secret = dAilKMAig6F22zaSVOyyyMVQANjGWRseO6fAgobteJN3Q5Op2VQTLbr8x9SvZUGt3n9Muwp
 *** Redirection Endpoint
 - Must be an absolute URI
 ** Authorization Flow
-   [[../design/diagrams/Authorization_Flow.png][Auth Flow]]
-   
-This can be edited [[https://docs.google.com/drawings/d/1YDC4WZBj1nn7w9u9UFQ4s6OT_GGkiF-v7Mo-3ccxD8E/edit][here]]
-
-[[https://docs.google.com/drawings/d/1YDC4WZBj1nn7w9u9UFQ4s6OT_GGkiF-v7Mo-3ccxD8E/pub?w=960&h=720][Authorization Flow]]
-
-#+BEGIN_HTML
-<img src="https://docs.google.com/drawings/d/1YDC4WZBj1nn7w9u9UFQ4s6OT_GGkiF-v7Mo-3ccxD8E/pub?w=960&h=720">
-<p align="center"> Authorization Flow </p>
-#+END_HTML
-
 
 
 
 * gitlab is open source, find the authentication and authorization component.
+
 
 * refer to https://github.com/babelouest/glewlwyd
 
