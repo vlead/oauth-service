@@ -141,6 +141,7 @@ secret = dAilKMAig6F22zaSVOyyyMVQANjGWRseO6fAgobteJN3Q5Op2VQTLbr8x9SvZUGt3n9Muwp
 
 * gitlab is open source, find the authentication and authorization component.
 
-yAlY8DTt0QNP3eCZGgF2SezLONsoyPZW6YzmCjS5
+* refer to https://github.com/babelouest/glewlwyd
 
-tUaAnMt4RxJh10pvwWlnbJqFQfzsugjdncIxDE9yQ24wrBcM6I
+
+
