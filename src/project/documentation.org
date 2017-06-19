@@ -1,4 +1,4 @@
-#+TITLE: Documentation Currently Oauth Serivce
+#+TITLE: Documentation of Oauth Service
 #+AUTHOR: Projit Bandyopadhyay
 #+DATE: [2017-06-08 Thursday]
 #+SETUPFILE: ../org-templates/level-1.org
@@ -31,7 +31,6 @@ https://stackoverflow.com/questions/10296681/is-there-an-oauth-2-0-provider-impl
 
   
 ** Explanation
-[[../design/diagrams/abstract_flow.png][Flow of Information]]
 
 4 Components : 
 
@@ -56,12 +55,37 @@ https://stackoverflow.com/questions/10296681/is-there-an-oauth-2-0-provider-impl
 https://github.com/jaredhanson/oauth2orize
 
 
-* References
-- To create Sign in + Registration
-https://simpleisbetterthancomplex.com/tutorial/2017/02/18/how-to-create-user-sign-up-view.html
+* Things to Look into
+- gitlab is open source, find the authentication and authorization component.
+- refer to https://github.com/babelouest/glewlwyd
+- SAML key
 
 
-* Oauth Info
+* So far
+
+** Technology back-end
+- Using a combination of flask(python3) and SQLAlchemy to create the server.
+#+BEGIN_SRC 
+Flask==0.10.1
+Flask-Cors==3.0.2
+Flask-OAuthlib==0.6.0
+Flask-SQLAlchemy==1.0
+Flask-Testing==0.6.2
+#+END_SRC
+
+** Oauth2 Servers Used and Tested
+- https://github.com/lepture/example-oauth2-server
+- https://github.com/lepture/flask-oauthlib/tree/master/tests/oauth2
+
+*** FIXED Notes (IMPORTANT)
+- Unset proxy both http and https for the servers to work.
+- In their current forms given above, there is no way to 'logout'. This can be
+  achieved instead by using a private browser which clears cookies and session
+  on closing the browser session.
+- Version of Oauthlib may be an issue sometimes(These servers are tested with 0.6.0)
+
+
+* TODO Oauth How-To
 
 ** Client
 - Needs to register with the authorization server
@@ -74,20 +98,13 @@ https://simpleisbetterthancomplex.com/tutorial/2017/02/18/how-to-create-user-sig
   password or some form of public/private key security measure. The degree of
   security is to be determined by the needs of the auth server.
 
+
 ** Protocol Endpoints
 *** Authorization Endpoint
 - Where the resource is interacted with to get authorization grant.
 - Auth server must use TLS for transmission to auth endpoint
 *** Redirection Endpoint
 - Must be an absolute URI
-** Authorization Flow
-
-
-
-* gitlab is open source, find the authentication and authorization component.
-
-
-* refer to https://github.com/babelouest/glewlwyd
 
 
 

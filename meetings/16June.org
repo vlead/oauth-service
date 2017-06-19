@@ -1,0 +1,24 @@
+* Potential in using Alloy to model oauth.
+** Federated Identity Management.
+
+* Looking at different types of attacks:
+** Inside Browser itself
+- Other tabs open can cause opening of malicious sites which can steal cookies
+  from your session. Can then present these later on and gain access to secure
+  servers through someone else's credentials.
+- Solution? : Creating proxy server, chrome extensions created, CORP: causing
+  the server to put restrictions on the browser interactions.
+
+* Working with black boxes
+- Looking at inputs and outputs and securing based on it.
+
+* IOT 
+- looking at different protocols and their security. Security of these devices
+  is where systems meet software. 
+- Can look in to Autosar(Automobile specification)
+- 
+- 
+
+
+
+

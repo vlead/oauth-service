@@ -1,4 +1,4 @@
-#+TITLE: Oauth Service
+#+TITLE: Oauth Service Requirements
 #+AUTHOR: Projit Bandyopadhyay
 #+DATE: [2017-06-05 MON]
 #+PROPERTY: results output
@@ -53,33 +53,30 @@
 
 
 
-* TODO Update on Requirements
+* Update on Requirements
 - (OVERLYING) Creating oauth service(login with vlabs)
 
   Using open source software / building own, we should be able to create a
   login with vlabs feature(currently outreach uses login with 
 
-** TODO Create a working model of oauth service oauth style validation.
+** DONE Create a working model of oauth service oauth style validation.
 
 ** TODO Integrate it with our current architecture in the outreach portal.
 
 ** TODO Deploy on larger scale
 
-- 
-
-
-* TODO Work Now 
-
-** DONE Create a diagram for flow of data
-
-** TODO Get the outreach portal repository and analyze the application's current auth system to see where I can insert my own.
-
-** TODO Make changes in outreach portal to integrate it with a new auth system
-
-** TODO gitlab is open source, find the authentication and authorization component.
 
 * TODO Things to look in to 
 
 ** SAML key
 
 
+* Use Cases
+** User - Client Interactions
+   [[https://docs.google.com/drawings/d/1J2yjhPOw_HzCx7ri48rJ1Z-Wg2We4QJekBxFtvwO08g/pub?w=960&h=720][Interaction Model]]
+   
+   Editable [[https://docs.google.com/drawings/d/1J2yjhPOw_HzCx7ri48rJ1Z-Wg2We4QJekBxFtvwO08g/edit][here]]
+** Inter-Client Interactions
+   [[https://docs.google.com/drawings/d/1dzTLByG3R4mXx4dsMMyAMP24w6IIMucGQ76e56ipHAU/pub?w=960&h=720][Client Client Interactions]]
+
+   Editable [[https://docs.google.com/drawings/d/1dzTLByG3R4mXx4dsMMyAMP24w6IIMucGQ76e56ipHAU/edit][here]]
