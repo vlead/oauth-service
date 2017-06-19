@@ -1,0 +1,48 @@
+* Reasons for Oauth system to be developed by us.
+- Delegated authentication mechanism.
+
+
+* Questions
+** Microservice
+- building microservice based system, authentication is another service.
+- working with the assumption that already authenticated
+- From a building perspective.
+- User is an id, store all the data in a db table.
+
+
+
+
+* Why we need it
+
+** Use Cases
+- 3rd party services.
+- User Flow wth user agent
+- Server-Server Flow with 'server agent'
+
+
+** User Flow   
+
+Client ----> Server
+u, c requests s;
+is_authorized(u, c)
+s, u, c requests a
+a evaluates
+a returns true or false to s.
+s says allow u
+
+
+* Building
+- Engineering decision: do we build it? 
+
+
+* What to do now.
+- Authenticate all microservices in VLABS, server-server flow 
+- new service has a service configuration specification / config file.
+Should have all the keys and all that.
+- 
+
+1) take a service, make it register with google and have s1, s2 register with
+   google and have them register with google and get the triangle system
+   working. 
+2) Apply to cluster
+3) Verify in cloud server, if EDX there then.
