@@ -1,5 +1,4 @@
 # OS generated files #
-######################
 *.DS_Store
 *.DS_Store?
 ._*
@@ -18,7 +17,6 @@ outreach-portal.egg-info/
 dist/
 logs/
 build/
-elisp/
 org-templates/
 style/
 src/org-templates
@@ -27,3 +25,4 @@ sitemap*
 lint_output
 literate-tools/
 *.sqlite
+elisp

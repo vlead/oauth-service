@@ -12,7 +12,19 @@
 
 
 
+
 * Why we need it
+  - Integrating third party service, having standarized
+  - Offer a service, 
+    - without authentication
+    - in order to use this, you need some authentication
+      only authenticated users can have access to this service.
+      - build my own authentication
+      - use other 
+
+  - Every server needs authentication
+
+  - Every request that comes to the server is forwarded
 
 ** Use Cases
 - 3rd party services.
@@ -29,6 +41,15 @@ s, u, c requests a
 a evaluates
 a returns true or false to s.
 s says allow u
+
+*** representational
+  1. c ---------> server -------> a
+  2. c:(u, c) -------> s
+  3. s: is_authorized (u, c)
+  4. s: S, u, c ----------> a
+  5. a authenticates u on c
+  6. a: ----------> is authenticated S
+  7. s: allow u
 
 
 * Building
