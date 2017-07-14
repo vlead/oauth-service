@@ -1,0 +1,100 @@
+#+TITLE: Web Frontend for Lab Data Service Dashboard
+#+AUTHOR: VLEAD
+#+DATE: [2017-06-05 Mon]
+#+SETUPFILE: ../../org-templates/level-2.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+* Introduction
+  This "Literate Document" is an illustration of building the client side frontend for our OAuth app. 
+
+* HTML
+** Index
+The App is now a SPA. Here's the basic skeleton.
+~Side Nav to be removed from here in future releases.~
+#+NAME: index
+#+BEGIN_SRC html :tangle app/templates/index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Login Page</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+
+</head>
+
+<body id="body">
+<header>
+</header>
+	<main>
+		<div class="container">
+			<div class="row">
+				<div class="col card">
+					<h3 class="card-title"> Login with </h3>	
+					<a href="/login" class="btn btn-danger"><span class="fa fa-google-plus"></span> Google</a>
+
+				</div>
+			</div>
+		</div>
+	</main>
+
+<footer>		
+</footer>
+</body>
+</html>
+
+
+#+END_SRC
+
+
+
+* Tangle                                                        :boilerplate:
+  
+** sources
+#+BEGIN_SRC js :tangle app/static/js/main.js :eval no :noweb yes
+<<auth_api>>
+<<index_handler>>
+<<logged_in>>
+<<get_json_dash>>
+<<get_json_nav>>
+<<create_Division>>
+<<decoding_Json>>
+<<attach_Division>>
+<<handlers_map>>
+<<handlers_map_func_def>>
+<<current_window_hash>>
+<<hash_navigate_function>>
+<<register_on_hash_change>>
+<<show_all_container>>
+<<show_one_container>>
+<<hide_all_container>>
+<<get_users>>
+<<get_roles>>
+<<add_user>>
+<<add_role>>
+<<update_user_table>>
+<<updateUserHelperFunction>>
+<<update_users>>
+<<delete_user>>
+<<update_role_table>>
+<<updateRoleHelperFunction>>
+<<delete_role>>
+<<update_own_click>>
+<<onClick_event_handle>>
+<<update_role_drop>>
+<<hash_home>>
+<<onload>>
+
+#+END_SRC
+   
+
+
+   
+
