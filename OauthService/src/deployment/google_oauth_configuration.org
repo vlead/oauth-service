@@ -1,4 +1,4 @@
-#+TITLE: Google Oauth Configuration
+x#+TITLE: Google Oauth Configuration
 #+AUTHOR: VLEAD
 #+DATE: [2017-06-14 WED]
 #+SETUPFILE: ../org-templates/level-0.org
@@ -24,7 +24,7 @@
 	+ Configure =Authorised redirect URIs= as below if you are
           running application in =localhost=
 	  #+BEGIN_EXAMPLE
-	  http://localhost:5000/authorized
+	  https://localhost:5000/gCallback
 	  #+END_EXAMPLE
         + Click on =Create=
         + Note down =CLIENT ID= and =CLIENT SECRET=

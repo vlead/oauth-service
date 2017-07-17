@@ -16,7 +16,6 @@
 	
 @api.route("/", methods=['GET'])
 def index():	
-	print(session)
 	return render_template('index.html')
 
 #+END_SRC
@@ -63,7 +62,7 @@ def get_google_auth(state=None, token=None):
 
 @api.route('/login', methods=["GET","POST"])
 def login():
-	if 'user' in session: 
+	if 'user' in login_session: 
 		return redirect("/")
 	google = get_google_auth()
 	auth_url, state = google.authorization_url(
@@ -125,7 +124,7 @@ def callback():
 			except:
 				next='/'
 
-			session['google_token'] = token
+			login_session['google_token'] = token
 			session['user'] =data
 			return redirect(next) ,200
 
@@ -174,10 +173,9 @@ class Auth:
 
 @api.route('/logout', methods=["GET"])
 def logout():
-	if 'user' in session :
+	if 'user' in login_session :
 		try:
-			print(session)
-			session.clear()
+			login_session.clear()
 			session.clear()
 		except:
 			return jsonify(success=False, message="No session present"), 400
@@ -202,14 +200,14 @@ def logout():
 @api.route('/check_login',methods=["GET"])
 def check_login():
 	if request.method=="GET":
-		if 'user' in session:		
-			return jsonify(loggedIn=session['user'])
+		if 'user' in login_session:		
+			return jsonify(loggedIn=True,data=login_session['user'])
 		else:	
 			return jsonify(loggedIn=False)
 	return  jsonify(loggedIn=True)
 
 #+END_SRC
-
+    
 * Infra                                                         :boilerplate:
 
   
@@ -234,7 +232,7 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.security import gen_salt
 
 api = Blueprint('users', __name__)
-
+login_session={};
 #+end_src
     
     

@@ -1,4 +1,4 @@
-#+TITLE: Running Lab Data Service on Developement Environment
+#+TITLE: Running Oauth Service on Developement Environment
 #+Author: VLEAD
 #+Date: [2017-05-06 Fri]
 #+PROPERTY: results output
@@ -15,16 +15,16 @@
     #+BEGIN_EXAMPLE
     show databases;
     #+END_EXAMPLE
-  - If <lds> database is not present, create it
+  - If <oauthService> database is not present, create it
     #+BEGIN_EXAMPLE
-    create database ldsdashboard;
+    create database ouathService;
     #+END_EXAMPLE
   
     Exit out of the mysql console
 
 
 * Initial make
-  Run make from =lab-data-service-dashboard= directory to build the
+  Run make from =oauth-service= directory to build the
   application.  The code gets tangled but the test cases will fail.  This is
   because some of the dependencies have not been set up.  To insall the
   dependencies and run the application, follow the steps listed below.
@@ -36,7 +36,7 @@
 
 * Creation of Virtual Environment
 
-  + Create Virtual Environemnt in the =lab-data-service= directory
+  + Create Virtual Environemnt in the =oauth-service= directory
   #+BEGIN_EXAMPLE
   virtualenv venv
   #+END_EXAMPLE
@@ -47,11 +47,11 @@
 
 
 * Setting up dependencies
-  Install all the dependencies for running the =lds= applciation.  The
-  =setup.py= script is in the =build/code/deployment/= directory
+  Install all the dependencies for running the =oauthService= applciation.  The
+  =requirements.txt= file is in the =build/code/deployment/= directory
   #+BEGIN_EXAMPLE
   cd build/code/deployment/
-  python setup.py install
+  pip install -r requirements.txt
 
   #+END_EXAMPLE
 
@@ -91,7 +91,7 @@
 
 * Run Make again
   The =make= again and time it should pass all the test cases. Change directory
-  to =lab-data-service-dashboard= and run =make=.
+  to =oauth-service= and run =make=.
 
 
 * Set SQLALCHEMY_DATABASE_URI
@@ -99,7 +99,7 @@
   =build/code/runtime/config/flask_app_config.py= so that the application can
   use the database.
   #+BEGIN_EXAMPLE
-  SQLALCHEMY_DATABASE_URI = 'mysql+oursql://root:<yourpswd>@localhost/ldsdashboard'
+  SQLALCHEMY_DATABASE_URI = 'mysql+mysqldbs://root:<yourpswd>@localhost/oauthService'
   #+END_EXAMPLE
 
 
@@ -144,24 +144,12 @@
   python cert.py
   #+END_EXAMPLE
 
-
-* Run the application
-  
-  The application can now be run from the =build/code/runtime/rest/= directory
-  #+BEGIN_EXAMPLE
-  cd build/code/runtime/rest/
-  unset http_proxy
-  unset https_proxy
-  python run.py
-  #+END_EXAMPLE
-
-
 * Access the application
   
-  The application is accessed at =http://localhost:5000=
+  The application is accessed at =https://localhost:5000=
   
 
 * API Documentation
   URL :
-  [https://github.com/vlead/lab-data-service/blob/master/src/runtime/rest/api.org] 
+  [https://github.com/vlead/oauth-service/blob/master/src/runtime/rest/api.org] 
 

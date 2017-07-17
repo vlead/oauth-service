@@ -14,78 +14,102 @@
   Here we use the =setuptools= module from the standard lib, to make a
   =setup.py= file, which will install all the python library dependencies.
 
-#+BEGIN_SRC python :tangle setup.py :eval no
-from setuptools import setup
-
-requires = [
-    'flask',
-    'Flask-SQLAlchemy',
-    'oursql',
-    'flask-cors',
-    'flask-testing',
-    'requests',
-    'pyyaml',
-    'Flask',
-    'Flask-Login',
-    'Flask-OAuth',
-    'Flask-SQLAlchemy',
-    'Flask-Testing',
-    'Jinja2',
-    'MarkupSafe',
-    'SQLAlchemy',
-    'Werkzeug',
-    'argparse',
-    'asn1crypto',
-    'certifi',
-    'cffi',
-    'chardet',
-    'click',
-    'client',
-    'cryptography',
-    'enum34',
-    'http',
-    'httplib2',
-    'idna',
-    'ipaddress',
-    'itsdangerous',
-    'oauth2',
-    'oauthlib',
-    'pyOpenSSL',
-    'pycparser',
-    'requests',
-    'requests-oauthlib',
-    'six',
-    'urllib3',
-    'wsgiref'
-]
-
-setup(
-    name='lds',
-    version='2.0',
-    install_requires=requires
-)
-
-#+END_SRC
-
-* Program to set up the database
-#+BEGIN_SRC python :tangle db_setup.py :eval no
-from flask import Flask
-from runtime.rest.app import db
-from runtime.rest.app.users.db import *
-
-def populate():
-    role1 = Roles(role_name="admin")
-    role1.save()
-    user = User(name="admin_user",
-                email="admin@email.com",
-                role="admin")
-    user.save()
-
-if __name__ == "__main__":
-    app = Flask(__name__)
-    app.config.from_object("runtime.config.flask_app_config")
-    db.create_all()
-    populate()
+#+BEGIN_SRC python :tangle requirements.txt :eval no
+CherryPy==3.2.2
+Flask==0.12.2
+Flask-Cors==3.0.3
+Flask-Login==0.4.0
+Flask-OAuth==0.12
+Flask-OAuthlib==0.9.4
+Flask-SQLAlchemy==2.2
+Flask-Testing==0.6.2
+Jinja2==2.9.6
+MarkupSafe==1.0
+MySQL-python==1.2.3
+Naked==0.1.31
+PAM==0.4.2
+Pillow==2.3.0
+PyYAML==3.10
+Routes==2.0
+SQLAlchemy==1.1.11
+Twisted==16.0.0
+Twisted-Core==13.2.0
+Twisted-Web==13.2.0
+WebOb==1.3.1
+Werkzeug==0.12.2
+adium-theme-ubuntu==0.3.4
+apt-xapian-index==0.45
+argparse==1.2.1
+asn1crypto==0.22.0
+beautifulsoup4==4.4.1
+certifi==2017.4.17
+cffi==1.10.0
+chardet==2.0.1
+click==6.7
+client==0.0.1
+colorama==0.2.5
+command-not-found==0.3
+crypto==1.4.1
+cryptography==2.0
+debtagshw==0.1
+defer==1.0.6
+dirspec==13.10
+dnspython==1.12.0
+duplicity==0.6.23
+enum34==1.1.6
+gdata==2.0.18
+html5lib==0.999
+http==0.02
+httplib2==0.8
+idna==2.5
+ipaddress==1.0.18
+itsdangerous==0.24
+lds==2.0
+lockfile==0.8
+lxml==3.3.3
+matplotlib==1.3.1
+numpy==1.8.2
+oauth2==1.9.0.post1
+oauthlib==2.0.2
+oneconf==0.3.7.14.04.1
+oursql==0.9.3.2
+pexpect==3.1
+piston-mini-client==0.7.5
+psutil==1.2.1
+pyOpenSSL==0.13
+pycparser==2.18
+pycrypto==2.6.1
+pycups==1.9.66
+pycurl==7.19.3
+pygobject==3.12.0
+pyparsing==2.0.1
+pyserial==2.6
+pysmbc==1.0.14.1
+python-apt==0.9.3.5ubuntu2
+python-dateutil==1.5
+python-debian==0.1.21-nmu2ubuntu2
+pytz==2012c
+pyxdg==0.25
+recordtype==1.1
+reportlab==3.0
+repoze.lru==0.6
+requests==2.2.1
+requests-oauthlib==0.8.0
+sessioninstaller==0.0.0
+shellescape==3.4.1
+six==1.5.2
+software-center-aptd-plugins==0.0.0
+ssh-import-id==3.21
+system-service==0.1.6
+unity-lens-photos==1.0
+urllib3==1.7.1
+urlparse2==1.1.1
+virtualenv==15.0.1
+wheel==0.24.0
+wsgiref==0.1.2
+xdiagnose==3.6.3build2
+youtube-dl==2014.02.17
+zope.interface==4.0.5
 
 #+END_SRC
 
@@ -161,9 +185,9 @@ cd build/oursql
 wget https://pypi.python.org/packages/8c/88/9f53a314a2af6f56c0a1249c5673ee384b85dc791bac5c1228772ced3502/oursql-0.9.3.2.tar.gz#md5=ade5959a6571b1626966d47f3ab2d315
 tar xvf oursql-0.9.3.2.tar.gz
 cd oursql-0.9.3.2
-python setup.py install
+python install requirements.txt
 
-pip install Flask Flask-SQLAlchemy oursql requests flask-cors flask-testing
+# pip install Flask Flask-SQLAlchemy oursql requests flask-cors flask-testing
 
 if [[ $? -ne 0 ]]; then
   echo "FATAL: Installation failed!"
@@ -197,7 +221,7 @@ update_app_config () {
   CONFIG_FILE="../runtime/config/flask_app_config.py"
   DB_USER="root"
   DB_PASS=$(cat db_pass.txt)
-  DB_NAME="ldsdashboard"
+  DB_NAME="oauthService"
   DB_SERVER="localhost"
 
   # the list of white-listed IPs for POST/PUT requests to data service
@@ -225,8 +249,8 @@ update_app_config () {
 }
 
 update_apache_config() {
-  PROC_NAME="ldsdashboard"
-  WSGI_SCRIPT="ldsdashboard.wsgi"
+  PROC_NAME="oauthService"
+  WSGI_SCRIPT="oauthService.wsgi"
   APACHE_VHOST_FILE="/etc/apache2/sites-available/000-default.conf"
 
   sed -i "/<\/VirtualHost>/i \
@@ -276,7 +300,7 @@ exit 0;
 
 * Deploying the application
 
-#+BEGIN_SRC python :tangle ldsdashboard.wsgi :eval no
+#+BEGIN_SRC python :tangle oauthService.wsgi :eval no
 import sys, os
 
 BASE_DIR = BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)))

@@ -1,4 +1,4 @@
-#+TITLE: Lab Data Service Dashboard
+#+TITLE: Oauth Service Dashboard
 #+AUTHOR: VLEAD
 #+DATE: [2017-06-05 Mon]
 #+PROPERTY: results output
@@ -11,43 +11,16 @@
   :PROPERTIES:
   :CUSTOM_ID: introduction
   :END: 
-  This document describes all the requirements of =lab-data-service-dashboard=.
+  This document describes all the requirements of =oauth-service=.
 
 * Requirements
   :PROPERTIES:
   :CUSTOM_ID: requirements
   :END: 
-
+      
 ** Req1
   :PROPERTIES:
   :CUSTOM_ID: req1
-  :END: 
-   - Ability to do all the =CRUD= operations on labs data based on the given role
-     and a User. 
-
-** Req2 
-  :PROPERTIES:
-  :CUSTOM_ID: req2
-  :END: 
-   - Admin Role should be able to perform all the =CRUD= operations. 
-   - Admin Role should be able to add other users and assign roles to them.
-
-** Req3
-  :PROPERTIES:
-  :CUSTOM_ID: req3
-  :END: 
-   - Guest Role should be able to =Read/View= the labs data.
-
-** Req4
-  :PROPERTIES:
-  :CUSTOM_ID: req4
-  :END: 
-   - Authentication and Authorization should be provided for all the LDS
-     Dashboard users. 
-      
-** Req5
-  :PROPERTIES:
-  :CUSTOM_ID: req5
   :END: 
   - Generate HTML code from JSON specification. All HTML code need to  be
     auto generated from the given JSON Specification.

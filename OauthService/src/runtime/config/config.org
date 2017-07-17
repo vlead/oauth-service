@@ -17,11 +17,9 @@ This holds the application's configuration parameters.
 #+BEGIN_SRC python
 # DB URI
 # It contains properties that are useful to establish a connection to the our database. For example:
-# mysql+oursql://scott:tiger@localhost/mydatabase
-# postgresql+psycopg2://scott:tiger@localhost/mydatabase
-SQLALCHEMY_DATABASE_URI = 'mysql+oursql://root:khuushi2005@localhost/ldsdashboard'
+SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://root:iiit123@localhost/oauthService'
 # On production <text> needs to be changed like this example
-# SQLALCHEMY_DATABASE_URI = 'mysql+oursql://root:root@localhost/ldsdashboard'
+# SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://root:root@localhost/oauthService'
 
 # Debug from SQLAlchemy
 # Turn TRACK_MODIFICATIONS and ECHO to 'False' on production
@@ -39,7 +37,7 @@ WHITELIST_IPS = ["127.0.0.1"]
 
 # Configure your log paths
 LOG_FILE_DIRECTORY = 'logs'
-LOG_FILE = 'ldsdashboard.log'
+LOG_FILE = 'oauthService.log'
 
 # Log level for the application
 # 10=DEBUG, 20=INFO, 30=WARNING, 40=ERROR, 50=CRITICAL",

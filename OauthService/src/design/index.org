@@ -1,4 +1,4 @@
-#+TITLE: Design of lab-data-service-dashboard
+#+TITLE: Design of oauth-service
 #+AUTHOR: VLEAD
 #+DATE: [2017-06-09 Friday]
 #+SETUPFILE: ../org-templates/level-1.org
@@ -8,7 +8,7 @@
 
 
 * Introduction 
-  The =design= of the =lab-data-service-dashboard= is captured here.
+  The =design= of the =oauth-service= is captured here.
 
 
 * Design diagram
@@ -16,20 +16,11 @@
   :CUSTOM_ID: design_diagram
   :END:    
 
-  Following diagram represents the lab-data-service-dashboard design.
+  Following diagram represents the oauth-service design.
   This diagram has the following 3 sections:
-  1) *Lab Data Service* : A Micro Service which provides the labs
+  1) *Oauth Service* : A Micro Service which provides the authentication
      information via =REST= API's
-  2) *User Authentication/Authorization Service* : A Micro Service which
-     manages all the users and their roles in the system. Also provides the
+  2) *User Authentication/Authorization Service* : A Identity Provider which
+     manages all the users authentication. Also provides the
      google authentication for user to login and logout.
-  3) *Web Interface/Front End* : A Web Interface to view all the labs data
-     based on a given role.
-
-#+BEGIN_HTML
-<img src="https://docs.google.com/drawings/d/1hgRPbFjn-Gqtd-Ypqi8F8888uJpm_S6r_vnwld45ioA/pub?w=960&h=720">
-<p align="center"> lab data service dashboard design diagram </p>
-#+END_HTML
-
- [[https://docs.google.com/drawings/d/1hgRPbFjn-Gqtd-Ypqi8F8888uJpm_S6r_vnwld45ioA/edit?usp=sharing][click here]] to edit the diagram
-
+  3) *Micro Services
