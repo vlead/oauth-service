@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Login Page</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+
+</head>
+
+<body id="body">
+<header>
+</header>
+	<main>
+		<div class="container">
+			<div class="row">
+				<h3>Welcome to the VLEAD Service</h3>				
+			</div>
+			<div class="row">
+			{% if data.loggedIn== True %}	
+				<div class="col m4 card">			<h5 class="card-title"> {{ data.data.name }} </h5>
+						<img src={{ data.data.picture }} height="200px" />
+					<div class="card-action">
+					<a href= {{ data.data.link }} /> Link to my account </a>
+					<a href="#"> {{ data.data.email }} </a> 
+				</div>
+				<a class="btn" href="/logout"
+				> Logout </a>
+			{% else %}
+				<div class="col m6 card">
+					<a class="btn btn-danger" href="/login"> Login </a>	
+				</div>
+			{% endif %}
+			</div>
+		</div>
+	</main>
+
+<footer>		
+</footer>
+</body>
+</html>
