@@ -15,6 +15,7 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.security import gen_salt
 
 api = Blueprint('users', __name__)
+login_session={};
 
 def get_google_auth(state=None, token=None):
 	if token:
@@ -32,12 +33,12 @@ def get_google_auth(state=None, token=None):
 	
 @api.route("/", methods=['GET'])
 def index():	
-	print(session)
+	print(login_session)
 	return render_template('index.html')
 
 @api.route('/login', methods=["GET","POST"])
 def login():
-	if 'user' in session: 
+	if 'user' in login_session: 
 		return redirect("/")
 	google = get_google_auth()
 	auth_url, state = google.authorization_url(
@@ -73,17 +74,17 @@ def callback():
 				next='/'
 
 			session['google_token'] = token
-			session['user'] =data
+			login_session['user'] =data
 			return redirect(next) ,200
 
 		return  jsonify(success=False, message="Couldn't fetch information"), 400
 
 @api.route('/logout', methods=["GET"])
 def logout():
-	if 'user' in session :
+	if 'user' in login_session :
 		try:
-			print(session)
-			session.clear()
+			print(login_session)
+			login_session.clear()
 			session.clear()
 		except:
 			return jsonify(success=False, message="No session present"), 400
@@ -93,8 +94,8 @@ def logout():
 @api.route('/check_login',methods=["GET"])
 def check_login():
 	if request.method=="GET":
-		if 'user' in session:		
-			return jsonify(loggedIn=session['user'])
+		if 'user' in login_session:		
+			return jsonify(loggedIn=True,data=login_session['user'])
 		else:	
 			return jsonify(loggedIn=False)
 	return  jsonify(loggedIn=True)

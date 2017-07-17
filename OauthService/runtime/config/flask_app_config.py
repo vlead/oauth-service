@@ -7,7 +7,7 @@ UPLOAD_BASE = os.path.abspath(os.path.join(BASE_DIR, 'uploads'))
 # Our Database
 # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'safe.db')
 # On production <text> needs to be changed like this example
-SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://root:khuushi2005@localhost:3306/IDP'
+SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://root:iiit123@localhost:3306/IDP'
 
 # Debug from SQLAlchemy
 # Turn TRACK_MODIFICATIONS and ECHO to 'False' on production
