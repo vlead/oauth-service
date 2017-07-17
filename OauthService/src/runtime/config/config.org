@@ -1,0 +1,108 @@
+#+TITLE: Configuration
+#+AUTHOR: VLEAD
+#+DATE: [2017-06-06 Tue]
+#+SETUPFILE: ../../org-templates/level-2.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+* Introduction
+
+This holds the application's configuration parameters.
+
+
+* Flask Application Configuration
+  Configuration for the flask application. 
+#+NAME: flask_app_config
+#+BEGIN_SRC python
+# DB URI
+# It contains properties that are useful to establish a connection to the our database. For example:
+# mysql+oursql://scott:tiger@localhost/mydatabase
+# postgresql+psycopg2://scott:tiger@localhost/mydatabase
+SQLALCHEMY_DATABASE_URI = 'mysql+oursql://root:khuushi2005@localhost/ldsdashboard'
+# On production <text> needs to be changed like this example
+# SQLALCHEMY_DATABASE_URI = 'mysql+oursql://root:root@localhost/ldsdashboard'
+
+# Debug from SQLAlchemy
+# Turn TRACK_MODIFICATIONS and ECHO to 'False' on production
+SQLALCHEMY_ECHO = False
+DATABASE_CONNECT_OPTIONS = {}
+SQLALCHEMY_TRACK_MODIFICATIONS = True
+
+# Cross-origin resource sharing (CORS) is a mechanism that allows restricted resources on a web page  to be requested from another domain.
+# Which is outside the domain from which the first resource was served.
+# List of allowed origins for CORS for this app
+ALLOWED_ORIGINS = "['*']"
+
+# List of allowed IPs
+WHITELIST_IPS = ["127.0.0.1"]
+
+# Configure your log paths
+LOG_FILE_DIRECTORY = 'logs'
+LOG_FILE = 'ldsdashboard.log'
+
+# Log level for the application
+# 10=DEBUG, 20=INFO, 30=WARNING, 40=ERROR, 50=CRITICAL",
+LOG_LEVEL = 10
+
+# Application threads. A common general assumption is
+# using 2 per available processor cores - to handle
+# incoming requests using one and performing background
+# operations using the other.
+THREADS_PER_PAGE = 2
+
+# Enable protection agains *Cross-site Request Forgery (CSRF)*
+CSRF_ENABLED = True
+
+# In order to use sessions you have to set a secret key. 
+# Prevents users to modify your cookie without this secret key.
+import os
+SECRET_KEY = os.urandom(13)
+
+# These are meant to be initialized inorder to be used for bypassing login_required decorator and custom decorators during build.
+LOGIN_REQUIRED = True
+TESTING = False
+
+#+END_SRC
+
+
+* System Config
+#+NAME: system_config
+#+BEGIN_SRC python
+#Fill the value during deployment. Generate the key. 
+import os
+KEY = os.urandom(13)
+#+END_SRC
+
+
+* Google OAuth Configuration
+#+NAME: goauth_config
+#+BEGIN_SRC python
+class Auth:
+    CLIENT_ID = "Your client ID"
+    CLIENT_SECRET = "Your client secret"
+    REDIRECT_URI = 'https://localhost:5000/gCallback'
+    AUTH_URI = 'https://accounts.google.com/o/oauth2/auth'
+    TOKEN_URI = 'https://accounts.google.com/o/oauth2/token'
+    USER_INFO = 'https://www.googleapis.com/userinfo/v2/me'
+    SCOPE = ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email']
+#+END_SRC
+
+
+* Tangling                                                      :boilerplate:
+** flask_app_config
+#+BEGIN_SRC python :tangle flask_app_config.py :eval no :noweb yes
+<<flask_app_config>>
+#+end_src
+
+
+** system_config
+#+BEGIN_SRC python :tangle system_config.py :eval no :noweb yes
+<<system_config>>
+#+end_src   
+
+
+** goauth_config
+#+BEGIN_SRC python :tangle goauth_config.py :eval no :noweb yes
+<<goauth_config>>
+#+END_SRC  

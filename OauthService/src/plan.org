@@ -1,0 +1,21 @@
+#+TITLE: Plan for Lab Data Service Dashboard
+#+AUTHOR: VLEAD
+#+DATE: [2017-06-19 Mon]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-1.org
+#+options: ^:nil
+#+LATEX: Literal LaTeX code for export
+
+* Introduction
+  - This document briefly explains plan for =OauthService= project.
+
+
+* Realization 
+    :PROPERTIES:
+    :CUSTOM_ID: cc_realization
+    :END:    
+
+
+ 
+  

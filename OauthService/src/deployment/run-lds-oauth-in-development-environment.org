@@ -1,0 +1,167 @@
+#+TITLE: Running Lab Data Service on Developement Environment
+#+Author: VLEAD
+#+Date: [2017-05-06 Fri]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ./org-templates/level-0.org
+#+options: ^:nil
+
+* Creation of database
+  - Login to mysql
+    #+BEGIN_EXAMPLE
+    mysql -u <username> -p <password>
+    #+END_EXAMPLE
+  - Show all databases
+    #+BEGIN_EXAMPLE
+    show databases;
+    #+END_EXAMPLE
+  - If <lds> database is not present, create it
+    #+BEGIN_EXAMPLE
+    create database ldsdashboard;
+    #+END_EXAMPLE
+  
+    Exit out of the mysql console
+
+
+* Initial make
+  Run make from =lab-data-service-dashboard= directory to build the
+  application.  The code gets tangled but the test cases will fail.  This is
+  because some of the dependencies have not been set up.  To insall the
+  dependencies and run the application, follow the steps listed below.
+
+  #+BEGIN_EXAMPLE
+  make
+  #+END_EXAMPLE
+
+
+* Creation of Virtual Environment
+
+  + Create Virtual Environemnt in the =lab-data-service= directory
+  #+BEGIN_EXAMPLE
+  virtualenv venv
+  #+END_EXAMPLE
+  + Activate the Virtual Environment
+  #+BEGIN_EXAMPLE
+  source venv/bin/activate
+  #+END_EXAMPLE
+
+
+* Setting up dependencies
+  Install all the dependencies for running the =lds= applciation.  The
+  =setup.py= script is in the =build/code/deployment/= directory
+  #+BEGIN_EXAMPLE
+  cd build/code/deployment/
+  python setup.py install
+
+  #+END_EXAMPLE
+
+** Note :- 
+   If you found error something like =error: Couldn't find a setup script
+   in /tmp/easy_install-oTRjpD/oursql-0.9.3.2.linux-i686.tar.gz= please
+   execute below steps skip otherwise
+
+   #+BEGIN_EXAMPLE
+   mkdir oursql
+   cd oursql
+   wget https://pypi.python.org/packages/8c/88/9f53a314a2af6f56c0a1249c5673ee384b85dc791bac5c1228772ced3502/oursql-0.9.3.2.tar.gz#md5=ade5959a6571b1626966d47f3ab2d315
+   tar xvf oursql-0.9.3.2.tar.gz
+   cd oursql-0.9.3.2
+   python setup.py install
+   #+END_EXAMPLE
+
+   If below problem occurs =oursqlx/oursql.c:8:22: fatal error: pyconfig.h:
+   No such file or directory=.
+   #+BEGIN_EXAMPLE
+   oursqlx/oursql.c:8:22: fatal error: pyconfig.h: No such file or directory
+   #include "pyconfig.h"
+                      ^
+   compilation terminated.
+   error: Setup script exited with error: command 'x86_64-linux-gnu-gcc' failed
+   with exit status 1
+   #+END_EXAMPLE
+  
+   Do the following:
+
+   #+BEGIN_EXAMPLE
+   sudo su -
+   apt-get install libmysqlclient-dev
+   apt-get install python-dev
+   #+END_EXAMPLE
+
+
+* Run Make again
+  The =make= again and time it should pass all the test cases. Change directory
+  to =lab-data-service-dashboard= and run =make=.
+
+
+* Set SQLALCHEMY_DATABASE_URI
+  The variable =SQLALCHEMY_DATABASE_URI= has to be set to proper value in
+  =build/code/runtime/config/flask_app_config.py= so that the application can
+  use the database.
+  #+BEGIN_EXAMPLE
+  SQLALCHEMY_DATABASE_URI = 'mysql+oursql://root:<yourpswd>@localhost/ldsdashboard'
+  #+END_EXAMPLE
+
+
+* Export PYTHONPATH
+  Set PYTHONPATH variable and export it to access python modules. 
+  #+BEGIN_EXAMPLE
+  cd build/code/
+  export PYTHONPATH=$(pwd) 
+  #+END_EXAMPLE
+
+  
+* Insert Dafault data
+  Go to =build/code/deployment= and open =db_setup.py=. Change the
+  user email and name to your google account e-mail and name. Now 
+  Run =db_setup.py= to create the database schema with you as an admin.
+  
+  #+BEGIN_EXAMPLE
+  cd build/code/deployment
+  python db_setup.py
+  #+END_EXAMPLE
+
+
+* [[./google_oauth_configuration.org][Obtain Google OAuth Credentials]]
+
+* Configure OAuth for Application
+  Edit =src/runtime/config/goauth_config.py= to set =CLIENT_KEY= and
+  =CLIENT_SECRET= that were obtained from the previous step. 
+  
+  This is necessary for the current application to use Google OAUTH service.
+
+  #+BEGIN_EXAMPLE
+    CLIENT_KEY = "<key>"
+    CLIENT_SECRET = "<key>"
+  #+END_EXAMPLE
+
+
+* Make SSL Certicates and Key
+  Go to =build/code/runtime/rest= and run the ~cert.py~ present 
+  in the directory inorder to get the required files.
+  #+BEGIN_EXAMPLE
+  cd build/code/runtime/rest
+  python cert.py
+  #+END_EXAMPLE
+
+
+* Run the application
+  
+  The application can now be run from the =build/code/runtime/rest/= directory
+  #+BEGIN_EXAMPLE
+  cd build/code/runtime/rest/
+  unset http_proxy
+  unset https_proxy
+  python run.py
+  #+END_EXAMPLE
+
+
+* Access the application
+  
+  The application is accessed at =http://localhost:5000=
+  
+
+* API Documentation
+  URL :
+  [https://github.com/vlead/lab-data-service/blob/master/src/runtime/rest/api.org] 
+

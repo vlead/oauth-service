@@ -1,0 +1,19 @@
+#+TITLE: REST Interface for LDS Dashboard
+#+AUTHOR: VLEAD
+#+DATE: [2017-06-05 Mon]
+#+SETUPFILE: ../../org-templates/level-2.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+The REST package hold two modules
+
+ - [[./app.org][=app=]]
+
+ - [[./api.org][=api=]]
+
+
+* Tangle                                       :boilerplate:
+#+BEGIN_SRC python :eval no :tangle __init__.py
+print "rest package"
+#+END_SRC
