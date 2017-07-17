@@ -1,8 +1,21 @@
-* Milestone 1
-** Friday [2017-06-09 Fri]
-- Installing oauth server, and trying to integrate it with our current
-  architecture in outreach Portal. Should try to test login.
+#+TITLE: Plan for Lab Data Service Dashboard
+#+AUTHOR: VLEAD
+#+DATE: [2017-06-19 Mon]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-1.org
+#+options: ^:nil
+#+LATEX: Literal LaTeX code for export
 
-* Milestone 2
-- Analytics dashboard integration with outreach Portal via auth service
+* Introduction
+  - This document briefly explains plan for =OauthService= project.
 
+
+* Realization 
+    :PROPERTIES:
+    :CUSTOM_ID: cc_realization
+    :END:    
+
+
+ 
+  

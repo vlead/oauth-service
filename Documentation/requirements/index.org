@@ -1,0 +1,82 @@
+#+TITLE: Oauth Service Requirements
+#+AUTHOR: Projit Bandyopadhyay
+#+DATE: [2017-06-05 MON]
+#+PROPERTY: results output
+#+PROPERTY: exports code
+#+SETUPFILE: ../org-templates/level-1.org
+#+options: ^:nil
+#+LATEX: Literal LaTeX code for export
+
+
+* CANCELED Requirements
+  
+** Diagrams
+
+[[./diagrams/normalAuthFlow.jpg][Normal Authentication Flow]]
+
+[[./diagrams/jwtAuthFlow.jpg][Proposed Authentication Flow via JWT]]
+
+
+** Description
+
+- Create a Sample system using jwt to provide authorization.
+
+- Will involve a single micro-service, the outreach portal, and auth
+  system(main thing to be created). It's based on the second diagram.
+
+- *Aim*: To test the creation and passing of a jwt token with limited
+  information. 
+
+  
+** DONE Needed
+
+*** Micro-service
+
+- Needed to experiment with. The decryption of the JWT must take place at the
+  microservice itself thus a sample is needed for testing.
+
+- Dashboard?
+
+  
+** Additional Information Still Needed
+
+- What level of security needs to be maintained.
+
+- How much information will be needed to be sent in the packets, and currently
+  where are the microservices receiving the information from(for the sake of
+  emulation)
+
+- Security Analysis of using only JWT, vs Oauth also inside.
+
+ 
+
+
+
+
+* Update on Requirements
+- (OVERLYING) Creating oauth service(login with vlabs)
+
+  Using open source software / building own, we should be able to create a
+  login with vlabs feature(currently outreach uses login with 
+
+** DONE Create a working model of oauth service oauth style validation.
+
+** TODO Integrate it with our current architecture in the outreach portal.
+
+** TODO Deploy on larger scale
+
+
+* TODO Things to look in to 
+
+** SAML key
+
+
+* Use Cases
+** User - Client Interactions
+   [[https://docs.google.com/drawings/d/1J2yjhPOw_HzCx7ri48rJ1Z-Wg2We4QJekBxFtvwO08g/pub?w=960&h=720][Interaction Model]]
+   
+   Editable [[https://docs.google.com/drawings/d/1J2yjhPOw_HzCx7ri48rJ1Z-Wg2We4QJekBxFtvwO08g/edit][here]]
+** Inter-Client Interactions
+   [[https://docs.google.com/drawings/d/1dzTLByG3R4mXx4dsMMyAMP24w6IIMucGQ76e56ipHAU/pub?w=960&h=720][Client Client Interactions]]
+
+   Editable [[https://docs.google.com/drawings/d/1dzTLByG3R4mXx4dsMMyAMP24w6IIMucGQ76e56ipHAU/edit][here]]
