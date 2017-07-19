@@ -8,3 +8,10 @@ microservices at VLEAD and can potentially provide authentication of the user.
    local/development environment.
 ** API documentation
    Visit [[./src/runtime/rest/api.org][link]] for API documentation
+
+** Change in microservices code
+	Visit  [[./src/runtime/rest/api.org][link]] to understand the diffrence in the implementation
+
+** Client Server 
+	It is a small API which represents VLEAD microservices using oauth-server for authentication and  authorization.
+	The implementation can be found [[./src/client/index.org][here]] 	 
