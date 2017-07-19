@@ -1,0 +1,117 @@
+#+TITLE: Deploying the Client Server application
+#+AUTHOR: Shubh
+#+DATE: [2017-06-05 Mon]
+#+SETUPFILE: ../org-templates/level-1.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+* Introduction
+  This document will illustrate working of small example of VLEAD microservice, client server for the Oauth.
+
+* Implementation 
+  The client server is a small server with login and logout routes.These routes redirect the client server to the oauth service.
+
+#+BEGIN_SRC python :eval no :tangle client.py
+from flask import Flask, redirect, url_for, session, request, jsonify, abort,render_template
+import requests	
+
+# from requests.packages.urllib3.exceptions import InsecureRequestWarning
+# requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
+app = Flask(__name__)
+app.debug = True    
+app.secret_key = 'development'
+
+proxies = {
+"http": None,
+"https": None,
+"all":None
+}
+# Configure all_proxy correctly 
+
+
+def check_login():
+    r=requests.get('https://0.0.0.0:5000/check_login',verify=False,proxies=proxies)
+    print(r)
+    data=r.json()
+    return data
+
+@app.route('/')
+def index():
+    return render_template('index.html',data=check_login())
+
+@app.route('/login')
+def login():
+    return redirect('https://localhost:5000')
+
+@app.route('/logout')
+def logout():
+    return redirect('https://localhost:5000/logout')
+
+if __name__ == '__main__':
+    app.run(host='localhost', port=8000,ssl_context=('./ssl.crt','./ssl.key'))
+#+END_SRC
+
+* SSL Certifactes
+  To our service more secure we use https and not http protocol.
+  To get the certificates run =python cert.py= in the client server directory in the build
+
+#+BEGIN_SRC python :eval no :tangle cert.py
+from werkzeug.serving import make_ssl_devcert
+make_ssl_devcert('./ssl', host='localhost')
+#+END_SRC
+
+* Frontend
+  This code shows the simple front html of our client server which will be rendered by the server using jinja.
+  When the user is logged out, it displays a login button
+  When the user is logged in, it displays the credentials of the user
+#+BEGIN_SRC python :tangle templates/index.html :eval no 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Login Page</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+
+</head>
+
+<body id="body">
+<header>
+</header>
+	<main>
+		<div class="container">
+			<div class="row">
+				<h3>Welcome to the VLEAD Service</h3>				
+			</div>
+			<div class="row">
+			{% if data.loggedIn== True %}	
+				<div class="col m4 card">			<h5 class="card-title"> {{ data.data.name }} </h5>
+						<img src={{ data.data.picture }} height="200px" />
+					<div class="card-action">
+					<a href= {{ data.data.link }} /> Link to my account </a>
+					<a href="#"> {{ data.data.email }} </a> 
+				</div>
+				<a class="btn" href="/logout"
+				> Logout </a>
+			{% else %}
+				<div class="col m6 card">
+					<a class="btn btn-danger" href="/login"> Login </a>	
+				</div>
+			{% endif %}
+			</div>
+		</div>
+	</main>
+
+<footer>		
+</footer>
+</body>
+</html>
+
+#+END_SRC
