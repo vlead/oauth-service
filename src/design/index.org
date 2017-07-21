@@ -7,20 +7,18 @@
 #+OPTIONS: ^:nil
 
 
-* Introduction 
-  The =design= of the =oauth-service= is captured here.
+  #+BEGIN_HTML
+  <img src="./work_flow.png" />
+  #+END_HTML
 
-
-* Design diagram
-  :PROPERTIES:
-  :CUSTOM_ID: design_diagram
-  :END:    
 
   Following diagram represents the oauth-service design.
   This diagram has the following 3 sections:
   1) *Oauth Service* : A Micro Service which provides the authentication
      information via =REST= API's
-  2) *User Authentication/Authorization Service* : A Identity Provider which
+  2) *Idp Service* : A Identity Provider which
      manages all the users authentication. Also provides the
      google authentication for user to login and logout.
-  3) *Micro Services
+  3) *Micro Services* : S1 and S2 are microservices which belong to vlabs.
+  4) *User* : Person using microservices and needs to be authenticated. 
+  

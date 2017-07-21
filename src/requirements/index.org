@@ -17,10 +17,11 @@
   :PROPERTIES:
   :CUSTOM_ID: requirements
   :END: 
-      
-** Req1
-  :PROPERTIES:
-  :CUSTOM_ID: req1
-  :END: 
-  - Generate HTML code from JSON specification. All HTML code need to  be
-    auto generated from the given JSON Specification.
+	  
+** Authentication of user
+	Main goal of our service is seamless authentication of Vlabs microservices.
+	Hence we want to use Single-Sign On of various providers like Google,Facebook.
+
+** Common authentication between services
+	Once the user logs in, he must be able to access all the services without authenticating again.  
+		
