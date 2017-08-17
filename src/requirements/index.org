@@ -19,9 +19,18 @@
   :END: 
 	  
 ** Authentication of user
-	Main goal of our service is seamless authentication of Vlabs microservices.
-	Hence we want to use Single-Sign On of various providers like Google,Facebook.
+   1. VLEAD would like to develop a single sign on for all
+      the VLEAD dashboards without the user signing on for
+      each dashboard.  Example, when a user is signed in to
+      outreach portal, and from outreach portal, when the
+      user navigates to Vlabs analytics dashboard, the user
+      should not be prompted for login.
+   2. VLEAD does not want to maintain passwords which means
+      VLEAD likes to use gmail authentication. 
 
-** Common authentication between services
-	Once the user logs in, he must be able to access all the services without authenticating again.  
+   
+
+** COMMENT Common authentication between services
+   Once the user logs in, he must be able to access all the
+   services without authenticating again.
 		

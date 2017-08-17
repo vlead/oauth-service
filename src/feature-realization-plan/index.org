@@ -1,0 +1,18 @@
+#+TITLE: Feature realization plan
+#+AUTHOR: SSAD Team
+#+DATE: [2017-08-17 Thu]
+#+SETUPFILE: ./org-templates/level-0.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+* Introduction
+  This document holds the feature realization plan for oauth
+  service. 
+
+
+* Milestones
+
+** Milesone I
+
+   
