@@ -37,34 +37,3 @@
 ** Milestone III
 *** Packages
     Develop packages for diffrent VLEAD portals for easy integration with CAS   
-
-
-
-
-Theme Initiaitive Feature Estimate
-Common authentication portal Implementing the CAS
-of JAVA Multiple VLEAD projects
-would have a single login 3 days
-Portal for users to log in 2 days
-Mechanism for user to
-remian logged in even after
-he starts using another
-portal
-2 days
-Register different projects
-with VLEAD
-5 days
-Google single sign on
-User does not have to
- on store password on the
-in CAS
-VLEAD
-5 days
-Authentication will be provi
-ded by google
-1 day
-Relay tokens, authorization
-of the users will be done
-CAS portal
-5 days
-	       
