@@ -1,0 +1,39 @@
+#+TITLE: Design of oauth-service
+#+AUTHOR: VLEAD
+#+DATE: [2017-08-21 Monday]
+#+SETUPFILE: ../org-templates/level-1.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+* Introduction 
+  In todays meet we will discuss the implementation of CAS with
+  google-oauth using the spring framework in java
+
+  
+* Why CAS 
+  CAS stands to central authentication system. 
+  It is widely used( even by IIIT), has a large community and is constantly being updated.
+  It uses Spring MVC with the help of Maven and Apache Tomcat as its container.
+  
+
+* Discovery
+** CAS  
+  After much looking around we can see the documentation of using CAS wih SSO [[https://apereo.github.io/cas/5.1.x/index.html][here]]
+
+** Singe Sign on 
+   CAS has a support with multiple protocols like SAML( SAML is the
+   protocol used Google to talk with the identity providers.)
+   
+  [[https://support.google.com/a/answer/6349809][Documentation provided by google]]    
+
+
+* Work done previous week 
+  This weeks major focus was on:
+  1. Learning Spring Framework 
+  2. Learning Maven
+  3. Started the working on CAS using a cas-overlay-template
+  
+* Plan for next week
+  1. Make the cas server
+  2. Make a clinet server to use our cas server 
