@@ -1,0 +1,25 @@
+#+TITLE: Main 
+#+AUTHOR: Shubh
+#+DATE: [2017-06-05 Mon]
+#+SETUPFILE: ../../../../org-templates/level-4.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+* Introduction
+  Main file contains 
+  
+**  [[./java/index.org][java]]
+    1. Here we will store all the Controllers, filters necessary for the server
+
+    2. In java we will store them in packages, each packages would
+       define its classes where all the endpoints will be defined.
+    
+** [[./resources/index.org][resources]]
+   1. This contains the services which will be registered to the CAS
+      in the form of json files.
+   2. It contains the application properties eg. the port, ssl certificates,etc.
+
+** [[./webapp/WEB-INF/index.org][webapp]]
+   This section contains the basic web design of our application.
+

@@ -19,7 +19,11 @@
 
 5. [[./deployment/index.org][Deployment]]
 
-6.[[./Client][Client]]
+6. [[./Client/index.org][Client]]
+
+** CAS 
+	We are trying the new approach of using CAS a Spring MVC software to authenticate users
+	[[./cas-pac4j-oauth-demo/index.org][CAS Server]]
 
    
 * Tangle                                       :boilerplate:

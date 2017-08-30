@@ -1,0 +1,58 @@
+#+TITLE: Demo of CAS 
+#+AUTHOR: VLEAD
+#+DATE: [2017-08-30 Wednesday]
+#+SETUPFILE: ../org-templates/level-1.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+* Introduction 
+  This week was devoted in making a demo CAS server which
+  could be further build up to make the cas server 
+  .
+
+* Issues Completed/Faced
+** [[../feature-realization-plan/index.org::Prerequisites::Issues::Learning%20the%20Spring%20MVC][Learning Spring MVC]]   
+   CAS is written Spring MVC in JAVA Though it is a highly used
+   framework, understaning the working of its various components.
+
+
+** [[%20../feature-realization-plan/index.org::Prerequisites::Issues::Understanding%20cas][CAS documentation]]
+   CAS has a huge documentation and can take some time to underdtand
+   the its working.
+ 
+
+** [[%20../feature-realization-plan/index.org::Prerequisites::Issues::Learning%20the%20Spring%20MVC][Multiple VLEAD projects would have a single login]]
+   Documentation of the code for the cas server for VLEAD [[../cas-pac4j-oauth-demo/index.org][here]]
+ 
+** [[%20../feature-realization-plan/index.org::Prerequisites::Issues::Learning%20the%20Spring%20MVC][Portal for users to log in ]]
+   Using the inbuilt webapp of CAS we have made a small demo serivce
+   Currently it takes an user/password both are *leleuj*
+
+** Updated  in the planning
+   I have added more issues in the planning.org to justify work done
+   this week and more issues will be faces in the next week.
+   
+** Google Single Sign on
+   While attempting to use google-sign-on, it requires us to make a paid
+   account in G suite to use its CAS sigle-sign on. 
+   
+   The amount is 5$ per month and also has a free for 14 days. 
+
+   Hence I have refrained from going further with it.
+   https://support.google.com/a/answer/6349809
+
+
+* Work done previous week 
+  Prevous week major focus was on:
+  1. Trying to make an cas-overlay-template which contains only the pom.xml  
+  2. We were learning maven to easily build the project in java
+  3. Using Google and generating the RSA keys to be stored to communicate with google.
+
+* Plan for next week( New issues to be added)
+  1. Integrate the CAS server with the LDS dashboard of VLEAD CAS
+     generates tickets on successful login and how to transfer
+     these tickets to the client server.
+  2. Update the CAS server. As CAS is still in demo phase we need to
+     make it much better and add various dependencies, configure the servlet, add view.     
+

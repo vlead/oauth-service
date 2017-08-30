@@ -10,30 +10,41 @@
   This document holds the feature realization plan for oauth
   service. 
 
-  
-* Milestones
-  This section contains the various milestones and the various issues to reach those milestones.
+* Prerequisites
+
+** Issues
+
+*** Learning the Spring MVC
+  As CAS is build on Spring MVC using JAVA basic knowledge is required of this framework.
+
+*** Understanding the CAS documentation
+  CAS has a vast documentation and hence it takes time to find any query. Hence a basic understanding of the CAS server using demoes and reading the documentation is required.  
 
 
-** Milesone I
-*** Common Authentcation portal
-    Implementation of CAS in JAVA
-*** Issues
-    1. Multiple VLEAD projects would have a single login.
-    2. Portal for users to log in.
-    3. Mechanism for user to remian logged in even after he starts using another portal.
+* Milesone I
+   Common Authentcation portal Implementation of CAS in JAVA
+** Issues
+*** Multiple VLEAD projects would have a single login.
+    Using cas the user has to login only once for all services.
+
+*** Portal for users to log in.
+    Frontend using popular framework to make the login page.
+
+*** Mechanism for user to remian logged in even after he starts using another portal.
+    Understand and implement the ticket generation process and storing it as Cookie.
+   
+*** Generation of VLEAD services to CAS 
     4. Register different projects of VLEAD with CAS.
 
 
-** Milestone II
-*** Google single sign on 
-    use googles single sign
-*** Issues
+* Milestone II
+  Google single sign on use googles single sign
+** Issues
     1. Use relay tokens.
     2. Authorize users after authentication with google(Session time, Refresh tokens etc.)
     3. Implement SSO of google.
 
 
-** Milestone III
-*** Packages
+* Milestone III
+** Packages
     Develop packages for diffrent VLEAD portals for easy integration with CAS   
