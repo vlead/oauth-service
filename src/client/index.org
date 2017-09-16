@@ -15,42 +15,27 @@
 #+BEGIN_SRC python :eval no :tangle client.py
 from flask import Flask, redirect, url_for, session, request, jsonify, abort,render_template
 import requests	
+from flask_cas import CAS
+from flask_cas import login_required
 
-# from requests.packages.urllib3.exceptions import InsecureRequestWarning
-# requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 app = Flask(__name__)
-app.debug = True    
-app.secret_key = 'development'
+cas = CAS(app, '/cas')
+app.secret_key = "devel"
+app.config['CAS_SERVER'] = 'https://localhost:8443/cas' 
+app.config['CAS_AFTER_LOGIN'] = 'route_root'
 
-proxies = {
-"http": None,
-"https": None,
-"all":None
-}
-# Configure all_proxy correctly 
-
-
-def check_login():
-    r=requests.get('https://0.0.0.0:5000/check_login',verify=False,proxies=proxies)
-    print(r)
-    data=r.json()
-    return data
 
 @app.route('/')
-def index():
-    return render_template('index.html',data=check_login())
+@login_required
+def route_root():
+	return render_template('index.html',
+		username = cas.username,
+		display_name = cas.attributes)
 
-@app.route('/login')
-def login():
-    return redirect('https://localhost:5000')
+if __name__ == "__main__":
+	app.run(host='localhost',port=5000,debug=True,ssl_context = ('./ssl.crt', './ssl.key'))
 
-@app.route('/logout')
-def logout():
-    return redirect('https://localhost:5000/logout')
-
-if __name__ == '__main__':
-    app.run(host='localhost', port=8000,ssl_context=('./ssl.crt','./ssl.key'))
 #+END_SRC
 
 * SSL Certifactes
@@ -67,6 +52,7 @@ make_ssl_devcert('./ssl', host='localhost')
   When the user is logged out, it displays a login button
   When the user is logged in, it displays the credentials of the user
 #+BEGIN_SRC python :tangle templates/index.html :eval no 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -91,18 +77,14 @@ make_ssl_devcert('./ssl', host='localhost')
 				<h3>Welcome to the VLEAD Service</h3>				
 			</div>
 			<div class="row">
-			{% if data.loggedIn== True %}	
-				<div class="col m4 card">			<h5 class="card-title"> {{ data.data.name }} </h5>
-						<img src={{ data.data.picture }} height="200px" />
-					<div class="card-action">
-					<a href= {{ data.data.link }} /> Link to my account </a>
-					<a href="#"> {{ data.data.email }} </a> 
+			{% if username %}	
+				<div class="col m4">
+					<h5 class="card-title">Name: {{ username }} </h5>			
+					<a class="btn" href="/cas/logout"> Logout </a>
 				</div>
-				<a class="btn" href="/logout"
-				> Logout </a>
 			{% else %}
 				<div class="col m6 card">
-					<a class="btn btn-danger" href="/login"> Login </a>	
+					<a class="btn btn-danger" href="cas/login"> Login </a>	
 				</div>
 			{% endif %}
 			</div>
@@ -113,5 +95,6 @@ make_ssl_devcert('./ssl', host='localhost')
 </footer>
 </body>
 </html>
+
 
 #+END_SRC

@@ -13,17 +13,24 @@
 * Prerequisites
 
 ** Issues
+:PROPERTIES:
+:CUSTOM_ID: prerequisites_issue
+:END: 
 
 *** Learning the Spring MVC
   As CAS is build on Spring MVC using JAVA basic knowledge is required of this framework.
 
 *** Understanding the CAS documentation
   CAS has a vast documentation and hence it takes time to find any query. Hence a basic understanding of the CAS server using demoes and reading the documentation is required.  
-
+  
 
 * Milesone I
    Common Authentcation portal Implementation of CAS in JAVA
 ** Issues
+:PROPERTIES:
+:CUSTOM_ID: milestone1_issue
+:END: 
+
 *** Multiple VLEAD projects would have a single login.
     Using cas the user has to login only once for all services.
 

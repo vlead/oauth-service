@@ -122,7 +122,7 @@ cas.authn.attributeRepository.attributes.affiliation=groupMembership
 #+BEGIN_SRC :eval no :tangle services/lds-3.json
 {
   "@class" : "org.apereo.cas.services.RegexRegisteredService",
-  "serviceId" : "http://localhost:5000/cas/login\?client_name=CasClient",
+  "serviceId" : "http://localhost:5000/cas/login?client_name=CasClient",
   "name" : "the lds dashboard using cas",
   "id" : 3,
   "description" : "desc"

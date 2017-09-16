@@ -17,15 +17,15 @@
    framework, understaning the working of its various components.
 
 
-** [[%20../feature-realization-plan/index.org::Prerequisites::Issues::Understanding%20cas][CAS documentation]]
+** [[%20../feature-realization-plan/index.org::#prerequisites_issue][CAS documentation]]
    CAS has a huge documentation and can take some time to underdtand
    the its working.
  
 
-** [[%20../feature-realization-plan/index.org::Prerequisites::Issues::Learning%20the%20Spring%20MVC][Multiple VLEAD projects would have a single login]]
+** [[%20../feature-realization-plan/index.org::#milestone1_issue][Multiple VLEAD projects would have a single login]]
    Documentation of the code for the cas server for VLEAD [[../cas-pac4j-oauth-demo/index.org][here]]
- 
-** [[%20../feature-realization-plan/index.org::Prerequisites::Issues::Learning%20the%20Spring%20MVC][Portal for users to log in ]]
+
+** [[%20../feature-realization-plan/index.org::milestone1_issue][Portal for users to log in ]]
    Using the inbuilt webapp of CAS we have made a small demo serivce
    Currently it takes an user/password both are *leleuj*
 

@@ -1,0 +1,77 @@
+
+Set proxy for maven:
+
+	go to /usr/share/maven/conf/settings.xml
+
+	add 
+<proxy>
+	<active>true</active>
+	<protocol>http</protocol>
+	<username>proxyuser</username>
+	<password>proxypass</password>
+	<host>proxy.iiit.ac.in</host>
+	<port>8080</port>
+	<nonProxyHosts>localhost|*.iiit.ac.in</nonProxyHosts>
+</proxy>
+
+
+
+1. Run the commands using sudo 
+
+2. the clients are attached to the server using json files which
+   stores client details
+
+
+FOR GRADLE TEMPLATE
+
+3.1 Make the thekeystore file by:
+	
+	keytool -genkey -alias tomcat -keyalg RSA
+
+3.2 To delete a keystore file use the alias name::	
+	keytool -delete -alias tomcat 
+
+
+3. theKestore for SSL and Google SSO
+	go to /etc/cas/config/application.yml
+
+	go to /etc/cas/config/cas.properties
+
+	add the lines
+==>
+# SSL
+server.ssl.enabled=true
+
+# Set the place of thekeystore
+server.ssl.keyStore=file:/home/shubh/.keystore
+server.ssl.keyStorePassword=changeit
+server.ssl.keyPassword=changeit
+
+
+# to change port 
+# server.port=9443 
+# rememeber to change the value of the port from 8080 to the real port everywhere in the repo eg, cas.properties
+------------------------------------------------
+build by
+sudo ./gradlew --stacktrace build
+
+
+run by 
+
+
+sudo ./gradlew --stacktrace -Dhttp.proxyHost=proxy.iiit.ac.in -Dhttp.proxyPort=8080  -Dhttps.proxyHost=proxy.iiit.ac.in -Dhttps.proxyPort=8080 bootRun
+
+
+
+
+_____________________
+Use this for further documentation: 
+https://docs.spring.io/spring-security/site/docs/3.1.x/reference/cas.html
+
+How ticket referencing takes place
+
+
+// Currently make sure SSL verification is closed, hence the client and server work on https but the key is not verified
+
+make changes in Flask-CAS: routing.py(/usr/share/lib/python2.7/dist-packages/flask_cas)
+	attributes = xml_from_dict.get("cas:attributes", OrderedDict())
