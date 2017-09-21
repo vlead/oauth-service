@@ -35,7 +35,6 @@ def route_root():
 
 if __name__ == "__main__":
 	app.run(host='localhost',port=5000,debug=True,ssl_context = ('./ssl.crt', './ssl.key'))
-
 #+END_SRC
 
 * SSL Certifactes
@@ -52,7 +51,6 @@ make_ssl_devcert('./ssl', host='localhost')
   When the user is logged out, it displays a login button
   When the user is logged in, it displays the credentials of the user
 #+BEGIN_SRC python :tangle templates/index.html :eval no 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -95,6 +93,4 @@ make_ssl_devcert('./ssl', host='localhost')
 </footer>
 </body>
 </html>
-
-
 #+END_SRC
