@@ -1,0 +1,640 @@
+#+TITLE: The Demo CAS Server application
+#+AUTHOR: Shubh
+#+DATE: [2017-06-05 Mon]
+#+SETUPFILE: ../org-templates/level-5.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+
+* Introduction
+
+  Resources contains the configurations of your server, it is the most important directory for CAS applications
+  
+* Application Proeperties
+  The basic configurations like port:8443, ssl-functionality, initial-users stored in here
+#+BEGIN_SRC :eval no :tangle application.properties
+# CAS Server Context Configuration
+#
+server.name=https://localhost:8443
+server.context-path=/cas
+server.port=8443
+cas.server.http.enabled=false
+cas.tgc.secure=false
+
+cas.ticket.st.timeToKillInSeconds=600
+
+#server.ssl.key-store=file:/etc/cas/thekeystore
+#server.ssl.key-store-password=changeit
+#server.ssl.key-password=changeit
+server.max-http-header-size=2097152
+server.max-http-post-size=2097152
+#server.use-forward-headers=true
+
+
+cas.service.security=https://localhost:8443/cas/login
+
+
+
+# SSL
+server.ssl.enabled=true
+
+# Set the place of thekeystore
+server.ssl.key-store=file:/home/shubh/vlead/cas/vlead-cas-overlay/public_private_keys/thekeystore
+server.ssl.key-store-password=changeit
+server.ssl.key-password=changeit
+
+# server.ssl.ciphers=
+# server.ssl.client-auth=
+# server.ssl.enabled=
+# server.ssl.key-alias=
+# server.ssl.key-store-provider=
+# server.ssl.key-store-type=
+# server.ssl.protocol=
+# server.ssl.trust-store=
+# server.ssl.trust-store-password=
+# server.ssl.trust-store-provider=
+# server.ssl.trust-store-type=
+        
+server.tomcat.basedir=build/tomcat
+server.tomcat.accesslog.enabled=true
+server.tomcat.accesslog.pattern=%t %a "%r" %s (%D ms)
+server.tomcat.accesslog.suffix=.log
+server.tomcat.max-threads=5
+server.tomcat.port-header=X-Forwarded-Port
+server.tomcat.protocol-header=X-Forwarded-Proto
+# server.tomcat.protocol-header-https-value=https
+server.tomcat.remote-ip-header=X-FORWARDED-FOR
+server.tomcat.uri-encoding=UTF-8
+        
+spring.http.encoding.charset=UTF-8
+spring.http.encoding.enabled=true
+spring.http.encoding.force=true
+
+##
+# CAS Cloud Bus Configuration
+#
+spring.cloud.bus.enabled=false
+# spring.cloud.bus.refresh.enabled=true
+# spring.cloud.bus.env.enabled=true
+# spring.cloud.bus.destination=CasCloudBus
+# spring.cloud.bus.ack.enabled=true
+
+endpoints.enabled=true
+endpoints.sensitive=true
+management.context-path=/status
+endpoints.restart.enabled=false
+endpoints.shutdown.enabled=false
+
+
+##
+# CAS Web Application Session Configuration
+#
+server.session.timeout=300
+server.session.cookie.http-only=true
+server.session.tracking-modes=COOKIE
+
+##
+# CAS Thymeleaf View Configuration
+#
+spring.thymeleaf.encoding=UTF-8
+spring.thymeleaf.cache=false
+
+##
+# CAS Log4j Configuration
+#
+# logging.config=file:/etc/cas/log4j2.xml
+server.context-parameters.isLog4jAutoInitializationDisabled=true
+
+##
+# CAS AspectJ Configuration
+#
+spring.aop.auto=true
+spring.aop.proxy-target-class=true
+
+##
+# CAS Authentication Credentials
+#
+cas.authn.accept.users=jleleu::jleleu,leleuj::leleuj,vlead::vlead
+
+##
+# CAS Authentication Attributes
+#
+cas.authn.attributeRepository.attributes.uid=uid
+cas.authn.attributeRepository.attributes.displayName=displayName
+cas.authn.attributeRepository.attributes.cn=commonName
+cas.authn.attributeRepository.attributes.affiliation=groupMembership
+
+
+#+END_SRC
+
+* BootStrap Properties
+  The server is started by this file.
+#+BEGIN_SRC :eval no :tangle bootstrap.properties
+##
+# CAS Spring Cloud Config Client
+#
+# Name of the application for which environment settings and properties should be fetched.
+# This should map to a cas.yml or cas.properties file.
+spring.application.name=cas
+spring.cloud.config.fail-fast=true
+        
+## 
+# CAS Embedded Cloud Config Server
+#
+# Native profile in the Config Server that doesn't use Git, but just loads the 
+# config files from the local classpath or file system.
+#
+spring.profiles.active=native
+spring.cloud.config.server.native.searchLocations=file:///etc/cas/config
+        
+# spring.profiles.active=default
+# spring.cloud.config.server.git.uri=https://github.com/repoName/config
+# spring.cloud.config.server.git.uri=file://${user.home}/config
+# spring.cloud.config.server.git.username=
+# spring.cloud.config.server.git.password=
+spring.cloud.config.server.bootstrap=true
+spring.cloud.config.server.prefix=/configserver
+spring.jmx.default-domain=server
+
+#+END_SRC
+
+* CAS theme
+  To link the javascript and the stylesheets we have a default theme
+#+BEGIN_SRC :eval no :tangle cas-theme-default.properties
+standard.custom.css.file=/css/cas.css
+cas.javascript.file=/js/cas.js
+#+END_SRC
+
+* Deployer Configuration 
+  Beans for CAS
+#+BEGIN_SRC :eval :no :tangle deployerConfigContext.groovy
+beans {
+    xmlns([context:'http://www.springframework.org/schema/context'])
+    xmlns([lang:'http://www.springframework.org/schema/lang'])
+    xmlns([util:'http://www.springframework.org/schema/util'])
+    xmlns([metrics:'http://www.ryantenney.com/schema/metrics'])
+
+    metrics.'annotation-driven'('metric-registry':'metrics','health-check-registry':'healthCheckMetrics')
+}
+
+
+#+END_SRC  
+
+* Logging errors and files
+  This documents the file which stores the configuration of logging the server
+#+BEGIN_SRC :eval no :tangle log4j2.xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Specify the refresh internal in seconds. -->
+<Configuration monitorInterval="10">
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %p [%c] - &lt;%m&gt;%n"/>
+        </Console>
+
+        <RollingFile name="file" fileName="cas.log" append="true"
+                     filePattern="cas-%d{yyyy-MM-dd-HH}-%i.log">
+            <PatternLayout pattern="%d %p [%c] - &lt;%m&gt;%n"/>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingFile>
+        <RollingFile name="auditlogfile" fileName="cas_audit.log" append="true"
+                     filePattern="cas_audit-%d{yyyy-MM-dd-HH}-%i.log">
+            <PatternLayout pattern="%d %p [%c] - %m%n"/>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingFile>
+
+        <RollingFile name="perfFileAppender" fileName="perfStats.log" append="true"
+                     filePattern="perfStats-%d{yyyy-MM-dd-HH}-%i.log">
+            <PatternLayout pattern="%m%n"/>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingFile>
+
+        <CasAppender name="casAudit">
+            <AppenderRef ref="auditlogfile" />
+        </CasAppender>
+        <CasAppender name="casFile">
+            <AppenderRef ref="file" />
+        </CasAppender>
+        <CasAppender name="casConsole">
+            <AppenderRef ref="console" />
+        </CasAppender>
+        <CasAppender name="casPerf">
+            <AppenderRef ref="perfFileAppender" />
+        </CasAppender>
+    </Appenders>
+    <Loggers>
+        <AsyncLogger name="org.apereo" level="info" additivity="false" includeLocation="true">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.apache.catalina" level="debug" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework.cloud.server" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework.cloud.client" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework.cloud.bus" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework.aop" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework.boot" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework.boot.actuate.autoconfigure" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework.webflow" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework.session" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework.amqp" level="off" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework.integration" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework.messaging" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework.web" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework.orm.jpa" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework.scheduling" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.thymeleaf" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.pac4j" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.opensaml" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="net.sf.ehcache" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="com.ryantenney.metrics" level="warn" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="file"/>
+        </AsyncLogger>
+        <AsyncLogger name="net.jradius" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.openid4java" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.ldaptive" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="com.hazelcast" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework.context.annotation" level="off" additivity="false" />
+        <AsyncLogger name="org.jasig.spring" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.springframework.web.socket" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+
+        <AsyncLogger name="org.apache.http" level="off" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="perfStatsLogger" level="info" additivity="false" includeLocation="true">
+            <AppenderRef ref="casPerf"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.apereo.cas.web.flow" level="info" additivity="true" includeLocation="true">
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.apereo.inspektr.audit.support" level="info" includeLocation="true">
+            <AppenderRef ref="casAudit"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncRoot level="error">
+            <AppenderRef ref="casConsole"/>
+        </AsyncRoot>
+    </Loggers>
+</Configuration>
+
+
+#+END_SRC
+
+* User Properties
+  The general user properties, the various types of user, eg: Admin are stored here
+#+BEGIN_SRC :eval no :tangle user-details.properties
+# This file lists the set of users that are allowed access to the CAS sensitive/admin endpoints.
+#
+# The syntax of each entry should be in the form of:
+# 
+# username=password,grantedAuthority[,grantedAuthority][,enabled|disabled]
+
+# Example:
+casuser=notused,ROLE_ADMIN
+
+
+#+END_SRC
+* Services
+  Various Clients of VLEAD are stored in the form of JSON. The domain
+  under which a service is defined is stated using regex. Examples are shown below:
+
+** Front Server Example 
+   This takes all care of all the json files starting with =https://front=
+#+BEGIN_SRC :eval no :tangle services/front-0.json
+{
+  "@class" : "org.apereo.cas.services.RegexRegisteredService",
+  "serviceId" : "^https?://front.*",
+  "name" : "front",
+  "id" : 0,
+  "description" : "Allows only front services",
+  "logoutType" : "FRONT_CHANNEL"
+}
+
+#+END_SRC
+** Back Server Example
+   This is used for all the back services
+   #+BEGIN_SRC :eval no :tangle services/back-1.json
+{
+  "@class" : "org.apereo.cas.services.RegexRegisteredService",
+  "serviceId" : "^https?://back.*",
+  "name" : "back",
+  "id" : 1,
+  "description" : "Allows only back services",
+  "logoutType" : "BACK_CHANNEL",
+  "attributeReleasePolicy" : {
+    "@class" : "org.apereo.cas.services.ReturnAllowedAttributeReleasePolicy",
+    "principalAttributesRepository" : {
+      "@class" : "org.apereo.cas.authentication.principal.DefaultPrincipalAttributesRepository"
+    },
+    "authorizedToReleaseCredentialPassword" : false,
+    "authorizedToReleaseProxyGrantingTicket" : false
+  }
+}
+
+   
+   #+END_SRC
+   
+** Localhost Server Example
+   All localhost, services come under this service
+#+BEGIN_SRC :eval no :tangle services/CasClient-2.json
+{
+  "@class" : "org.apereo.cas.services.RegexRegisteredService",
+  "serviceId" : "^https?://localhost.*",
+  "name" : "CasClient",
+  "id" : 2,
+  "description" : "Allows only localhost services"
+
+}
+
+#+END_SRC
+
+
+* truststore.jks
+  The public key for the server is stored here 
+  #+BEGIN_SRC :eval no :tangle truststore.jks
+  feed feed 0000 0002 0000 0002 0000 0002
+000c 6573 7365 6e74 6961 6c73 736c 0000
+0148 7ded b9a5 0005 582e 3530 3900 0005
+0730 8205 0330 8203 eba0 0302 0102 0210
+18b2 cbba a304 f1a0 0fc1 f2f3 2646 2a4a
+300d 0609 2a86 4886 f70d 0101 0505 0030
+8181 310b 3009 0603 5504 0613 0247 4231
+1b30 1906 0355 0408 1312 4772 6561 7465
+7220 4d61 6e63 6865 7374 6572 3110 300e
+0603 5504 0713 0753 616c 666f 7264 311a
+3018 0603 5504 0a13 1143 4f4d 4f44 4f20
+4341 204c 696d 6974 6564 3127 3025 0603
+5504 0313 1e43 4f4d 4f44 4f20 4365 7274
+6966 6963 6174 696f 6e20 4175 7468 6f72
+6974 7930 1e17 0d30 3631 3230 3130 3030
+3030 305a 170d 3139 3132 3331 3233 3539
+3539 5a30 7231 0b30 0906 0355 0406 1302
+4742 311b 3019 0603 5504 0813 1247 7265
+6174 6572 204d 616e 6368 6573 7465 7231
+1030 0e06 0355 0407 1307 5361 6c66 6f72
+6431 1a30 1806 0355 040a 1311 434f 4d4f
+444f 2043 4120 4c69 6d69 7465 6431 1830
+1606 0355 0403 130f 4573 7365 6e74 6961
+6c53 534c 2043 4130 8201 2230 0d06 092a
+8648 86f7 0d01 0101 0500 0382 010f 0030
+8201 0a02 8201 0100 adf0 08b0 72c6 ab83
+1231 1770 8985 a920 12d4 986a ed80 d4d1
+dfe4 8e59 2dd3 9621 8d76 d23f 180b 4619
+630b c720 f3e5 0bdd 801a f15a a0bd 1d76
+cdb7 233a 745e 611b 75aa 9bd4 85f4 e178
+91d3 2de1 affc 982e 06d2 793d 5ac0 1f21
+2d1c ae21 53c6 3aa7 217e beed 676f 751d
+1a9f 6a5b 06b3 6ae3 b10b aa6a 0ee7 6d6c
+c3ca 958c 37ce 211f 3590 7ddb da1a 5ca8
+8814 b20f c812 205f c5d3 7fe8 e138 e0db
+bcf9 1fa1 aad6 1b90 0721 fa45 2450 5d27
+2aa0 2841 455b 7dbc a0a2 2faa 9b7e 5b53
+c5f1 0516 577e 11d7 3bb4 d901 76dc df7d
+10cf 51a9 e538 f27b 1400 7559 f9f0 59db
+173e f7af e602 2da4 79c1 5da2 1cc3 9ac8
+a7a8 0b48 0a6a 2e7f 2d97 65f6 c504 9c44
+c899 967e 7ea4 dd2f 0203 0100 01a3 8201
+8330 8201 7f30 1f06 0355 1d23 0418 3016
+8014 0b58 e58b c64c 1537 a440 a930 a921
+be47 365a 56ff 301d 0603 551d 0e04 1604
+14da cbea ad5b 085d ccff fc26 54ce 49e5
+55c6 38f4 f830 0e06 0355 1d0f 0101 ff04
+0403 0201 0630 1206 0355 1d13 0101 ff04
+0830 0601 01ff 0201 0030 2006 0355 1d25
+0419 3017 060a 2b06 0104 0182 370a 0303
+0609 6086 4801 86f8 4204 0130 3e06 0355
+1d20 0437 3035 3033 0604 551d 2000 302b
+3029 0608 2b06 0105 0507 0201 161d 6874
+7470 733a 2f2f 7365 6375 7265 2e63 6f6d
+6f64 6f2e 636f 6d2f 4350 5330 4906 0355
+1d1f 0442 3040 303e a03c a03a 8638 6874
+7470 3a2f 2f63 726c 2e63 6f6d 6f64 6f63
+612e 636f 6d2f 434f 4d4f 444f 4365 7274
+6966 6963 6174 696f 6e41 7574 686f 7269
+7479 2e63 726c 306c 0608 2b06 0105 0507
+0101 0460 305e 3036 0608 2b06 0105 0507
+3002 862a 6874 7470 3a2f 2f63 7274 2e63
+6f6d 6f64 6f63 612e 636f 6d2f 436f 6d6f
+646f 5554 4e53 4743 4341 2e63 7274 3024
+0608 2b06 0105 0507 3001 8618 6874 7470
+3a2f 2f6f 6373 702e 636f 6d6f 646f 6361
+2e63 6f6d 300d 0609 2a86 4886 f70d 0101
+0505 0003 8201 0100 2d97 347a 4032 ea70
+972f 813b 4b79 1277 aefb aad7 1aa8 da5f
+f3a1 db9e 4d96 cb37 7aa8 eaee 9b95 db9d
+bbe1 279e fd45 ed0e 5296 acf4 27bf 74aa
+92f4 a5c4 4300 1f0e b578 f98a c58c 70bd
+9a7a 31a3 29d0 596b 4c33 b52c f88b 0f92
+6357 56ac 2467 8a5b 2f29 c2b1 b9da 24c5
+e462 0e7e 79c3 feb9 83ea 273b bc1d 43b5
+6e17 aafb c898 886a d9f2 7ca1 f671 ba19
+4fb8 38e3 42d7 f0da b1c0 23df ddd7 f1a7
+ed09 8f56 a0ab c30b cba4 9280 8192 1fa9
+6ff9 6c33 dc3e 57c6 a7f2 1fcc 2a7c e42c
+4c46 5feb f361 f72b c435 9f8d 58f5 3a83
+440e d893 ac4c 6bcc 77f4 03cd ccdc e01c
+4b5d 25da 3d5e ce77 8ae1 3ec6 d794 cd70
+493c ff0e bd08 48ab e552 1415 9d0e 9c1a
+8756 68ad 9c09 0064 0000 0002 0006 6361
+6365 7274 0000 0147 3e6a e448 0005 582e
+3530 3900 0006 8e30 8206 8a30 8204 72a0
+0302 0102 0203 0ef0 ac30 0d06 092a 8648
+86f7 0d01 010d 0500 3079 3110 300e 0603
+5504 0a13 0752 6f6f 7420 4341 311e 301c
+0603 5504 0b13 1568 7474 703a 2f2f 7777
+772e 6361 6365 7274 2e6f 7267 3122 3020
+0603 5504 0313 1943 4120 4365 7274 2053
+6967 6e69 6e67 2041 7574 686f 7269 7479
+3121 301f 0609 2a86 4886 f70d 0109 0116
+1273 7570 706f 7274 4063 6163 6572 742e
+6f72 6730 1e17 0d31 3430 3432 3832 3035
+3735 355a 170d 3136 3034 3237 3230 3537
+3535 5a30 5b31 0b30 0906 0355 0406 1302
+4155 310c 300a 0603 5504 0813 034e 5357
+310f 300d 0603 5504 0713 0653 7964 6e65
+7931 1430 1206 0355 040a 130b 4341 6365
+7274 2049 6e63 2e31 1730 1506 0355 0403
+130e 7777 772e 6361 6365 7274 2e6f 7267
+3082 0122 300d 0609 2a86 4886 f70d 0101
+0105 0003 8201 0f00 3082 010a 0282 0101
+00c4 83f3 42d0 0bee f93f e21f 63c5 a384
+e3fd c5c2 a768 1662 da88 5845 a5dd 4116
+c0e7 9e3b 2e13 36ee b483 12ca a8a6 a68d
+6cd6 e86e 67f7 f390 bd69 9893 ee14 2b6f
+2aa4 b2f6 6a8f e74c 9ff5 f58b 9718 fc3c
+91a4 6d69 d2b3 8be8 6ae1 0fdb b190 b219
+1621 a6ec db25 bf23 c56b 2686 2048 7bc9
+7838 d3dd e4eb d5a9 a50b 3253 66af bd8b
+acf1 fbfc f4f6 67b9 a2d3 fe61 6deb f3f2
+7d55 92d1 74ea ab82 4e78 5271 8ee0 4614
+a51d cc89 5252 355a 0bb1 168d 5006 3c07
+c7a1 d579 9151 8c05 dd25 c506 4982 11e2
+61fa f1af 5b34 e8cb 4dcf 2dba e735 c0de
+f327 e4ef a5d4 203d 9e37 cd48 092c 2923
+9bbd d7aa 2718 736c b8b7 5498 72f4 160c
+9a95 2690 4e6e 9c9b 5475 ca2b 7912 05c1
+cb02 0301 0001 a382 0237 3082 0233 300c
+0603 551d 1301 01ff 0402 3000 300e 0603
+551d 0f01 01ff 0404 0302 03a8 3034 0603
+551d 2504 2d30 2b06 082b 0601 0505 0703
+0206 082b 0601 0505 0703 0106 0960 8648
+0186 f842 0401 060a 2b06 0104 0182 370a
+0303 3033 0608 2b06 0105 0507 0101 0427
+3025 3023 0608 2b06 0105 0507 3001 8617
+6874 7470 3a2f 2f6f 6373 702e 6361 6365
+7274 2e6f 7267 2f30 3106 0355 1d1f 042a
+3028 3026 a024 a022 8620 6874 7470 3a2f
+2f63 726c 2e63 6163 6572 742e 6f72 672f
+7265 766f 6b65 2e63 726c 3082 0173 0603
+551d 1104 8201 6a30 8201 6682 0e77 7777
+2e63 6163 6572 742e 6f72 67a0 1c06 082b
+0601 0505 0708 05a0 100c 0e77 7777 2e63
+6163 6572 742e 6f72 6782 1173 6563 7572
+652e 6361 6365 7274 2e6f 7267 a01f 0608
+2b06 0105 0507 0805 a013 0c11 7365 6375
+7265 2e63 6163 6572 742e 6f72 6782 1277
+7777 6d61 696c 2e63 6163 6572 742e 6f72
+67a0 2006 082b 0601 0505 0708 05a0 140c
+1277 7777 6d61 696c 2e63 6163 6572 742e
+6f72 6782 0a63 6163 6572 742e 6f72 67a0
+1806 082b 0601 0505 0708 05a0 0c0c 0a63
+6163 6572 742e 6f72 6782 0e77 7777 2e63
+6163 6572 742e 6e65 74a0 1c06 082b 0601
+0505 0708 05a0 100c 0e77 7777 2e63 6163
+6572 742e 6e65 7482 0a63 6163 6572 742e
+6e65 74a0 1806 082b 0601 0505 0708 05a0
+0c0c 0a63 6163 6572 742e 6e65 7482 0e77
+7777 2e63 6163 6572 742e 636f 6da0 1c06
+082b 0601 0505 0708 05a0 100c 0e77 7777
+2e63 6163 6572 742e 636f 6d82 0a63 6163
+6572 742e 636f 6da0 1806 082b 0601 0505
+0708 05a0 0c0c 0a63 6163 6572 742e 636f
+6d30 0d06 092a 8648 86f7 0d01 010d 0500
+0382 0201 0023 e529 2d01 2911 c040 3991
+1c98 8dbb 176f 8356 ab01 b332 e414 8f12
+79e7 c057 cd75 e9e9 3e33 fa65 46e8 23a4
+dc4b e9cf 2f4a 9c8a aecd 1618 e967 fcd5
+4cd3 594c 4830 faa2 8a16 c88b 9420 92c4
+c979 0741 98d9 a06e 04bb 2a68 aaa5 3298
+6ee5 05cf bc15 0075 6628 09ed 040f 2ad6
+98d6 75b8 70c8 006a c3a7 d714 e584 ffbe
+9cd2 b8cc 6d4b 31d4 df8a c12d 6fc8 a567
+43c9 b8dd 774e be3c 804e 491e 79d9 c0b4
+7f08 3f11 a154 f049 b8fb 9144 9728 d544
+adac a5b8 0a1d 4f2a 9ac1 4b39 c755 c4e7
+79d4 7492 2a41 db6f 8209 5109 314d b4ce
+41f0 3a98 c9f5 9255 8f27 fc0b 0a3d 5833
+1697 a3ac 12c6 4c79 9138 46bf 1421 a77a
+91af 904b bde0 a474 66c1 423b d548 bdea
+9edd e3c1 d656 3aab 0954 93db 1260 adca
+33e0 deca 126e 1e75 f503 55e4 a843 6e50
+a670 3fcf eb27 352c a565 7f75 d837 042b
+71e6 b820 d726 3d53 9c93 d364 4fbe c82d
+30a6 e237 81fb 4103 efb5 9d58 7bf5 f7ce
+1d29 4253 ba39 f845 3e91 e038 f59f bd3e
+7dfe 029e 92fa 2bc8 05b6 c02a d832 c99b
+3d21 0b15 3861 b896 b486 8f0d 9a8d 675c
+a9d9 e0a7 ecc9 93a4 88d4 1a38 8309 0fdc
+8f54 8fa2 ebb3 5950 56e5 8cab d58f 2854
+cd75 5281 6235 1227 7303 bc4e 3044 49dc
+a007 89e6 5eb1 5661 a76a b71d ca3e fedc
+4b45 e3bc c5ae 3a85 3362 2177 b892 422f
+553f 8354 731e f115 8690 f2a3 5587 8307
+6d39 38e8 2486 b8ad 673b ffbf 7aba b5b4
+e9e8 345e 9b8e 7928 f2db 0f60 e7ee 0abf
+41b5 3cfe 4fda 9e05 fd61 2806 8700 ab15
+f031 1cbc b7ad 30e8 60
+  #+END_SRC
+
+

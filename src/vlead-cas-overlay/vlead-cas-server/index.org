@@ -1,0 +1,91 @@
+#+TITLE: The Demo CAS Server application
+#+AUTHOR: Shubh
+#+DATE: [2017-06-05 Mon]
+#+SETUPFILE: ../org-templates/level-2.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+* CAS Server
+  This document covers the Cas Server documentation
+
+* pom.xml
+  Various dependencies are provided in the pom.xml 
+  #+BEGIN_SRC :eval no :tangle pom.xml
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.leleuj</groupId>
+        <artifactId>vlead-cas-overlay</artifactId>
+        <version>5.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>vlead-cas-server</artifactId>
+    <packaging>war</packaging>
+    <name>VLEAD CAS SERVER</name>
+    <description>VLEAD CAS SERVER</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apereo.cas</groupId>
+            <artifactId>cas-server-webapp</artifactId>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apereo.cas</groupId>
+            <artifactId>cas-server-support-json-service-registry</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <warName>cas</warName>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <recompressZippedFiles>false</recompressZippedFiles>
+                    <archive>
+                        <compress>false</compress>
+                        <manifestFile>${project.build.directory}/war/work/org.apereo.cas/cas-server-webapp/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                    <overlays>
+                        <overlay>
+                            <groupId>org.apereo.cas</groupId>
+                            <artifactId>cas-server-webapp</artifactId>
+                        </overlay>
+                    </overlays>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+        <finalName>cas</finalName>
+    </build>
+</project>
+
+  
+  #+END_SRC
+
+* Dockerfile 
+  To set up on a docker we have the following docker file.
+#+BEGIN_SRC :eval no :tangle Dockerfile
+FROM openjdk:8
+
+COPY target/cas.war .
+
+CMD java -jar cas.war
+
+EXPOSE 8443
+
+#+END_SRC
+
+
+* [[./src/index.org][Source file]]
+

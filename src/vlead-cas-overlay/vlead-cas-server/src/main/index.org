@@ -1,0 +1,16 @@
+#+TITLE: The Demo CAS Server application
+#+AUTHOR: Shubh
+#+DATE: [2017-06-05 Mon]
+#+SETUPFILE: ../org-templates/level-4.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+* Main 
+  In spring MVC we seprate the codes into 3 parts
+
+[[./java/index.org][JAVA backend]]
+
+[[./resources/index.org][CAS Configuration ]]
+
+[[./webapp/index.org][Frontend]]
