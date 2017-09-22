@@ -1,6 +1,0 @@
-1. Run the commands using sudo 
-
-2. the clients are attached to the server using json files which
-   stores client details
-
-3. 
