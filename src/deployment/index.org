@@ -8,7 +8,7 @@
 
 * Introduction
   This document will illustrate installation of all the dependencies required
-  for setting up the application.
+  for setting up the CAS application for the deployment phase.
 
 * Install dependendent python packages
   Here we use the =setuptools= module from the standard lib, to make a
