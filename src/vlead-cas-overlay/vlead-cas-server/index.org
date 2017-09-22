@@ -1,7 +1,7 @@
 #+TITLE: The Demo CAS Server application
 #+AUTHOR: Shubh
 #+DATE: [2017-06-05 Mon]
-#+SETUPFILE: ../org-templates/level-2.org
+#+SETUPFILE: ../../org-templates/level-2.org
 #+TAGS: boilerplate(b)
 #+EXCLUDE_TAGS: boilerplate
 #+OPTIONS: ^:nil
