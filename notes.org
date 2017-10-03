@@ -75,3 +75,95 @@ How ticket referencing takes place
 
 make changes in Flask-CAS: routing.py(/usr/share/lib/python2.7/dist-packages/flask_cas)
 	attributes = xml_from_dict.get("cas:attributes", OrderedDict())
+
+
+-----------------
+Update the vagrant file to use public network
+
+
+----------------
+
+changes in flask cas-client server
+
+got to /usr/local/
+
+
+update routing.py validate function with :
+
+
+
+def validate(ticket):
+    """
+    Will attempt to validate the ticket. If validation fails, then False
+    is returned. If validation is successful, then True is returned
+    and the validated username is saved in the session under the
+    key `CAS_USERNAME_SESSION_KEY` while tha validated attributes dictionary
+    is saved under the key 'CAS_ATTRIBUTES_SESSION_KEY'.
+    """
+
+    cas_username_session_key = current_app.config['CAS_USERNAME_SESSION_KEY']
+    cas_attributes_session_key = current_app.config['CAS_ATTRIBUTES_SESSION_KEY']
+
+    current_app.logger.debug("validating token {0}".format(ticket))
+
+    cas_validate_url = create_cas_validate_url(
+        current_app.config['CAS_SERVER'],
+        current_app.config['CAS_VALIDATE_ROUTE'],
+        flask.url_for('.login', _external=True),
+        ticket)
+
+    current_app.logger.debug("Making GET request to {0}".format(
+        cas_validate_url))
+
+    xml_from_dict = {}
+    isValid = False
+
+    try:
+        context = ssl._create_unverified_context()
+        xmldump = urlopen(cas_validate_url, context=context).read().strip().decode('utf8', 'ignore')
+        xml_from_dict = parse(xmldump)
+        isValid = True if "cas:authenticationSuccess" in xml_from_dict["cas:serviceResponse"] else False
+    except ValueError:
+        current_app.logger.error("CAS returned unexpected result")
+
+    if isValid:
+        current_app.logger.debug("valid")
+        xml_from_dict = xml_from_dict["cas:serviceResponse"]["cas:authenticationSuccess"]
+        username = xml_from_dict["cas:user"]
+        attributes = xml_from_dict.get("cas:attributes",{})
+        if attributes is None:
+            attributes = {}
+
+
+        if "cas:memberOf" in attributes:
+            attributes["cas:memberOf"] = attributes["cas:memberOf"].lstrip('[').rstrip(']').split(',')
+            for group_number in range(0, len(attributes['cas:memberOf'])):
+                attributes['cas:memberOf'][group_number] = attributes['cas:memberOf'][group_number].lstrip(' ').rstrip(' ')
+
+        flask.session[cas_username_session_key] = username
+        flask.session[cas_attributes_session_key] = attributes
+    else:
+        current_app.logger.debug("invalid")
+
+    return isValid
+
+
+
+
+
+-------------------------------
+
+Add meeting to index.org
+
+
+mv plan.org to feature realization 
+
+mv meetings to feature-realization file 
+
+make 2 files ssad and previoous meeting
+
+
+autmate the vagrant box
+
+make a vagrant box
+
