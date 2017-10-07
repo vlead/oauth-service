@@ -22,3 +22,15 @@
   3) *Micro Services* : S1 and S2 are microservices which belong to vlabs.
   4) *User* : Person using microservices and needs to be authenticated. 
   
+
+* Work Flow
+  1. User opens in a portal. 
+  2. As the user isn't authenticated with the portal he is redirected
+     to the CAS Server/Oauth Server.
+  3. The User Authenticates is redirected to the microService.  
+  4. The User uses the Micro Service(S1) and then decides to use the
+     Second MicroService(S2).
+  5. S2 checks with the Oauth Service whether the
+  user is authenticated.  
+  6. As the User is Authenticated he is allowed
+  to use the S2.

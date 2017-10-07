@@ -9,22 +9,15 @@
 * Application
   The =Oauth Service= authenticates and authorizes all the users using VLEAD(IIIT) microservices
 
-1. [[./requirements/index.org][Requirements]]
+1. [[./requirements/index.org][Problem Statement]]
 
 2. [[./design/index.org][Design]]
 
 3. [[./data-model/index.org][Data Model]]
 
-4. [[./runtime/index.org][Runtime]]
+4. [[./vlead-cas-overlay/index.org][CAS Server]]
 
-5. [[./deployment/index.org][Deployment]]
-
-6. [[./Client/index.org][Client]]
-
-** CAS 
-	We are trying the new approach of using CAS a Spring MVC software to authenticate users
-	[[./cas-pac4j-oauth-demo/index.org][CAS Server]]
-
+5. [[./client/index.org][Demo Client Server]]
    
 * Tangle                                       :boilerplate:
 #+BEGIN_SRC python :eval no :tangle __init__.py
