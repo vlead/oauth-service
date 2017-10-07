@@ -6,6 +6,49 @@
 #+EXCLUDE_TAGS: boilerplate
 #+OPTIONS: ^:nil
 
+* Introduction
+** Project Name
+   VLEAD-Oauth Service
+** Project Description
+   Aim is to create a service which can provide authorization between microservices
+   at VLEAD and can potentially provide authentication of the user.VLEAD is a platform for multiple portals,
+   VLEAD requires an authentication service for authorizing users to access its various portals.
+   Using CAS software and google single sign-on we will develop this service.  
+** Team Members
+   TEAM-57
+         Himansh Sheoran (20161211)
+         Shubh Maheshwari (20161170)
+         Lovish Narang (20161158)
+
+* Layout For Release-1
+** Problem Statement
+  -> We need to design a portal which could help a user login into various portals
+     of VLEAD through a common single Sign-In. Once Signed-In a user should access all the
+     portals without logging in again.
+  
+  -> Also once signed-out the user no longer should be able to access respective VLEAD portals.
+
+  -> Moreover the project should be designed in such a manner that it should never store
+     the credentials of user as it is.
+
+** System Requirements
+  -> SPRING FRAMEWORK
+  -> TOMCAT( Container)
+  -> MAVEN( PROJECT MANAGEMENT TOOL)
+  -> ALLOY (RELATIONAL MODELLING TOOL)
+
+** Future Work
+*** Milestone-II
+    -> Now instead of signing in through the credentials, the user should be able to sign in 
+       through omniauths such as google or facebook.
+    
+    -> Once clicked onto the link the user should be redirected to Google or Facebook login 
+       page and once successfully signed in should redirect back to the respective VLEAD portal.
+
+*** Milestone-III
+    -> Once the CAS server is up and running devlop several new packages for different VLEAD 
+       portals for easy integration with CAS.
+
 * Application
   The =Oauth Service= authenticates and authorizes all the users using VLEAD(IIIT) microservices
 
