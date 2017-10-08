@@ -1,4 +1,4 @@
-#+TITLE: Building the Oauth Service for VLEAD
+#+TITLE: Oauth Service for VLEAD
 #+AUTHOR: Shubh
 #+DATE: [2016-07-11 Fri]
 #+SETUPFILE: ./org-templates/level-0.org
@@ -7,6 +7,8 @@
 #+OPTIONS: ^:nil
 
 * Introduction
+** Team 
+   SSAD-57
 ** Project Description
    Building a Common Authentication System(CAS) for various VLEAD services.
 
