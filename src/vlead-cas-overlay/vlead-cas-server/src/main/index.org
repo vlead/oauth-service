@@ -8,9 +8,8 @@
 
 * Main 
   In spring MVC we seprate the codes into 3 parts
+** [[./java/org/vlead/index.org][JAVA backend]] 
 
-[[./java/index.org][JAVA backend]]
-
-[[./resources/index.org][CAS Configuration ]]
-
-[[./webapp/index.org][Frontend]]
+   All the Classes to be defined.
+** [[./resources/index.org][CAS Configuration ]]
+** [[./webapp/index.org][Frontend]]
