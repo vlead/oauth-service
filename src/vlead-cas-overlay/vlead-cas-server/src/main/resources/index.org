@@ -233,7 +233,11 @@ beans {
 
 * Logging errors and files
   This documents the file which stores the configuration of logging the server
-#+BEGIN_SRC :eval no :tangle log4j2.xml
+  
+  In case of following error =[Fatal Error] log4j2.xml:2:6: The processing instruction target matching "[xX][mM][lL]" is not allowed.=
+  Remove the space created in the log4j2.xml file after building the cas-server
+  
+#+BEGIN_SRC :eval no :tangle log4j2.xml 
 <?xml version="1.0" encoding="UTF-8" ?>
 <Configuration monitorInterval="10">
     <Appenders>
