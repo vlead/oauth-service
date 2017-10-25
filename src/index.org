@@ -13,21 +13,11 @@
    Building a Common Authentication System(CAS) for various VLEAD services.
 
 ** Team Members
-   TEAM-57
          Himansh Sheoran (20161211)
 
          Shubh Maheshwari (20161170)
 
          Lovish Narang (20161158)
-
-** Layout For Release-1
-   In this presentation we wil discuss:
-   
-   1. Requirements
-   2. Workflow
-   3. Demo of CAS Server   
-   4. Implementation
-   5. Future Work and Goals   
 
 
 * Application

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<bean id="facebook1" class="org.pac4j.oauth.client.FacebookClient">
+  <property name="key" value="153186971478756" />
+  <property name="secret" value="4e72f0233e6b4594e49ca5eaa59660a4" />
+  <property name="scope"
+    value="email,user_likes,user_about_me,user_birthday,user_education_history,user_hometown" />
+  <property name="fields"
+    value="id,name,first_name,middle_name,last_name,gender,locale,languages,link,username,third_party_id,timezone,updated_time" />
+</bean>
+
+<bean id="twitter1" class="org.pac4j.oauth.client.TwitterClient">
+  <property name="key" value="OPEWaSoTuAe49K4dSoRvNw" />
+  <property name="secret" value="aKmvleltXAmLKcnlMgzRjTsCnhV3QVMVDh153xJttCo" />
+</bean>
+
+<bean id="clients" class="org.pac4j.core.client.Clients">
+  <property name="callbackUrl" value="https://localhost:8443/cas/login" />
+  <property name="clients">
+    <list>
+      <ref bean="facebook1" />
+      <ref bean="twitter1" />
+    </list>
+  </property>
+</bean>

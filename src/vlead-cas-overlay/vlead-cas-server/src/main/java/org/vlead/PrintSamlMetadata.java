@@ -2,34 +2,26 @@ package org.vlead;
 
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.client.SAML2ClientConfiguration;
-
+import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.oauth.profile.facebook.FacebookProfile;
+import org.pac4j.oauth.profile.twitter.TwitterProfile;
+// import org.apereo.cas.authentication.principal.;
+import org.jasig.cas.client.authentication.AttributePrincipal;
 import java.io.File;
+import java.util.*;  
+
 
 public class PrintSamlMetadata {
 
     public static void main(final String[] args) {
-        final SAML2Client client = getClient();
-        client.init(null);
 
-        // generate pac4j SAML2 Service Provider metadata to import on Identity Provider side
-        final String spMetadata = client.getServiceProviderMetadataResolver().getMetadata();
-        System.out.println(spMetadata);
+        // final AttributePrincipal principal = assertion.getPrincipal();
+        // final String id = principal.getName();
+        // final Map<String, Object> attributes = principal.getAttributes();
+
+        // final FacebookProfile rebuiltProfileOnCasClientSideFacebook = (FacebookProfile) ProfileHelper.buildProfile(id, attributes);
+
+        // final TwitterProfile rebuiltProfileOnCasClientSideTwitter = (TwitterProfile) ProfileHelper.buildProfile(id, attributes);    
     }
 
-    private static SAML2Client getClient() {
-
-        final SAML2ClientConfiguration cfg =
-                new SAML2ClientConfiguration("resource:samlKeystore.jks",
-                        "pac4j-demo-passwd",
-                        "pac4j-demo-passwd",
-                        "resource:testshib-providers.xml");
-        cfg.setMaximumAuthenticationLifetime(3600);
-        cfg.setServiceProviderEntityId("urn:mace:saml:pac4j.org");
-        cfg.setServiceProviderMetadataPath(new File("target", "sp-metadata.xml").getAbsolutePath());
-
-        final SAML2Client saml2Client = new SAML2Client(cfg);
-        saml2Client.setCallbackUrl("https://localhost:8443/cas/login?client_name=Saml2Client");
-        return saml2Client;
-    }
 }
-

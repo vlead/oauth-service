@@ -6,9 +6,7 @@
 #+EXCLUDE_TAGS: boilerplate
 #+OPTIONS: ^:nil
 
-
-* Introduction 
-  The source file contains the main file and the testing module.
+The source file contains the main module and the testing module.
 
 [[./main/index.org][Main ]]
 

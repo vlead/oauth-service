@@ -13,3 +13,24 @@
        http://www.springframework.org/schema/util/spring-util.xsd">
     
 </beans>
+
+<bean id="authenticationManager" class="org.apereo.cas.authentication.PolicyBasedAuthenticationManager">
+    <constructor-arg>
+    <map>
+           <entry key-ref="proxyAuthenticationHandler" value-ref="proxyPrincipalResolver" />
+           <entry key-ref="primaryAuthenticationHandler" value-ref="primaryPrincipalResolver" />
+        </map>
+    </constructor-arg>
+    <property name="authenticationMetaDataPopulators">
+        <util:list>
+           <bean class="org.apereo.cas.support.pac4j.authentication.ClientAuthenticationMetaDataPopulator" />
+        </util:list>
+    </property>
+    <property name="authenticationPolicy">
+        <bean class="org.apereo.cas.authentication.AnyAuthenticationPolicy" />
+    </property>
+</bean>
+
+<bean id="primaryAuthenticationHandler"     
+    class="org.apereo.cas.support.pac4j.authentication.handler.support.ClientAuthenticationHandler"
+    c:clients-ref="clients">

@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Implementation-Title: cas-server-webapp
+Implementation-Title: vlead-cas-server
 Implementation-Version: 5.0.0.RC1
 Start-Class: org.apereo.cas.web.CasWebApplication
 Spring-Boot-Classes: WEB-INF/classes/

@@ -19,13 +19,25 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          metadata-complete="true">
-    <display-name>cas-overlay-server-demo</display-name>
+    <display-name>vlead-cas-server</display-name>
 
     <absolute-ordering/>
 
+    <servlet>
+        <servlet-name>dispatcher</servlet-name>
+        <servlet-class>
+            org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/cas-servlet.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:applicationContext.xml,classpath:securityContext.xml</param-value>
+        <param-value>classpath:ApplicationContext.xml,classpath:securityContext.xml</param-value>
     </context-param>
 
     <listener>
@@ -42,17 +54,7 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-<!--     <servlet>
-        <servlet-name>demo</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
 
-    <servlet-mapping>
-        <servlet-name>demo</servlet-name>
-        <url-pattern>/*</url-pattern>
-    </servlet-mapping>
- -->
     <error-page>
         <error-code>401</error-code>
         <location>/templates/error/401.html</location>
@@ -73,7 +75,6 @@
         <location>/templates/error/500.html</location>
     </error-page>
 </web-app>
-
 #+END_SRC
 
 * deployerConfigContext.xml
@@ -94,7 +95,37 @@
     
 </beans>
 
+<bean id="authenticationManager" class="org.apereo.cas.authentication.PolicyBasedAuthenticationManager">
+    <constructor-arg>
+    <map>
+           <entry key-ref="proxyAuthenticationHandler" value-ref="proxyPrincipalResolver" />
+           <entry key-ref="primaryAuthenticationHandler" value-ref="primaryPrincipalResolver" />
+        </map>
+    </constructor-arg>
+    <property name="authenticationMetaDataPopulators">
+        <util:list>
+           <bean class="org.apereo.cas.support.pac4j.authentication.ClientAuthenticationMetaDataPopulator" />
+        </util:list>
+    </property>
+    <property name="authenticationPolicy">
+        <bean class="org.apereo.cas.authentication.AnyAuthenticationPolicy" />
+    </property>
+</bean>
+
+<bean id="primaryAuthenticationHandler"     
+    class="org.apereo.cas.support.pac4j.authentication.handler.support.ClientAuthenticationHandler"
+    c:clients-ref="clients">
 #+END_SRC
+
+
+* cas-servlet
+  The flow after indentity provider has completed its authentication
+  followed by Callback should be defined in the cas-servlet.
+  #+BEGIN_SRC :eval no :tangle WEB-INF/cas-servlet.xml
+<bean id="clientAction" class="org.apereo.cas.support.pac4j.web.flow.ClientAction"
+    c:theCentralAuthenticationService-ref="centralAuthenticationService"
+    c:theClients-ref="clients"/>
+  #+END_SRC
 
 * webflow
   The most important part of the server is to maintain the login-logout flow
@@ -187,7 +218,7 @@
         <evaluate expression="sendTicketGrantingTicketAction"/>
         <transition to="serviceCheck"/>
     </action-state>
-    
+ 
     <action-state id="generateServiceTicket">
         <evaluate expression="generateServiceTicketAction"/>
         <transition on="success" to="warn"/>
@@ -207,6 +238,12 @@
         <transition to="postRedirectDecision"/>
     </action-state>
 
+    <action-state id="clientAction">
+        <evaluate expression="clientAction" />
+        <transition on="success" to="sendTicketGrantingTicket" />
+        <transition on="error" to="ticketGrantingTicketCheck" />
+        <transition on="stop" to="stopWebflow" />
+    </action-state>
 
     <end-state id="postView" view="protocol/casPostResponseView">
         <on-entry>
@@ -215,8 +252,6 @@
         </on-entry>
     </end-state>
 </flow>
-
-
 #+END_SRC
 
 
@@ -255,4 +290,20 @@
 
 </flow>
 
+#+END_SRC
+
+
+* META-INF
+#+BEGIN_SRC :eval no :tangle META-INF/MANIFEST.MF
+Manifest-Version: 1.0
+Implementation-Title: vlead-cas-server
+Implementation-Version: 5.0.0.RC1
+Start-Class: org.apereo.cas.web.CasWebApplication
+Spring-Boot-Classes: WEB-INF/classes/
+Spring-Boot-Lib: WEB-INF/lib/
+Implementation-Date: 2016-08-29T06:06:30.320-07:00[America/Phoenix]
+Spring-Boot-Version: 1.4.0.RELEASE
+Created-By: org.apereo.cas
+Implementation-Vendor: org.apereo.cas
+Main-Class: org.springframework.boot.loader.WarLauncher 
 #+END_SRC

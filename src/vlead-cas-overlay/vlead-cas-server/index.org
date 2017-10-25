@@ -6,8 +6,8 @@
 #+EXCLUDE_TAGS: boilerplate
 #+OPTIONS: ^:nil
 
-* CAS Server
-  This document covers the Cas Server documentation
+* Introduction
+  This document covers the Cas Server documentation 
 
 * pom.xml
   Various dependencies are provided in the pom.xml 
@@ -65,6 +65,11 @@
             <version>${pac4j.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.apereo.cas</groupId>
+                <artifactId>cas-server-support-pac4j</artifactId>
+                <version>${cas.version}</version>
+            </dependency>
+        <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-saml</artifactId>
             <version>${pac4j.version}</version>
@@ -111,7 +116,7 @@
     </build>
 
     <properties>
-        <pac4j.version>1.9.4</pac4j.version>
+        <pac4j.version>3.0.0</pac4j.version>
     </properties>
 
 </project>
