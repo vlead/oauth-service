@@ -309,6 +309,10 @@ cas.javascript.file=/js/cas.js
             <AppenderRef ref="casConsole"/>
             <AppenderRef ref="casFile"/>
         </AsyncLogger>
+        <AsyncLogger name="org.springframework.web" level="warn" additivity="false">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
         <AsyncLogger name="org.springframework.aop" level="warn" additivity="false">
             <AppenderRef ref="casConsole"/>
             <AppenderRef ref="casFile"/>
@@ -405,20 +409,22 @@ cas.javascript.file=/js/cas.js
         <AsyncLogger name="perfStatsLogger" level="info" additivity="false" includeLocation="true">
             <AppenderRef ref="casPerf"/>
         </AsyncLogger>
-        <AsyncLogger name="org.apereo.cas.web.flow" level="info" additivity="true" includeLocation="true">
-            <AppenderRef ref="casFile"/>
+        <AsyncLogger name="org.apereo.cas.web.flow" level="debug" additivity="true" includeLocation="true">
+            <AppenderRef ref="casConsole"/>
         </AsyncLogger>
         <AsyncLogger name="org.apereo.inspektr.audit.support" level="info" includeLocation="true">
             <AppenderRef ref="casAudit"/>
             <AppenderRef ref="casFile"/>
+        </AsyncLogger>
+        <AsyncLogger name="org.pac4j" level="debug" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="file"/>
         </AsyncLogger>
         <AsyncRoot level="error">
             <AppenderRef ref="casConsole"/>
         </AsyncRoot>
     </Loggers>
 </Configuration>
-
-
 #+END_SRC
 
 * User Properties

@@ -7,196 +7,30 @@
 #+OPTIONS: ^:nil
 
 * Introduction
-  This document will illustrate working of small example of VLEAD microservice, client server for the Oauth.
+  This document will illustrate working of small example of VLEAD
+  microservice, client server, for the Oauth.
 
-* Implementation 
-  The client server is a small server with login and logout routes.These routes redirect the client server to the oauth service.
-
-#+BEGIN_SRC python :eval no :tangle client.py
-from flask import Flask, redirect, url_for, session, request, jsonify, abort,render_template
-import requests	
-from flask_cas import CAS
-from flask_cas import login_required
+* What does CAS provide? 
+  It must be clarified that CAS is only to be used for authentication
+  of user and not for *registering* the user. Registration of the user
+  must be taken care by the microservice. Many attributes eg. name
+  of the user, identity provider(eg.google, facebook) will be provider by CAS.
 
 
-app = Flask(__name__)
-cas = CAS(app, '/cas')
-app.secret_key = "devel"
-app.config['CAS_SERVER'] = 'https://localhost:8443/cas' 
-app.config['CAS_AFTER_LOGIN'] = 'route_root'
-
-
-@app.route('/')
-@login_required
-def route_root():
-	return render_template('index.html',
-		username = cas.username,
-		display_name = cas.attributes)
-
-if __name__ == "__main__":
-	app.run(host='localhost',port=5000,debug=True,ssl_context = ('./ssl.crt', './ssl.key'))
-#+END_SRC
-
-* SSL Certifactes
-  To our service more secure we use https and not http protocol.
-  To get the certificates run =python cert.py= in the client server directory in the build
-
-#+BEGIN_SRC python :eval no :tangle cert.py
-from werkzeug.serving import make_ssl_devcert
-make_ssl_devcert('./ssl', host='localhost')
-#+END_SRC
-
-* Frontend
-  This code shows the simple front html of our client server which will be rendered by the server using jinja.
-  When the user is logged out, it displays a login button
-  When the user is logged in, it displays the credentials of the user
-#+BEGIN_SRC python :tangle templates/index.html :eval no 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title>Login Page</title>
-	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
-
-</head>
-
-<body id="body">
-<header>
-</header>
-	<main>
-		<div class="container">
-			<div class="row">
-				<h3>Welcome to the VLEAD Service</h3>				
-			</div>
-			<div class="row">
-			{% if username %}	
-				<div class="col m4">
-					<h5 class="card-title">Name: {{ username }} </h5>			
-					<a class="btn" href="/cas/logout"> Logout </a>
-				</div>
-			{% else %}
-				<div class="col m6 card">
-					<a class="btn btn-danger" href="cas/login"> Login </a>	
-				</div>
-			{% endif %}
-			</div>
-		</div>
-	</main>
-
-<footer>		
-</footer>
-</body>
-</html>
-#+END_SRC
-
-* Debugging Parsing error or ssl context error 
-  1.The Flask-CAS package can give errors like: SSL is not verified by
-  urlopen 
-  2.If no proxy conditions have to be set in urlopen as
-  cas-server and the service are inside proxy
-
-  Hence it is recommended to replace files
-  python2.7 -> /usr/local/lib/python2.7/dist-packages/flask_cas/routing.py
-  pyhton3.5 -> /usr/local/lib/python3.5/dist-packages/flask_cas/routing.py
+* CAS package 
+  Many frameworks provide libraries/packages to integrate with CAS by
+  acting as a Client service
   
-  with the routing.py file tangled in this directory
+** Attributes by Identity Provider
+   All the attributes given by an identity provider are sent to a
+   client service during the validation of the ticket in the form of
+   XML.  This XML is then parsed and retured as a python list in the
+   following section.
 
-
+** Changes 
+   Replace the =def validate(ticket)= method with the following file 
 #+BEGIN_SRC :eval no :tangle routing.py
-import flask
-from xmltodict import parse
-from flask import current_app
-from .cas_urls import create_cas_login_url
-from .cas_urls import create_cas_logout_url
-from .cas_urls import create_cas_validate_url
-from collections import OrderedDict
 import ssl
-
-try:
-    from urllib import urlopen
-except ImportError:
-    from urllib.request import urlopen
-
-blueprint = flask.Blueprint('cas', __name__)
-
-
-@blueprint.route('/login/')
-def login():
-    """
-    This route has two purposes. First, it is used by the user
-    to login. Second, it is used by the CAS to respond with the
-    `ticket` after the user logs in successfully.
-
-    When the user accesses this url, they are redirected to the CAS
-    to login. If the login was successful, the CAS will respond to this
-    route with the ticket in the url. The ticket is then validated.
-    If validation was successful the logged in username is saved in
-    the user's session under the key `CAS_USERNAME_SESSION_KEY` and
-    the user's attributes are saved under the key
-    'CAS_USERNAME_ATTRIBUTE_KEY'
-    """
-
-    cas_token_session_key = current_app.config['CAS_TOKEN_SESSION_KEY']
-
-    redirect_url = create_cas_login_url(
-        current_app.config['CAS_SERVER'],
-        current_app.config['CAS_LOGIN_ROUTE'],
-        flask.url_for('.login', _external=True))
-
-    if 'ticket' in flask.request.args:
-        flask.session[cas_token_session_key] = flask.request.args['ticket']
-
-    if cas_token_session_key in flask.session:
-
-        if validate(flask.session[cas_token_session_key]):
-            if 'CAS_AFTER_LOGIN_SESSION_URL' in flask.session:
-                redirect_url = flask.session.pop('CAS_AFTER_LOGIN_SESSION_URL')
-            else:
-                redirect_url = flask.url_for(
-                    current_app.config['CAS_AFTER_LOGIN'])
-        else:
-            del flask.session[cas_token_session_key]
-
-    current_app.logger.debug('Redirecting to: {0}'.format(redirect_url))
-
-    return flask.redirect(redirect_url)
-
-
-@blueprint.route('/logout/')
-def logout():
-    """
-    When the user accesses this route they are logged out.
-    """
-
-    cas_username_session_key = current_app.config['CAS_USERNAME_SESSION_KEY']
-    cas_attributes_session_key = current_app.config['CAS_ATTRIBUTES_SESSION_KEY']
-
-    if cas_username_session_key in flask.session:
-        del flask.session[cas_username_session_key]
-
-    if cas_attributes_session_key in flask.session:
-        del flask.session[cas_attributes_session_key]
-
-    if(current_app.config['CAS_AFTER_LOGOUT'] != None):
-        redirect_url = create_cas_logout_url(
-            current_app.config['CAS_SERVER'],
-            current_app.config['CAS_LOGOUT_ROUTE'],
-            current_app.config['CAS_AFTER_LOGOUT'])
-    else:
-        redirect_url = create_cas_logout_url(
-            current_app.config['CAS_SERVER'],
-            current_app.config['CAS_LOGOUT_ROUTE'])
-
-    current_app.logger.debug('Redirecting to: {0}'.format(redirect_url))
-    return flask.redirect(redirect_url)
-
-
 def validate(ticket):
     """
     Will attempt to validate the ticket. If validation fails, then False
@@ -226,8 +60,8 @@ def validate(ticket):
     try:
         context = ssl._create_unverified_context()
         xmldump = urlopen(cas_validate_url, context=context,proxies={}).read().strip().decode('utf8', 'ignore')
-        print(xmldump)
         xml_from_dict = parse(xmldump)
+        print(xml_from_dict)
         isValid = True if "cas:authenticationSuccess" in xml_from_dict["cas:serviceResponse"] else False
     except ValueError:
         current_app.logger.error("CAS returned unexpected result")
@@ -236,7 +70,7 @@ def validate(ticket):
         current_app.logger.debug("valid")
         xml_from_dict = xml_from_dict["cas:serviceResponse"]["cas:authenticationSuccess"]
         username = xml_from_dict["cas:user"]
-        attributes = xml_from_dict.get("cas:attributes",{})
+        attributes = xml_from_dict
         if attributes is None:
             attributes = {}
 
@@ -254,4 +88,114 @@ def validate(ticket):
     return isValid
 #+END_SRC
 
+
+** Errors
+  1.The Flask-CAS package can give errors like: SSL is not verified by
+  urlopen 
+  2.No proxy conditions have to be set in urlopen as
+  cas-server and the service are inside a proxy
+
+  Hence it is recommended to replace files
+  python2.7 -> /usr/local/lib/python2.7/dist-packages/flask_cas/routing.py
+  pyhton3.5 -> /usr/local/lib/python3.5/dist-packages/flask_cas/routing.py
   
+  with the changes specified above.
+
+* Implementation 
+  The client server is a small server with login and logout
+  routes.These routes redirect the client server to the CAS server.
+
+  =cas.attributes= is a dict which provides various attributes
+  depending on the identity provider used.
+
+#+BEGIN_SRC python :eval no :tangle client.py
+from flask import Flask, redirect, url_for, session, request, jsonify, abort,render_template
+import requests	
+from flask_cas import CAS
+from flask_cas import login_required
+
+
+app = Flask(__name__)
+cas = CAS(app, '/cas')
+app.secret_key = "devel"
+app.config['CAS_SERVER'] = 'https://localhost:8443/cas' 
+app.config['CAS_AFTER_LOGIN'] = 'route_root'
+app.config['CAS_AFTER_LOGOUT'] = 'https://localhost:5000/'
+
+@app.route('/')
+@login_required
+def route_root():
+	return render_template('index.html',
+		username = cas.username,
+		attributes = cas.attributes)
+
+if __name__ == "__main__":
+	app.run(host='localhost',port=5000,debug=True,ssl_context = ('./ssl.crt', './ssl.key'))
+#+END_SRC
+
+  To start the client server:
+#+BEGIN_EXAMPLE
+python cert.py
+python client.py
+#+END_EXAMPLE
+
+* SSL Certifactes
+  For our service to be more secure we use https protocol.
+  To get the certificates run =python cert.py= in the client server directory during the build
+
+#+BEGIN_SRC python :eval no :tangle cert.py
+from werkzeug.serving import make_ssl_devcert
+make_ssl_devcert('./ssl', host='localhost')
+#+END_SRC
+
+* Frontend
+  This code shows the simple front html of our client server which
+  will be rendered by the server using jinja.  When the user is logged
+  out, it redirects to CAS. When the user is logged in, it
+  displays the credentials of the user.
+#+BEGIN_SRC python :tangle templates/index.html :eval no
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Login Page</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+
+</head>
+
+<body id="body">
+<header>
+</header>
+	<main>
+		<div class="container">
+			<div class="row">
+				<h3>Welcome to the VLEAD Service</h3>				
+			</div>
+			<div class="row">
+			{% if username %}	
+					<h5 class="card-title">Name: {{ username }} </h5>			
+				<div class="col m4">
+					{{ attributes }}
+				</div>
+					<a class="btn" href="/cas/logout"> Logout </a>
+			{% else %}
+				<div class="col m6 card">
+					<a class="btn btn-danger" href="cas/login"> Login </a>	
+				</div>
+			{% endif %}
+			</div>
+		</div>
+	</main>
+
+<footer>		
+</footer>
+</body>
+</html>
+#+END_SRC
+

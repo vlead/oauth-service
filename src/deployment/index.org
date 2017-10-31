@@ -22,16 +22,16 @@
 * Set up the proxy
 ** Basic setup on .bashrc
   Export the following variables
-  #+BEGIN_EXAMPLE
-  HTTP_PROXY=http://proxy.iiit.ac.in:8080/
-http_proxy=http://proxy.iiit.ac.in:8080/
-FTP_PROXY=http://proxy.iiit.ac.in:8080/
-all_proxy=socks://proxy.iiit.ac.in:8080/
-HTTPS_PROXY=http://proxy.iiit.ac.in:8080/
-https_proxy=http://proxy.iiit.ac.in:8080/
-no_proxy=::1,localhost,127.0.0.1/8,0.0.0.0,iiit.ac.in,*.iiit.ac.in,iiit.net,*.iiit.net,iiith.org,172.16.0.0/12,192.168.0.0/16,10.0.0.0/8
-ALL_PROXY=socks://proxy.iiit.ac.in:8080/
-ftp_proxy=http://proxy.iiit.ac.in:8080/
+  #+BEGIN_EXAMPLE :eval no :tangle set_proxy.sh
+  export HTTP_PROXY=http://proxy.iiit.ac.in:8080/
+  export http_proxy=http://proxy.iiit.ac.in:8080/
+  export FTP_PROXY=http://proxy.iiit.ac.in:8080/
+  export all_proxy=socks://proxy.iiit.ac.in:8080/
+  export HTTPS_PROXY=http://proxy.iiit.ac.in:8080/
+  export https_proxy=http://proxy.iiit.ac.in:8080/
+  export  no_proxy=::1,localhost,127.0.0.1/8,0.0.0.0,iiit.ac.in,*.iiit.ac.in,iiit.net,*.iiit.net,iiith.org,172.16.0.0/12,192.168.0.0/16,10.0.0.0/8
+  export ALL_PROXY=socks://proxy.iiit.ac.in:8080/
+  export  ftp_proxy=http://proxy.iiit.ac.in:8080/
   #+END_EXAMPLE
 
 ** Apt-get 
@@ -40,26 +40,19 @@ ftp_proxy=http://proxy.iiit.ac.in:8080/
    Acquire::http::proxy "http://proxy.iiit.ac.in:8080/";
    Acquire::https::proxy "https://proxy.iiit.ac.in:8080/";
    #+END_SRC
-  
-* Install JDK-8 and systemd
-#+BEGIN_SRC :tangle setup.sh :eval no
-sudo -E add-apt-repository ppa:openjdk-r/ppa
-sudo apt-get update
-sudo apt-get upgrade
-sudo apt-get install openjdk-8-source
-sudo apt-get install systemd
-#+END_SRC
-* Install Maven
+   
+* Install JDK-8, systemd, maven 
+** Open-JDK-8 
+   This is the version of java used to build the application
+** Systemd 
+   Installed to create and run services on the OS
+** Maven
   Maven is the Java Managment Tool, in our service we have used maven
   to download, maintain and build the CAS module.
   
   Note: We are using Maven3 so only install that otherwise we might
   get dependencies issue with Maven 2 or Msven 1
-#+BEGIN_SRC :tangle setup.sh :eval no 
-sudo apt-get install maven
-#+END_SRC
-
-** Setiting proxy in Maven 
+*** Setiting proxy in Maven 
    For maven to download all the dependencies on a proxy netowrk
    1. Open /etc/maven/settings.xml 
    2. Go to the proxies section 
@@ -76,9 +69,19 @@ sudo apt-get install maven
       </proxy>
       #+END_EXAMPLE
    
+** Script to install
+#+name: installation
+#+BEGIN_SRC deployment
+sudo -E add-apt-repository ppa:openjdk-r/ppa
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install openjdk-8-source systemd maven
+#+END_SRC
+
 * Install Tomcat
 To install tomcat we must have to add it as a group user 
-#+BEGIN_SRC :tangle setup.sh
+#+name: install_tomcat
+#+BEGIN_SRC deployment
 sudo groupadd tomcat
 sudo mkdir /opt/tomcat
 sudo useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
@@ -144,8 +147,14 @@ sudo systemctl status tomcat
 sudo systemctl enable tomcat
    #+END_SRC
 
+** Update the cache size
+   As CAS is a large application make sure to update the CAS cache size
+   #+BEGIN_SRC 
+   
+   #+END_SRC
 * Pull the Repo and make it 
-#+BEGIN_SRC setup.sh
+#+name: make_emacs
+#+BEGIN_SRC deployment
 git clone https://github.com/shubhMaheshwari/oauth-service.git
 cd oauth-service
 make
@@ -155,3 +164,12 @@ chmod +x run.sh
 #+END_SRC
 
 
+
+    
+* Tangle                                                        :boilerplate:
+
+#+BEGIN_SRC deployment  :tangle setup.sh :eval no :noweb yes
+<<installation>>
+<<install_tomcat>>
+<<make_emacs>>
+#+END_SRC
