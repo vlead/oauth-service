@@ -156,7 +156,7 @@ sudo systemctl enable tomcat
 #+name: make_emacs
 #+BEGIN_SRC deployment
 git clone https://github.com/shubhMaheshwari/oauth-service.git
-cd oauth-service
+cd ~/oauth-service
 make
 cd build/code/vlead-cas-overlay
 chmod +x run.sh 

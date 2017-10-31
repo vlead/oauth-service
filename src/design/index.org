@@ -7,6 +7,13 @@
 #+OPTIONS: ^:nil
 
 
+* CAS Protocol 
+  CAS has developed a seprate protocol specifically for cas. 
+  For more information go to [[https://apereo.github.io/cas/5.0.x/protocol/CAS-Protocol.html]]
+  Also for the working of each route go to [[https://apereo.github.io/cas/5.0.x/protocol/CAS-Protocol-Specification.html]]
+
+* Work flow
+
   #+BEGIN_HTML
   <img src="./work_flow.png" />
   #+END_HTML
@@ -23,14 +30,49 @@
   4) *User* : Person using microservices and needs to be authenticated. 
   
 
-* Work Flow
-  1. User opens in a portal. 
-  2. As the user isn't authenticated with the portal he is redirected
-     to the CAS Server/Oauth Server.
-  3. The User Authenticates is redirected to the microService.  
-  4. The User uses the Micro Service(S1) and then decides to use the
-     Second MicroService(S2).
-  5. S2 checks with the Oauth Service whether the
-  user is authenticated.  
-  6. As the User is Authenticated he is allowed
-  to use the S2.
+** Procedure
+  1. User opens in a portal.
+
+  2. The user eventually requests a page that is secure.
+
+  3. The CasAuthenticationEntryPoint will redirect the user's browser
+     to the CAS server. It will also indicate a service parameter,
+     which is the callback URL. For example, the URL to which the
+     browser is redirected might be
+     https://localhost/cas/login?service=https%3A%2F%2Fserver3.company.com%2Fwebapp%2Fj_spring_cas_security_check.
+
+  4. At the CAS login page the user will be asked to choose an
+     identity provider(facebook, google, twitter). And then redirected
+     to =/oauth2.0/authorize=. Input GET parameters required:
+     client_id(VLEAD Sercice ID) and redirect_uri(redirect url after login).
+
+  5. The user is redirected to one of the identity provider
+     where he will type in his credentials.
+
+  6. On successful authentication he wil be redirected to the callback
+     url of the identity provider.
+   
+  7. The callback url is the login page of the cas. It will fetch the
+     attributes from the identity provider and store it in the user
+     session. ([[https://apereo.github.io/cas/4.2.x/installation/OAuth-OpenId-Authentication.html][Oauth Validation]])
+
+  8. Now CAS will generate a ticket for the user with the attributes
+     given by the identity provider.( [[https://apereo.github.io/cas/5.0.x/protocol/CAS-Protocol-Specification.html#36-ticket-granting-cookie][Ticket creation explanation]])
+     
+  9. This ticket is given back to the service. It is a very short
+     lived ticket for security reasons. Hence as soon as the user is
+     redirected back to the client side, the client server uses it to
+     get the users attribute and to validate user.
+
+  10. Now if the user has to user another service S2.
+
+  11. S2 will redirect it to CAS which will directly return a ticket
+      as the user would already be present in the session.
+
+  12. S2 will use it to get the users attribute.
+
+  13. After some time as either the user session would expire or the
+      user will attempt a logout. Hence his session would be destroyed
+      on CAS. And no ticket would be created unless they are validated.
+
+
