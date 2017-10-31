@@ -77,56 +77,6 @@
 </web-app>
 #+END_SRC
 
-* deployerConfigContext.xml
-#+BEGIN_SRC :eval no :tangle WEB-INF/deployerConfigContext.xml
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"
-       xmlns:c="http://www.springframework.org/schema/c"
-       xmlns:lang="http://www.springframework.org/schema/lang"
-       xmlns:util="http://www.springframework.org/schema/util"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/lang
-       http://www.springframework.org/schema/lang/spring-lang.xsd
-       http://www.springframework.org/schema/util
-       http://www.springframework.org/schema/util/spring-util.xsd">
-    
-</beans>
-
-<bean id="authenticationManager" class="org.apereo.cas.authentication.PolicyBasedAuthenticationManager">
-    <constructor-arg>
-    <map>
-           <entry key-ref="proxyAuthenticationHandler" value-ref="proxyPrincipalResolver" />
-           <entry key-ref="primaryAuthenticationHandler" value-ref="primaryPrincipalResolver" />
-        </map>
-    </constructor-arg>
-    <property name="authenticationMetaDataPopulators">
-        <util:list>
-           <bean class="org.apereo.cas.support.pac4j.authentication.ClientAuthenticationMetaDataPopulator" />
-        </util:list>
-    </property>
-    <property name="authenticationPolicy">
-        <bean class="org.apereo.cas.authentication.AnyAuthenticationPolicy" />
-    </property>
-</bean>
-
-<bean id="primaryAuthenticationHandler"     
-    class="org.apereo.cas.support.pac4j.authentication.handler.support.ClientAuthenticationHandler"
-    c:clients-ref="clients">
-#+END_SRC
-
-
-* cas-servlet
-  The flow after indentity provider has completed its authentication
-  followed by Callback should be defined in the cas-servlet.
-  #+BEGIN_SRC :eval no :tangle WEB-INF/cas-servlet.xml
-<bean id="clientAction" class="org.apereo.cas.support.pac4j.web.flow.ClientAction"
-    c:theCentralAuthenticationService-ref="centralAuthenticationService"
-    c:theClients-ref="clients"/>
-  #+END_SRC
-
 * webflow
   The most important part of the server is to maintain the login-logout flow
   The configuration is stored in login.xml and logout.xml

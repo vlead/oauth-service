@@ -1,6 +1,6 @@
-#+TITLE: Deploying the Oauth Service on a server
-#+AUTHOR: VLEAD
-#+DATE: [2017-06-05 Mon]
+#+TITLE: Deploying the CAS Service on a server
+#+AUTHOR: Shubh
+#+DATE: [2017-10-30 Mon]
 #+SETUPFILE: ../org-templates/level-1.org
 #+TAGS: boilerplate(b)
 #+EXCLUDE_TAGS: boilerplate
@@ -10,309 +10,148 @@
   This document will illustrate installation of all the dependencies required
   for setting up the CAS application for the deployment phase.
 
-* Install dependendent python packages
-  Here we use the =setuptools= module from the standard lib, to make a
-  =setup.py= file, which will install all the python library dependencies.
+* Starting the virtual environment
+  We will use the vagrant box provided by VLEAD to set up the server
+  The link to set up the box is given [[https://github.com/vlead/vlead-onboarding/blob/master/src/set-up-vlead-dev-vagrant-box.org][here]]
 
-#+BEGIN_SRC python :tangle requirements.txt :eval no
-CherryPy==3.2.2
-Flask==0.12.2
-Flask-Cors==3.0.3
-Flask-Login==0.4.0
-Flask-OAuth==0.12
-Flask-OAuthlib==0.9.4
-Flask-SQLAlchemy==2.2
-Flask-Testing==0.6.2
-Jinja2==2.9.6
-MarkupSafe==1.0
-MySQL-python==1.2.3
-Naked==0.1.31
-PAM==0.4.2
-Pillow==2.3.0
-PyYAML==3.10
-Routes==2.0
-SQLAlchemy==1.1.11
-Twisted==16.0.0
-Twisted-Core==13.2.0
-Twisted-Web==13.2.0
-WebOb==1.3.1
-Werkzeug==0.12.2
-adium-theme-ubuntu==0.3.4
-apt-xapian-index==0.45
-argparse==1.2.1
-asn1crypto==0.22.0
-beautifulsoup4==4.4.1
-certifi==2017.4.17
-cffi==1.10.0
-chardet==2.0.1
-click==6.7
-client==0.0.1
-colorama==0.2.5
-command-not-found==0.3
-crypto==1.4.1
-cryptography==2.0
-debtagshw==0.1
-defer==1.0.6
-dirspec==13.10
-dnspython==1.12.0
-duplicity==0.6.23
-enum34==1.1.6
-gdata==2.0.18
-html5lib==0.999
-http==0.02
-httplib2==0.8
-idna==2.5
-ipaddress==1.0.18
-itsdangerous==0.24
-lds==2.0
-lockfile==0.8
-lxml==3.3.3
-matplotlib==1.3.1
-numpy==1.8.2
-oauth2==1.9.0.post1
-oauthlib==2.0.2
-oneconf==0.3.7.14.04.1
-oursql==0.9.3.2
-pexpect==3.1
-piston-mini-client==0.7.5
-psutil==1.2.1
-pyOpenSSL==0.13
-pycparser==2.18
-pycrypto==2.6.1
-pycups==1.9.66
-pycurl==7.19.3
-pygobject==3.12.0
-pyparsing==2.0.1
-pyserial==2.6
-pysmbc==1.0.14.1
-python-apt==0.9.3.5ubuntu2
-python-dateutil==1.5
-python-debian==0.1.21-nmu2ubuntu2
-pytz==2012c
-pyxdg==0.25
-recordtype==1.1
-reportlab==3.0
-repoze.lru==0.6
-requests==2.2.1
-requests-oauthlib==0.8.0
-sessioninstaller==0.0.0
-shellescape==3.4.1
-six==1.5.2
-software-center-aptd-plugins==0.0.0
-ssh-import-id==3.21
-system-service==0.1.6
-unity-lens-photos==1.0
-urllib3==1.7.1
-urlparse2==1.1.1
-virtualenv==15.0.1
-wheel==0.24.0
-wsgiref==0.1.2
-xdiagnose==3.6.3build2
-youtube-dl==2014.02.17
-zope.interface==4.0.5
+  After setting up the vagrant box, uncomment the config for *public
+  network* (line 34) to link the vagrant box to a seprate IP.
+  
+  Current password : =vargrant=
 
+* Set up the proxy
+** Basic setup on .bashrc
+  Export the following variables
+  #+BEGIN_EXAMPLE
+  HTTP_PROXY=http://proxy.iiit.ac.in:8080/
+http_proxy=http://proxy.iiit.ac.in:8080/
+FTP_PROXY=http://proxy.iiit.ac.in:8080/
+all_proxy=socks://proxy.iiit.ac.in:8080/
+HTTPS_PROXY=http://proxy.iiit.ac.in:8080/
+https_proxy=http://proxy.iiit.ac.in:8080/
+no_proxy=::1,localhost,127.0.0.1/8,0.0.0.0,iiit.ac.in,*.iiit.ac.in,iiit.net,*.iiit.net,iiith.org,172.16.0.0/12,192.168.0.0/16,10.0.0.0/8
+ALL_PROXY=socks://proxy.iiit.ac.in:8080/
+ftp_proxy=http://proxy.iiit.ac.in:8080/
+  #+END_EXAMPLE
+
+** Apt-get 
+   Add the following lines to /etc/apt/apt.conf
+   #+BEGIN_SRC 
+   Acquire::http::proxy "http://proxy.iiit.ac.in:8080/";
+   Acquire::https::proxy "https://proxy.iiit.ac.in:8080/";
+   #+END_SRC
+  
+* Install JDK-8 and systemd
+#+BEGIN_SRC :tangle setup.sh :eval no
+sudo -E add-apt-repository ppa:openjdk-r/ppa
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install openjdk-8-source
+sudo apt-get install systemd
+#+END_SRC
+* Install Maven
+  Maven is the Java Managment Tool, in our service we have used maven
+  to download, maintain and build the CAS module.
+  
+  Note: We are using Maven3 so only install that otherwise we might
+  get dependencies issue with Maven 2 or Msven 1
+#+BEGIN_SRC :tangle setup.sh :eval no 
+sudo apt-get install maven
 #+END_SRC
 
-* Install all dependencies and setup the software
-  Install all dependencies, including the OS related packages, Python packages,
-  setup the database, configure the webserver, and finally deploy the
-  application.
-
-#+BEGIN_SRC sh :tangle setup.sh :eval no
-#!/bin/bash
-# Shell script to install deb package dependencies as well as python package
-# dependencies for dataservice.
-
-# if any proxy server
-#PROXY=""
-# file to store the generated password
-DB_PASS_FILE="db_pass.txt"
-
-if [[ `id -u` -ne 0 ]]; then
-  echo "You have to execute this script as super user!"
-  exit 1;
-fi
-
-# Update the packages
-echo "Updating package cache.."
-apt-get -y update
-if [[ $? -ne 0 ]]; then
-  echo "Updating package cache failed!"
-  exit 1;
-fi
-
-echo "Installing MySQL database.."
-if [ ! -f $DB_PASS_FILE ]; then
-  # generate a random password for the database and store it in the $DB_PASS_FILE
-  # file
-#  DBPASS=$(date +%s | sha256sum | head -c 32)
-  DBPASS="root"
-  echo $DBPASS > $DB_PASS_FILE
-fi
-
-# Install MySQL Server in a Non-Interactive mode.
-echo "mysql-server mysql-server/root_password password $DBPASS" | sudo debconf-set-selections
-echo "mysql-server mysql-server/root_password_again password $DBPASS" | sudo debconf-set-selections
-apt-get install -y mysql-server
-if [[ $? -ne 0 ]]; then
-  echo "FATAL: MySQL installation failed!"
-  exit 1;
-fi
-
-# Install pre-requsite dependencies: python-dev, mysqld-dev, setuptools,
-# apache, mod_wsgi etc.
-echo "Installing pre-requisite dependencies.."
-apt-get install -y python-dev libmysqld-dev python-setuptools apache2 libapache2-mod-wsgi libffi-dev build-essential libssl-dev libxml2-dev libxslt1-dev 
-if [[ $? -ne 0 ]]; then
-  echo "FATAL: Installing pre-requisite dependencies failed!"
-  exit 1;
-fi
-
-echo "Enabling the mod WSGI on apache"
-a2enmod wsgi
-if [[ $? -ne 0 ]]; then
-  echo "FATAL: Unable to enable mod wsgi!"
-  exit 1;
-fi
-
-# Installing python dependencies
-echo "Installing dependencies.."
-#export http_proxy=$PROXY
-#export https_proxy=$PROXY
-#python setup.py install
-mkdir -p build/oursql
-cd build/oursql
-wget https://pypi.python.org/packages/8c/88/9f53a314a2af6f56c0a1249c5673ee384b85dc791bac5c1228772ced3502/oursql-0.9.3.2.tar.gz#md5=ade5959a6571b1626966d47f3ab2d315
-tar xvf oursql-0.9.3.2.tar.gz
-cd oursql-0.9.3.2
-python install requirements.txt
-
-# pip install Flask Flask-SQLAlchemy oursql requests flask-cors flask-testing
-
-if [[ $? -ne 0 ]]; then
-  echo "FATAL: Installation failed!"
-  exit 1;
-fi
-
-exit 0
-
+** Setiting proxy in Maven 
+   For maven to download all the dependencies on a proxy netowrk
+   1. Open /etc/maven/settings.xml 
+   2. Go to the proxies section 
+   3. Add 
+      #+BEGIN_EXAMPLE
+      <proxy>
+      <active>true</active>
+      <protocol>http</protocol>
+      <username>proxyuser</username>
+      <password>proxypass</password>
+      <host>proxy.iiit.ac.in</host>
+      <port>8080</port>
+      <nonProxyHosts>local.net|some.host.com</nonProxyHosts>
+      </proxy>
+      #+END_EXAMPLE
+   
+* Install Tomcat
+To install tomcat we must have to add it as a group user 
+#+BEGIN_SRC :tangle setup.sh
+sudo groupadd tomcat
+sudo mkdir /opt/tomcat
+sudo useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
+cd /tmp
+sudo curl -O http://redrockdigimark.com/apachemirror/tomcat/tomcat-8/v8.5.23/bin/apache-tomcat-8.5.23.zip  -x http://proxy.iiit.ac.in:8080 
+unzip apache-tomcat-8.5.23.zip
+sudo mv apache-tomcat-8.5.23/* /opt/tomcat/
+cd /opt/tomcat
+sudo chgrp -R tomcat /opt/tomcat
+sudo chmod -R g+r conf
+sudo chmod g+x conf
+sudo chown -R tomcat webapps/ work/ temp/ logs/
+sudo chgrp -R tomcat bin
+sudo chmod g+rwx bin
+sudo chmod g+r bin/*
+sudo chmod +x bin/*.sh
 #+END_SRC
 
-* Configuring the application and its deployment
-  The following program configures the application, configures the web server
-  to use WSGI and use the application scripts, and finally calls the database
-  setup scripts to actually setup the database with tables.
+** Create a systemd file for tomcat 
+*** Find out and update the JAVA_HOME env variable
+#+BEGIN_SRC :tangle setup.sh 
+export JAVA_HOME=$(sudo update-java-alternatives -l | cut -d ' ' -f 3)
+JAVA_HOME+="/jre"
+echo $JAVA_HOME
+sudo emacs /etc/systemd/system/tomcat.service
+#+END_SRC 
+*** Add the following lines to /etc/systemd/system/tomcat.serivce
+Also update the JAVA_HOME
+#+BEGIN_EXAMPLE
+[Unit]
+Description=Apache Tomcat Web Application Container
+After=network.target
 
-#+BEGIN_SRC sh :tangle configure.sh :eval no
-#!/bin/bash
-# Configure the application in the deployment environment
-# 1. Update the config.py file with appropriate values
-# 2. Update the apache config to server via WSGI
-# 3. Run the database setup scripts to setup the database
+[Service]
+Type=forking
 
-if [[ `id -u` -ne 0 ]]; then
-  echo "You have to execute this script as super user!"
-  exit 1;
-fi
+Environment=JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64/jre
+Environment=CATALINA_PID=/opt/tomcat/temp/tomcat.pid
+Environment=CATALINA_HOME=/opt/tomcat
+Environment=CATALINA_BASE=/opt/tomcat
+Environment='CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC'
+Environment='JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom'
 
-ABS_PATH_DS=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+ExecStart=/opt/tomcat/bin/startup.sh
+ExecStop=/opt/tomcat/bin/shutdown.sh
 
-update_app_config () {
-  CONFIG_FILE="../runtime/config/flask_app_config.py"
-  DB_USER="root"
-  DB_PASS=$(cat db_pass.txt)
-  DB_NAME="oauthService"
-  DB_SERVER="localhost"
+User=tomcat
+Group=tomcat
+UMask=0007
+RestartSec=10
+Restart=always
 
-  # the list of white-listed IPs for POST/PUT requests to data service
-  WHITELIST_IPS="['127.0.0.1']"
+[Install]
+WantedBy=multi-user.target
+#+END_EXAMPLE
+*** Start and enable tomcat 
+Once tomcat is added and the permisssions are set, start tomcat and if
+the status is =running=, enable it so we dont have to start it after
+every time we boot
+   #+BEGIN_SRC 
+   sudo systemctl start tomcat
+sudo systemctl status tomcat
+sudo systemctl enable tomcat
+   #+END_SRC
 
-  # the list of allowed domains for CORS
-  ALLOWED_ORIGINS="['*']"
-
-  echo "Updating config.py.."
-  # Update parts of the DB URI
-  sed -i "s/<userid>/$DB_USER/" $ABS_PATH_DS/$CONFIG_FILE
-  sed -i "s/<password>/$DB_PASS/" $ABS_PATH_DS/$CONFIG_FILE
-  sed -i "s/<servername>/$DB_SERVER/" $ABS_PATH_DS/$CONFIG_FILE
-  sed -i "s/<db_name>/$DB_NAME/" $ABS_PATH_DS/$CONFIG_FILE
-  # update SQLALCHEMY_ECHO
-  sed -i "s/^SQLALCHEMY_ECHO.*$/SQLALCHEMY_ECHO = False/" $ABS_PATH_DS/$CONFIG_FILE
-  # update WHITELIST_IPS
-  #sed -i "s/^WHITELIST_IPS.*$/WHITELIST_IPS = $WHITELIST_IPS/" $CONFIG_FILE
-  # update ALLOWED_ORIGINS
-  #sed -i "s/^ALLOWED_ORIGINS.*$/ALLOWED_ORIGINS = $ALLOWED_ORIGINS/" $CONFIG_FILE
-
-  # NOTE: this is hardcoded now..somehow the log file when dynamically created
-  # is owned by root. then the app fails to run.. hence the following is
-  # necessary
-}
-
-update_apache_config() {
-  PROC_NAME="oauthService"
-  WSGI_SCRIPT="oauthService.wsgi"
-  APACHE_VHOST_FILE="/etc/apache2/sites-available/000-default.conf"
-
-  sed -i "/<\/VirtualHost>/i \
-    WSGIScriptAlias / $ABS_PATH_DS/$WSGI_SCRIPT
-  " $APACHE_VHOST_FILE
-
-  #sed -i '/<\/VirtualHost>/i \
-  #  WSGIDaemonProcess $PROC_NAME user=www-data group=www-data threads=5
-  #  WSGIScriptAlias / $ABS_PATH_DS/$WSGI_SCRIPT
-
-  #  <Directory $ABS_PATH_DS>
-  #    WSGIProcessGroup $PROC_NAME
-  #    WSGIApplicationGroup %{GLOBAL}
-  #    Order deny,allow
-  #    Allow from all
-  #  </Directory>
-  #' $APACHE_VHOST_FILE
-
-}
-
-setup_db() {
-  echo "Creating database: $DB_NAME"
-  mysql -u $DB_USER -p$DB_PASS -Bse "create database $DB_NAME;"
-  if [[ $? -ne 0 ]]; then
-    echo "Failed to create database $DB_NAME"
-    exit 1;
-  fi
-
-}
-
-update_app_config
-if [[ $? -ne 0 ]]; then
-  echo "FATAL: Failed to update application flask_app_config.py"
-  exit 1;
-fi
-update_apache_config
-if [[ $? -ne 0 ]]; then
-  echo "FATAL: Failed to update apache config"
-  exit 1;
-fi
-
-service apache2 restart
-export PYTHONPATH="/var/www"
-setup_db
-exit 0;
+* Pull the Repo and make it 
+#+BEGIN_SRC setup.sh
+git clone https://github.com/shubhMaheshwari/oauth-service.git
+cd oauth-service
+make
+cd build/code/vlead-cas-overlay
+chmod +x run.sh 
+./run.sh
 #+END_SRC
 
-* Deploying the application
 
-#+BEGIN_SRC python :tangle oauthService.wsgi :eval no
-import sys, os
-
-BASE_DIR = BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-
-#sys.path.insert(0, BASE_DIR)
-sys.path.insert(0, "/var/www")
-
-from runtime.rest.run import application
-
-#+END_SRC
-
-* Tangle                                       :boilerplate:
-#+BEGIN_SRC python :eval no :tangle __init__.py
-print "deployment package"
-#+END_SRC

@@ -8,7 +8,9 @@
 
 
 * Private key
- Here we have kept the private key of the server, it can be created using keytool 
+ Here we have kept the private key of the server, it can be created using keytool
+ To manage your own key follow this link =Add the link here= 
+
 
 #+BEGIN_SRC :eval no :tangle thekeystore
 feed feed 0000 0002 0000 0001 0000 0001

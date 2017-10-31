@@ -106,9 +106,10 @@
     <properties>
         <cas.version>5.0.0.RC1</cas.version>
         <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 </project>
-  #+END_SRC
+#+END_SRC
 
 
 * Script to start the server
@@ -124,7 +125,7 @@
 
     mvn clean package
    
-    java -jar vlead-cas-server/target/cas.war
+    java -jar -Djava.net.useSystemProxies=true vlead-cas-server/target/cas.war
    #+END_SRC
 
 

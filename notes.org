@@ -167,3 +167,5 @@ autmate the vagrant box
 
 make a vagrant box
 
+enable the API at google by going to otherwise the API would be unautherized for entry
+ https://console.developers.google.com/apis/api/plus.googleapis.com/overview?project=<project_number>

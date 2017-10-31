@@ -20,7 +20,6 @@
    4.SAML protocols and use of facebook and twitter
 
 #+BEGIN_SRC :eval no :tangle application.properties
-
 # CAS Server Context Configuration
 #
 server.name=https://localhost:8443
@@ -47,7 +46,7 @@ cas.service.security=https://localhost:8443/cas/login
 server.ssl.enabled=true
 
 # Set the place of thekeystore
-server.ssl.key-store=file:/home/vagrant/oauth-service/build/code/vlead-cas-overlay/public_private_keys/thekeystore
+server.ssl.key-store=file:/home/shubh/oauth-service/build/code/vlead-cas-overlay/public_private_keys/thekeystore
 server.ssl.key-store-password=changeit
 server.ssl.key-password=changeit
 
@@ -131,53 +130,8 @@ cas.authn.attributeRepository.attributes.uid=uid
 cas.authn.attributeRepository.attributes.displayName=displayName
 cas.authn.attributeRepository.attributes.cn=commonName
 cas.authn.attributeRepository.attributes.affiliation=groupMembership
-
-cas.authn.pac4j.facebook.fields=id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id,timezone,updated_time,verified,bio,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work,friends,movies,music,books,likes,albums,events,groups,music.listens,picture
-cas.authn.pac4j.facebook.id=153186971478756
-cas.authn.pac4j.facebook.secret=4e72f0233e6b4594e49ca5eaa59660a4
-cas.authn.pac4j.facebook.scope=email,user_likes,user_about_me,user_birthday,user_education_history,user_hometown,user_relationship_details,user_location,user_religion_politics,user_relationships,user_work_history,user_website,user_photos,user_events,user_actions.music,badscope
-cas.authn.pac4j.facebook.callbackUrl=https://localhost:8443/cas/login
-cas.authn.pac4j.twitter.id=OPEWaSoTuAe49K4dSoRvNw
-cas.authn.pac4j.twitter.secret=aKmvleltXAmLKcnlMgzRjTsCnhV3QVMVDh153xJttCo
-cas.authn.pac4j.twitter.callbackUrl=https://localhost:8443/cas/login
-
-cas.authn.pac4j.cas.loginUrl=https://localhost:8443/cas/login
-cas.authn.pac4j.saml.keystorePassword=pac4j-demo-passwd
-cas.authn.pac4j.saml.privateKeyPassword=pac4j-demo-passwd
-cas.authn.pac4j.saml.keystorePath=vlead-cas-server/target/classes/samlKeystore.jks
-cas.authn.pac4j.saml.identityProviderMetadataPath=vlead-cas-server/target/classes/metadata-okta.xml
 #+END_SRC
 
-* Application Context 
-  For using Oauth we use Application Context to configure beans for
-  facebook and twitter which is used by the servlet to make the flow
-#+BEGIN_SRC :eval no :tangle ApplicationContext.xml
-<?xml version="1.0" encoding="UTF-8"?>
-
-<bean id="facebook1" class="org.pac4j.oauth.client.FacebookClient">
-  <property name="key" value="153186971478756" />
-  <property name="secret" value="4e72f0233e6b4594e49ca5eaa59660a4" />
-  <property name="scope"
-    value="email,user_likes,user_about_me,user_birthday,user_education_history,user_hometown" />
-  <property name="fields"
-    value="id,name,first_name,middle_name,last_name,gender,locale,languages,link,username,third_party_id,timezone,updated_time" />
-</bean>
-
-<bean id="twitter1" class="org.pac4j.oauth.client.TwitterClient">
-  <property name="key" value="OPEWaSoTuAe49K4dSoRvNw" />
-  <property name="secret" value="aKmvleltXAmLKcnlMgzRjTsCnhV3QVMVDh153xJttCo" />
-</bean>
-
-<bean id="clients" class="org.pac4j.core.client.Clients">
-  <property name="callbackUrl" value="https://localhost:8443/cas/login" />
-  <property name="clients">
-    <list>
-      <ref bean="facebook1" />
-      <ref bean="twitter1" />
-    </list>
-  </property>
-</bean>
-#+END_SRC
 * BootStrap Properties
   As in an operating system, bootstrap file is used to initialize and start the server
 #+BEGIN_SRC :eval no :tangle bootstrap.properties
@@ -217,18 +171,61 @@ cas.javascript.file=/js/cas.js
 #+END_SRC
   
 * Deployer Configuration 
-  Beans for CAS
-#+BEGIN_SRC :eval :no :tangle deployerConfigContext.groovy
-beans {
-    xmlns([context:'http://www.springframework.org/schema/context'])
-    xmlns([lang:'http://www.springframework.org/schema/lang'])
-    xmlns([util:'http://www.springframework.org/schema/util'])
-    xmlns([metrics:'http://www.ryantenney.com/schema/metrics'])
+  Beans for CAS to define the various identity providers
+#+BEGIN_SRC :eval :no :tangle deployerConfigContext.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/lang
+       http://www.springframework.org/schema/lang/spring-lang.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd">
+    
 
-    metrics.'annotation-driven'('metric-registry':'metrics','health-check-registry':'healthCheckMetrics')
-}
 
+<bean id="primaryAuthenticationHandler" 
+    class="org.apereo.cas.integration.pac4j.authentication.handler.support.UsernamePasswordWrapperAuthenticationHandler" />
 
+<bean id="facebook1" class="org.pac4j.oauth.client.FacebookClient">
+  <property name="key" value="306839079777827" />
+  <property name="secret" value="da1a82ccba02b41d369ba684a530d943" />
+  <property name="scope"
+    value="email" />
+  <property name="fields"
+    value="id,name,link" />
+  <property name="callbackUrl" value="https://localhost:8443/cas/login" />  
+</bean>
+
+<bean id="google1" class="org.pac4j.oauth.client.Google2Client">
+  <property name="key" value="958298972386-erh9adropte1c0qre6hnnjcolc5gem7u.apps.googleusercontent.com" />
+  <property name="secret" value="WDyqHw76WLyXk7JRj5VVln2H" />
+  <property name="callbackUrl" value="https://localhost:8443/cas/login" />  
+</bean>
+
+<bean id="twitter1" class="org.pac4j.oauth.client.TwitterClient">
+  <property name="key" value="OPEWaSoTuAe49K4dSoRvNw" />
+  <property name="secret" value="aKmvleltXAmLKcnlMgzRjTsCnhV3QVMVDh153xJttCo" />
+  <property name="callbackUrl" value="https://localhost:8443/cas/login" />  
+</bean>
+
+<bean id="clients" class="org.pac4j.core.client.Clients">
+  <property name="callbackUrl" value="https://localhost:8443/cas/login" />
+  <property name="clients">
+    <list>
+      <ref bean="facebook1" />
+      <ref bean="twitter1" />
+      <ref bean="google1" />
+    </list>
+  </property>
+</bean>
+
+</beans>
 #+END_SRC  
 
 * Logging errors and files
@@ -504,387 +501,6 @@ casuser=casuser,ROLE_ADMIN
   "description" : "LDS DASHBOARD"
 }
 #+END_SRC 
-* testshib-providers
-  This file contains the metadata for the testing IdP and SP that are
-  operated by TestShib as a service for testing new Shibboleth and
-  SAML providers.
-#+BEGIN_SRC :eval no :tangle testshib-providers.xml
-
-<EntitiesDescriptor Name="urn:mace:shibboleth:testshib:two"
-                    xmlns="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
-                    xmlns:mdalg="urn:oasis:names:tc:SAML:metadata:algsupport" xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui"
-                    xmlns:shibmd="urn:mace:shibboleth:metadata:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
-    <EntityDescriptor entityID="https://idp.testshib.org/idp/shibboleth">
-
-        <Extensions>
-            <mdalg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512" />
-            <mdalg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#sha384" />
-            <mdalg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
-            <mdalg:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-            <mdalg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha512" />
-            <mdalg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha384" />
-            <mdalg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" />
-            <mdalg:SigningMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
-        </Extensions>
-
-        <IDPSSODescriptor
-                protocolSupportEnumeration="urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0 urn:oasis:names:tc:SAML:2.0:protocol">
-            <Extensions>
-                <shibmd:Scope regexp="false">testshib.org</shibmd:Scope>
-                <mdui:UIInfo>
-                    <mdui:DisplayName xml:lang="en">TestShib Test IdP</mdui:DisplayName>
-                    <mdui:Description xml:lang="en">TestShib IdP. Use this as a source of attributes
-                        for your test SP.</mdui:Description>
-                    <mdui:Logo height="88" width="253"
-                    >https://www.testshib.org/testshibtwo.jpg</mdui:Logo>
-                </mdui:UIInfo>
-
-            </Extensions>
-            <!-- old signing key
-            <KeyDescriptor>
-                <ds:KeyInfo>
-                    <ds:X509Data>
-                        <ds:X509Certificate>
-                            MIIEDjCCAvagAwIBAgIBADANBgkqhkiG9w0BAQUFADBnMQswCQYDVQQGEwJVUzEV
-                            MBMGA1UECBMMUGVubnN5bHZhbmlhMRMwEQYDVQQHEwpQaXR0c2J1cmdoMREwDwYD
-                            VQQKEwhUZXN0U2hpYjEZMBcGA1UEAxMQaWRwLnRlc3RzaGliLm9yZzAeFw0wNjA4
-                            MzAyMTEyMjVaFw0xNjA4MjcyMTEyMjVaMGcxCzAJBgNVBAYTAlVTMRUwEwYDVQQI
-                            EwxQZW5uc3lsdmFuaWExEzARBgNVBAcTClBpdHRzYnVyZ2gxETAPBgNVBAoTCFRl
-                            c3RTaGliMRkwFwYDVQQDExBpZHAudGVzdHNoaWIub3JnMIIBIjANBgkqhkiG9w0B
-                            AQEFAAOCAQ8AMIIBCgKCAQEArYkCGuTmJp9eAOSGHwRJo1SNatB5ZOKqDM9ysg7C
-                            yVTDClcpu93gSP10nH4gkCZOlnESNgttg0r+MqL8tfJC6ybddEFB3YBo8PZajKSe
-                            3OQ01Ow3yT4I+Wdg1tsTpSge9gEz7SrC07EkYmHuPtd71CHiUaCWDv+xVfUQX0aT
-                            NPFmDixzUjoYzbGDrtAyCqA8f9CN2txIfJnpHE6q6CmKcoLADS4UrNPlhHSzd614
-                            kR/JYiks0K4kbRqCQF0Dv0P5Di+rEfefC6glV8ysC8dB5/9nb0yh/ojRuJGmgMWH
-                            gWk6h0ihjihqiu4jACovUZ7vVOCgSE5Ipn7OIwqd93zp2wIDAQABo4HEMIHBMB0G
-                            A1UdDgQWBBSsBQ869nh83KqZr5jArr4/7b+QazCBkQYDVR0jBIGJMIGGgBSsBQ86
-                            9nh83KqZr5jArr4/7b+Qa6FrpGkwZzELMAkGA1UEBhMCVVMxFTATBgNVBAgTDFBl
-                            bm5zeWx2YW5pYTETMBEGA1UEBxMKUGl0dHNidXJnaDERMA8GA1UEChMIVGVzdFNo
-                            aWIxGTAXBgNVBAMTEGlkcC50ZXN0c2hpYi5vcmeCAQAwDAYDVR0TBAUwAwEB/zAN
-                            BgkqhkiG9w0BAQUFAAOCAQEAjR29PhrCbk8qLN5MFfSVk98t3CT9jHZoYxd8QMRL
-                            I4j7iYQxXiGJTT1FXs1nd4Rha9un+LqTfeMMYqISdDDI6tv8iNpkOAvZZUosVkUo
-                            93pv1T0RPz35hcHHYq2yee59HJOco2bFlcsH8JBXRSRrJ3Q7Eut+z9uo80JdGNJ4
-                            /SJy5UorZ8KazGj16lfJhOBXldgrhppQBb0Nq6HKHguqmwRfJ+WkxemZXzhediAj
-                            Geka8nz8JjwxpUjAiSWYKLtJhGEaTqCYxCCX2Dw+dOTqUzHOZ7WKv4JXPK5G/Uhr
-                            8K/qhmFT2nIQi538n6rVYLeWj8Bbnl+ev0peYzxFyF5sQA==
-                        </ds:X509Certificate>
-                    </ds:X509Data>
-                </ds:KeyInfo>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes256-cbc"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes192-cbc" />
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes128-cbc"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#tripledes-cbc"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-1_5"/>
-            </KeyDescriptor>
-            -->
-
-            <!-- new signing key -->
-            <KeyDescriptor>
-                <ds:KeyInfo>
-                    <ds:X509Data>
-                        <ds:X509Certificate>
-                            MIIDAzCCAeugAwIBAgIVAPX0G6LuoXnKS0Muei006mVSBXbvMA0GCSqGSIb3DQEB
-                            CwUAMBsxGTAXBgNVBAMMEGlkcC50ZXN0c2hpYi5vcmcwHhcNMTYwODIzMjEyMDU0
-                            WhcNMzYwODIzMjEyMDU0WjAbMRkwFwYDVQQDDBBpZHAudGVzdHNoaWIub3JnMIIB
-                            IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAg9C4J2DiRTEhJAWzPt1S3ryh
-                            m3M2P3hPpwJwvt2q948vdTUxhhvNMuc3M3S4WNh6JYBs53R+YmjqJAII4ShMGNEm
-                            lGnSVfHorex7IxikpuDPKV3SNf28mCAZbQrX+hWA+ann/uifVzqXktOjs6DdzdBn
-                            xoVhniXgC8WCJwKcx6JO/hHsH1rG/0DSDeZFpTTcZHj4S9MlLNUtt5JxRzV/MmmB
-                            3ObaX0CMqsSWUOQeE4nylSlp5RWHCnx70cs9kwz5WrflnbnzCeHU2sdbNotBEeTH
-                            ot6a2cj/pXlRJIgPsrL/4VSicPZcGYMJMPoLTJ8mdy6mpR6nbCmP7dVbCIm/DQID
-                            AQABoz4wPDAdBgNVHQ4EFgQUUfaDa2mPi24x09yWp1OFXmZ2GPswGwYDVR0RBBQw
-                            EoIQaWRwLnRlc3RzaGliLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEASKKgqTxhqBzR
-                            OZ1eVy++si+eTTUQZU4+8UywSKLia2RattaAPMAcXUjO+3cYOQXLVASdlJtt+8QP
-                            dRkfp8SiJemHPXC8BES83pogJPYEGJsKo19l4XFJHPnPy+Dsn3mlJyOfAa8RyWBS
-                            80u5lrvAcr2TJXt9fXgkYs7BOCigxtZoR8flceGRlAZ4p5FPPxQR6NDYb645jtOT
-                            MVr3zgfjP6Wh2dt+2p04LG7ENJn8/gEwtXVuXCsPoSCDx9Y0QmyXTJNdV1aB0AhO
-                            RkWPlFYwp+zOyOIR+3m1+pqWFpn0eT/HrxpdKa74FA3R2kq4R7dXe4G0kUgXTdqX
-                            MLRKhDgdmA==
-                        </ds:X509Certificate>
-                    </ds:X509Data>
-                </ds:KeyInfo>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes256-cbc"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes192-cbc" />
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes128-cbc"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#tripledes-cbc"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-1_5"/>
-            </KeyDescriptor>
-
-            <ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding"
-                                       Location="https://idp.testshib.org:8443/idp/profile/SAML1/SOAP/ArtifactResolution"
-                                       index="1"/>
-            <ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP"
-                                       Location="https://idp.testshib.org:8443/idp/profile/SAML2/SOAP/ArtifactResolution"
-                                       index="2"/>
-
-            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
-            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
-
-            <SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest"
-                                 Location="https://idp.testshib.org/idp/profile/Shibboleth/SSO"/>
-            <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
-                                 Location="https://idp.testshib.org/idp/profile/SAML2/POST/SSO"/>
-            <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
-                                 Location="https://idp.testshib.org/idp/profile/SAML2/Redirect/SSO"/>
-            <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP"
-                                 Location="https://idp.testshib.org/idp/profile/SAML2/SOAP/ECP"/>
-
-        </IDPSSODescriptor>
-
-        <AttributeAuthorityDescriptor
-                protocolSupportEnumeration="urn:oasis:names:tc:SAML:1.1:protocol urn:oasis:names:tc:SAML:2.0:protocol">
-
-            <!-- old SSL/TLS
-            <KeyDescriptor>
-                <ds:KeyInfo>
-                    <ds:X509Data>
-                        <ds:X509Certificate>
-                            MIIEDjCCAvagAwIBAgIBADANBgkqhkiG9w0BAQUFADBnMQswCQYDVQQGEwJVUzEV
-                            MBMGA1UECBMMUGVubnN5bHZhbmlhMRMwEQYDVQQHEwpQaXR0c2J1cmdoMREwDwYD
-                            VQQKEwhUZXN0U2hpYjEZMBcGA1UEAxMQaWRwLnRlc3RzaGliLm9yZzAeFw0wNjA4
-                            MzAyMTEyMjVaFw0xNjA4MjcyMTEyMjVaMGcxCzAJBgNVBAYTAlVTMRUwEwYDVQQI
-                            EwxQZW5uc3lsdmFuaWExEzARBgNVBAcTClBpdHRzYnVyZ2gxETAPBgNVBAoTCFRl
-                            c3RTaGliMRkwFwYDVQQDExBpZHAudGVzdHNoaWIub3JnMIIBIjANBgkqhkiG9w0B
-                            AQEFAAOCAQ8AMIIBCgKCAQEArYkCGuTmJp9eAOSGHwRJo1SNatB5ZOKqDM9ysg7C
-                            yVTDClcpu93gSP10nH4gkCZOlnESNgttg0r+MqL8tfJC6ybddEFB3YBo8PZajKSe
-                            3OQ01Ow3yT4I+Wdg1tsTpSge9gEz7SrC07EkYmHuPtd71CHiUaCWDv+xVfUQX0aT
-                            NPFmDixzUjoYzbGDrtAyCqA8f9CN2txIfJnpHE6q6CmKcoLADS4UrNPlhHSzd614
-                            kR/JYiks0K4kbRqCQF0Dv0P5Di+rEfefC6glV8ysC8dB5/9nb0yh/ojRuJGmgMWH
-                            gWk6h0ihjihqiu4jACovUZ7vVOCgSE5Ipn7OIwqd93zp2wIDAQABo4HEMIHBMB0G
-                            A1UdDgQWBBSsBQ869nh83KqZr5jArr4/7b+QazCBkQYDVR0jBIGJMIGGgBSsBQ86
-                            9nh83KqZr5jArr4/7b+Qa6FrpGkwZzELMAkGA1UEBhMCVVMxFTATBgNVBAgTDFBl
-                            bm5zeWx2YW5pYTETMBEGA1UEBxMKUGl0dHNidXJnaDERMA8GA1UEChMIVGVzdFNo
-                            aWIxGTAXBgNVBAMTEGlkcC50ZXN0c2hpYi5vcmeCAQAwDAYDVR0TBAUwAwEB/zAN
-                            BgkqhkiG9w0BAQUFAAOCAQEAjR29PhrCbk8qLN5MFfSVk98t3CT9jHZoYxd8QMRL
-                            I4j7iYQxXiGJTT1FXs1nd4Rha9un+LqTfeMMYqISdDDI6tv8iNpkOAvZZUosVkUo
-                            93pv1T0RPz35hcHHYq2yee59HJOco2bFlcsH8JBXRSRrJ3Q7Eut+z9uo80JdGNJ4
-                            /SJy5UorZ8KazGj16lfJhOBXldgrhppQBb0Nq6HKHguqmwRfJ+WkxemZXzhediAj
-                            Geka8nz8JjwxpUjAiSWYKLtJhGEaTqCYxCCX2Dw+dOTqUzHOZ7WKv4JXPK5G/Uhr
-                            8K/qhmFT2nIQi538n6rVYLeWj8Bbnl+ev0peYzxFyF5sQA==
-                        </ds:X509Certificate>
-                    </ds:X509Data>
-                </ds:KeyInfo>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes256-cbc"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes192-cbc" />
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes128-cbc"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#tripledes-cbc"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-1_5"/>
-            </KeyDescriptor>
-            -->
-
-            <!-- new SSL/TLS -->
-            <KeyDescriptor>
-                <ds:KeyInfo>
-                    <ds:X509Data>
-                        <ds:X509Certificate>
-                            MIIDAzCCAeugAwIBAgIVAPX0G6LuoXnKS0Muei006mVSBXbvMA0GCSqGSIb3DQEB
-                            CwUAMBsxGTAXBgNVBAMMEGlkcC50ZXN0c2hpYi5vcmcwHhcNMTYwODIzMjEyMDU0
-                            WhcNMzYwODIzMjEyMDU0WjAbMRkwFwYDVQQDDBBpZHAudGVzdHNoaWIub3JnMIIB
-                            IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAg9C4J2DiRTEhJAWzPt1S3ryh
-                            m3M2P3hPpwJwvt2q948vdTUxhhvNMuc3M3S4WNh6JYBs53R+YmjqJAII4ShMGNEm
-                            lGnSVfHorex7IxikpuDPKV3SNf28mCAZbQrX+hWA+ann/uifVzqXktOjs6DdzdBn
-                            xoVhniXgC8WCJwKcx6JO/hHsH1rG/0DSDeZFpTTcZHj4S9MlLNUtt5JxRzV/MmmB
-                            3ObaX0CMqsSWUOQeE4nylSlp5RWHCnx70cs9kwz5WrflnbnzCeHU2sdbNotBEeTH
-                            ot6a2cj/pXlRJIgPsrL/4VSicPZcGYMJMPoLTJ8mdy6mpR6nbCmP7dVbCIm/DQID
-                            AQABoz4wPDAdBgNVHQ4EFgQUUfaDa2mPi24x09yWp1OFXmZ2GPswGwYDVR0RBBQw
-                            EoIQaWRwLnRlc3RzaGliLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEASKKgqTxhqBzR
-                            OZ1eVy++si+eTTUQZU4+8UywSKLia2RattaAPMAcXUjO+3cYOQXLVASdlJtt+8QP
-                            dRkfp8SiJemHPXC8BES83pogJPYEGJsKo19l4XFJHPnPy+Dsn3mlJyOfAa8RyWBS
-                            80u5lrvAcr2TJXt9fXgkYs7BOCigxtZoR8flceGRlAZ4p5FPPxQR6NDYb645jtOT
-                            MVr3zgfjP6Wh2dt+2p04LG7ENJn8/gEwtXVuXCsPoSCDx9Y0QmyXTJNdV1aB0AhO
-                            RkWPlFYwp+zOyOIR+3m1+pqWFpn0eT/HrxpdKa74FA3R2kq4R7dXe4G0kUgXTdqX
-                            MLRKhDgdmA==
-                        </ds:X509Certificate>
-                    </ds:X509Data>
-                </ds:KeyInfo>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes256-cbc"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes192-cbc" />
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes128-cbc"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#tripledes-cbc"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-1_5"/>
-            </KeyDescriptor>
-
-            <AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding"
-                              Location="https://idp.testshib.org:8443/idp/profile/SAML1/SOAP/AttributeQuery"/>
-            <AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP"
-                              Location="https://idp.testshib.org:8443/idp/profile/SAML2/SOAP/AttributeQuery"/>
-
-            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
-            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
-
-        </AttributeAuthorityDescriptor>
-
-        <Organization>
-            <OrganizationName xml:lang="en">TestShib Two Identity Provider</OrganizationName>
-            <OrganizationDisplayName xml:lang="en">TestShib Two</OrganizationDisplayName>
-            <OrganizationURL xml:lang="en">http://www.testshib.org/testshib-two/</OrganizationURL>
-        </Organization>
-        <ContactPerson contactType="technical">
-            <GivenName>Nate</GivenName>
-            <SurName>Klingenstein</SurName>
-            <EmailAddress>ndk@internet2.edu</EmailAddress>
-        </ContactPerson>
-    </EntityDescriptor>
-
-    <!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = -->
-    <!--             Metadata for SP.TESTSHIB.ORG                    -->
-    <!-- = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = -->
-
-    <EntityDescriptor entityID="https://sp.testshib.org/shibboleth-sp">
-
-        <Extensions>
-            <mdalg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/>
-            <mdalg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#sha384"/>
-            <mdalg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-            <mdalg:DigestMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#sha224"/>
-            <mdalg:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-            <mdalg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512"/>
-            <mdalg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384"/>
-            <mdalg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256"/>
-            <mdalg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha224"/>
-            <mdalg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha512"/>
-            <mdalg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha384"/>
-            <mdalg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
-            <mdalg:SigningMethod Algorithm="http://www.w3.org/2009/xmldsig11#dsa-sha256"/>
-            <mdalg:SigningMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1"/>
-            <mdalg:SigningMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-            <mdalg:SigningMethod Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1"/>
-        </Extensions>
-
-
-        <!-- An SP supporting SAML 1 and 2 contains this element with protocol support as shown. -->
-        <SPSSODescriptor
-                protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol http://schemas.xmlsoap.org/ws/2003/07/secext">
-
-            <Extensions>
-                <!-- A request initiator at /Testshib that you can use to customize authentication requests issued to your IdP by TestShib. -->
-                <init:RequestInitiator xmlns:init="urn:oasis:names:tc:SAML:profiles:SSO:request-init" Binding="urn:oasis:names:tc:SAML:profiles:SSO:request-init" Location="https://sp.testshib.org/Shibboleth.sso/TestShib"/>
-
-                <mdui:UIInfo>
-                    <mdui:DisplayName xml:lang="en">TestShib Test SP</mdui:DisplayName>
-                    <mdui:Description xml:lang="en">TestShib SP. Log into this to test your machine.
-                        Once logged in check that all attributes that you expected have been
-                        released.</mdui:Description>
-                    <mdui:Logo height="88" width="253">https://www.testshib.org/testshibtwo.jpg</mdui:Logo>
-                </mdui:UIInfo>
-            </Extensions>
-
-            <KeyDescriptor>
-                <ds:KeyInfo>
-                    <ds:X509Data>
-                        <ds:X509Certificate>
-                            MIIEPjCCAyagAwIBAgIBADANBgkqhkiG9w0BAQUFADB3MQswCQYDVQQGEwJVUzEV
-                            MBMGA1UECBMMUGVubnN5bHZhbmlhMRMwEQYDVQQHEwpQaXR0c2J1cmdoMSIwIAYD
-                            VQQKExlUZXN0U2hpYiBTZXJ2aWNlIFByb3ZpZGVyMRgwFgYDVQQDEw9zcC50ZXN0
-                            c2hpYi5vcmcwHhcNMDYwODMwMjEyNDM5WhcNMTYwODI3MjEyNDM5WjB3MQswCQYD
-                            VQQGEwJVUzEVMBMGA1UECBMMUGVubnN5bHZhbmlhMRMwEQYDVQQHEwpQaXR0c2J1
-                            cmdoMSIwIAYDVQQKExlUZXN0U2hpYiBTZXJ2aWNlIFByb3ZpZGVyMRgwFgYDVQQD
-                            Ew9zcC50ZXN0c2hpYi5vcmcwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
-                            AQDJyR6ZP6MXkQ9z6RRziT0AuCabDd3x1m7nLO9ZRPbr0v1LsU+nnC363jO8nGEq
-                            sqkgiZ/bSsO5lvjEt4ehff57ERio2Qk9cYw8XCgmYccVXKH9M+QVO1MQwErNobWb
-                            AjiVkuhWcwLWQwTDBowfKXI87SA7KR7sFUymNx5z1aoRvk3GM++tiPY6u4shy8c7
-                            vpWbVfisfTfvef/y+galxjPUQYHmegu7vCbjYP3On0V7/Ivzr+r2aPhp8egxt00Q
-                            XpilNai12LBYV3Nv/lMsUzBeB7+CdXRVjZOHGuQ8mGqEbsj8MBXvcxIKbcpeK5Zi
-                            JCVXPfarzuriM1G5y5QkKW+LAgMBAAGjgdQwgdEwHQYDVR0OBBYEFKB6wPDxwYrY
-                            StNjU5P4b4AjBVQVMIGhBgNVHSMEgZkwgZaAFKB6wPDxwYrYStNjU5P4b4AjBVQV
-                            oXukeTB3MQswCQYDVQQGEwJVUzEVMBMGA1UECBMMUGVubnN5bHZhbmlhMRMwEQYD
-                            VQQHEwpQaXR0c2J1cmdoMSIwIAYDVQQKExlUZXN0U2hpYiBTZXJ2aWNlIFByb3Zp
-                            ZGVyMRgwFgYDVQQDEw9zcC50ZXN0c2hpYi5vcmeCAQAwDAYDVR0TBAUwAwEB/zAN
-                            BgkqhkiG9w0BAQUFAAOCAQEAc06Kgt7ZP6g2TIZgMbFxg6vKwvDL0+2dzF11Onpl
-                            5sbtkPaNIcj24lQ4vajCrrGKdzHXo9m54BzrdRJ7xDYtw0dbu37l1IZVmiZr12eE
-                            Iay/5YMU+aWP1z70h867ZQ7/7Y4HW345rdiS6EW663oH732wSYNt9kr7/0Uer3KD
-                            9CuPuOidBacospDaFyfsaJruE99Kd6Eu/w5KLAGG+m0iqENCziDGzVA47TngKz2v
-                            PVA+aokoOyoz3b53qeti77ijatSEoKjxheBWpO+eoJeGq/e49Um3M2ogIX/JAlMa
-                            Inh+vYSYngQB2sx9LGkR9KHaMKNIGCDehk93Xla4pWJx1w==
-                        </ds:X509Certificate>
-                    </ds:X509Data>
-                </ds:KeyInfo>
-                <EncryptionMethod Algorithm="http://www.w3.org/2009/xmlenc11#aes128-gcm"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2009/xmlenc11#aes192-gcm"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2009/xmlenc11#aes256-gcm"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes128-cbc"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes192-cbc"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes256-cbc"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#tripledes-cbc"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2009/xmlenc11#rsa-oaep"/>
-                <EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p"/>
-            </KeyDescriptor>
-
-            <!-- This tells IdPs that Single Logout is supported and where/how to request it. -->
-
-            <SingleLogoutService Location="https://sp.testshib.org/Shibboleth.sso/SLO/SOAP"
-                                 Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP"/>
-            <SingleLogoutService Location="https://sp.testshib.org/Shibboleth.sso/SLO/Redirect"
-                                 Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"/>
-            <SingleLogoutService Location="https://sp.testshib.org/Shibboleth.sso/SLO/POST"
-                                 Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"/>
-            <SingleLogoutService Location="https://sp.testshib.org/Shibboleth.sso/SLO/Artifact"
-                                 Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact"/>
-
-
-            <!-- This tells IdPs that you only need transient identifiers. -->
-            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
-            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
-
-            <!--
-		This tells IdPs where and how to send authentication assertions. Mostly
-		the SP will tell the IdP what location to use in its request, but this
-		is how the IdP validates the location and also figures out which
-		SAML version/binding to use.
-		-->
-
-            <AssertionConsumerService index="1" isDefault="true"
-                                      Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
-                                      Location="https://sp.testshib.org/Shibboleth.sso/SAML2/POST"/>
-            <AssertionConsumerService index="2"
-                                      Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign"
-                                      Location="https://sp.testshib.org/Shibboleth.sso/SAML2/POST-SimpleSign"/>
-            <AssertionConsumerService index="3"
-                                      Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact"
-                                      Location="https://sp.testshib.org/Shibboleth.sso/SAML2/Artifact"/>
-            <AssertionConsumerService index="4"
-                                      Binding="urn:oasis:names:tc:SAML:1.0:profiles:browser-post"
-                                      Location="https://sp.testshib.org/Shibboleth.sso/SAML/POST"/>
-            <AssertionConsumerService index="5"
-                                      Binding="urn:oasis:names:tc:SAML:1.0:profiles:artifact-01"
-                                      Location="https://sp.testshib.org/Shibboleth.sso/SAML/Artifact"/>
-            <AssertionConsumerService index="6"
-                                      Binding="http://schemas.xmlsoap.org/ws/2003/07/secext"
-                                      Location="https://sp.testshib.org/Shibboleth.sso/ADFS"/>
-
-            <!-- A couple additional assertion consumers for the registration webapp. -->
-
-            <AssertionConsumerService index="7"
-                                      Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
-                                      Location="https://www.testshib.org/Shibboleth.sso/SAML2/POST"/>
-            <AssertionConsumerService index="8"
-                                      Binding="urn:oasis:names:tc:SAML:1.0:profiles:browser-post"
-                                      Location="https://www.testshib.org/Shibboleth.sso/SAML/POST"/>
-
-        </SPSSODescriptor>
-
-        <!-- This is just information about the entity in human terms. -->
-        <Organization>
-            <OrganizationName xml:lang="en">TestShib Two Service Provider</OrganizationName>
-            <OrganizationDisplayName xml:lang="en">TestShib Two</OrganizationDisplayName>
-            <OrganizationURL xml:lang="en">http://www.testshib.org/testshib-two/</OrganizationURL>
-        </Organization>
-        <ContactPerson contactType="technical">
-            <GivenName>Nate</GivenName>
-            <SurName>Klingenstein</SurName>
-            <EmailAddress>ndk@internet2.edu</EmailAddress>
-        </ContactPerson>
-
-    </EntityDescriptor>
-
-
-</EntitiesDescriptor>
-#+END_SRC
 * truststore.jks
   The public key for the server is stored here 
   #+BEGIN_SRC :eval no :tangle truststore.jks
@@ -1082,147 +698,4 @@ e9e8 345e 9b8e 7928 f2db 0f60 e7ee 0abf
 f031 1cbc b7ad 30e8 60
   #+END_SRC
 
-* samlKeystore.jks
-  For using SAML protocol we must have the SAML keys to interact and
-  authenticate our CAS Server with Facebook, Twitter, etc.
-#+BEGIN_SRC :eval no :tangle samlKeystore.jks
-feed feed 0000 0002 0000 0001 0000 0001
-000a 7061 6334 6a2d 6465 6d6f 0000 0144
-e034 621c 0000 0502 3082 04fe 300e 060a
-2b06 0104 012a 0211 0101 0500 0482 04ea
-1108 5091 af69 b8f3 93a9 e6cd e2c2 8c5a
-2cdc c455 74ec 010c d630 cadd dea1 0cf4
-3024 5449 f1dd c5c9 d413 4a50 f60b d60f
-55c1 2246 5807 96ac a746 ff21 ffa0 0304
-3ac1 3bf5 92a4 7a2a fe9b c34b 3aaf a022
-9a08 c95e 3ee7 e0ca 5ac1 9341 d4d7 5c5d
-48f6 4aba cd72 cdf4 16cf 83a9 9dbd 67df
-eb2a 1dd9 f9eb 0c90 6417 9174 be69 2ef9
-3d56 cc6d 47a3 08f8 0354 953e 7b28 694e
-3327 5245 d32c d8ef abf4 de16 0c04 18e8
-5688 549d e714 3375 4abf aeb7 5411 6f34
-fc2b 7389 e232 8ee2 dd19 3961 ecb6 8a1e
-bfc4 4f90 2612 d1ea 7d6a 3d9f e17a 46bf
-1aee fed8 fc45 a7cc 577b 4e1b 4c9b cde6
-c4ba ed76 b68f cd93 0353 80d9 818c 9129
-e3b4 335f 06bb 5bcf 35fb 960f 0a08 2a7a
-aadd a615 e185 b8f9 7c57 e25c e38c 4b46
-ee79 53c8 3b9d c216 4faa 9241 9131 1b5f
-082a 9365 21c8 d7ee 73c6 c52c 3afd 68e4
-ae45 ee6b bdc6 141a 9580 f28c 4876 14e8
-612c 8db6 bbaa ab14 8d37 ab8c d87a 04b4
-02f2 6f71 6578 43bd cfb6 0740 bace 94be
-0b25 2152 4e03 4b7c b06b 0943 770e 75b0
-2a4c 6617 58d6 3bd5 4735 261b 561c 4f05
-b27c 629e d96f 0246 593e c760 a57e 92a5
-b707 9b47 8ebe 05b6 82f7 27d1 8c3e a471
-52a6 5238 7624 4b00 d81a ce89 8309 37b6
-4588 e5e9 0f9a 04f6 1e08 a336 6647 f0ff
-e2a2 d0e1 d851 4f44 987b 0798 22fe 860b
-fc72 1cc2 e7fc 653c 0a8b 99b2 66d5 60a7
-f2b5 b395 2303 4a80 40b0 da52 5bc0 1637
-f6c1 07a3 4ca5 2e8f e568 8c3c 6198 f49d
-569b f71a 57f4 973e 3587 0056 2baa 4c25
-319a 954c afc1 737d 2697 e91c 2dac 19a9
-dda1 1d74 0739 65bc 719b 40f1 1eca 370b
-5153 b9fe 338e 338c 41bb 8643 c88d 0de4
-bdf3 d10c 7b3f 1a5b e4d3 4196 793a 4079
-b8b5 9e45 db55 c520 ddc9 9ca9 0bfe f23f
-8d10 006b 37fe d6ec b357 e1d3 d26b 0d3b
-d235 b573 0ec0 b6ce db4c c31e f82a 357d
-e51c eed4 c281 58de 646e 3344 91cc fcf8
-ce55 4729 10d6 d7e9 691e c504 a5fa 2e82
-5c91 bd12 fe7d ab9a 7dee a856 d672 b56e
-42e1 2234 6dd4 12b0 837a 26fd 3c9f 9473
-a5f9 eac4 6c9b 099b ef03 ae0b c213 f61f
-f4ba 27d2 cd99 1448 fa55 636c 4dd9 bade
-6230 52bc c2d9 b6d2 83d7 03c1 a551 cd6d
-079b 1e02 0d9e 3c36 2573 a2c6 625f ecf5
-8055 9c13 cc7f b372 a885 02a7 89cf 1baf
-9822 32b9 fdbb 0ee9 36fe 05be 5093 04c6
-ca5a a435 42b4 f7f0 4ff3 0219 899d 122f
-4b47 2d43 ee57 60be dbc6 37a6 a0fb d2d3
-d076 cd40 7920 edd9 28da 0f33 e7cd 4ca4
-5998 f639 afea 92c9 affc 640f 913e 518b
-66d7 8a17 782b b123 0468 65bf 6255 1d55
-6afa 57ce 4af2 3a22 57a0 7bcb c2fe ee3f
-6e29 29c4 0163 0ef9 f70a fa45 e5d2 500d
-d494 1bbf 6254 53d5 6ccf 8a11 888f e0ee
-5095 f360 48a2 d021 779d 371d 65ce d74c
-9875 dc01 85db 07b7 03e9 15c2 f04d 2a03
-1ef8 df2e bd93 6507 29ab 713e 08df 9dab
-6f88 1a28 d126 086c ac75 b8c9 9701 ef7c
-01e8 4c7c c5bd e192 803e 415d 06bc 0250
-d3db 3cfb 3623 f67e 9536 8f92 be68 44dd
-2faf 7cfb a5bf a5e1 7abd 6887 8f3b 6414
-2d0b d530 dea8 0bb9 4262 9761 4de3 85f2
-cf20 d5d5 903a 048a 6420 a6c4 c086 549f
-f1e8 f88b c05e d82f d90b c0b8 0115 096c
-27d1 474a 2016 2103 7683 08fe 9702 1a27
-4248 4e1f a902 bbb5 16b0 1d90 2953 3e45
-16eb 7e2d 61ac c278 86bb aac0 e9e2 68b0
-2fac 727d 26d1 2120 a065 65a8 8fd3 1bac
-be05 a622 d923 7fc4 c908 9ac7 8101 3cd7
-9d33 991c 65be f111 ec53 ff99 9f51 0bcb
-87ef 9aa2 eaa9 e5fc 3a67 61d5 52f9 97fb
-bd4a f2e8 d089 196c bff1 54eb 7d0c 2be4
-5829 1d5c d649 fe0b 664f ab49 1e8f 65b3
-93ad de93 564e 09a3 426e f299 167d ace5
-8cec 85d3 9f2a e00c 942d 0000 0001 0005
-582e 3530 3900 0003 5e30 8203 5a30 8202
-42a0 0302 0102 0204 532b 0f74 300d 0609
-2a86 4886 f70d 0101 0505 0030 6f31 1030
-0e06 0355 0406 1307 556e 6b6e 6f77 6e31
-1030 0e06 0355 0408 1307 556e 6b6e 6f77
-6e31 1030 0e06 0355 0407 1307 556e 6b6e
-6f77 6e31 1030 0e06 0355 040a 1307 556e
-6b6e 6f77 6e31 1030 0e06 0355 040b 1307
-556e 6b6e 6f77 6e31 1330 1106 0355 0403
-130a 7061 6334 6a2d 6465 6d6f 301e 170d
-3134 3033 3230 3135 3535 3332 5a17 0d32
-3430 3331 3731 3535 3533 325a 306f 3110
-300e 0603 5504 0613 0755 6e6b 6e6f 776e
-3110 300e 0603 5504 0813 0755 6e6b 6e6f
-776e 3110 300e 0603 5504 0713 0755 6e6b
-6e6f 776e 3110 300e 0603 5504 0a13 0755
-6e6b 6e6f 776e 3110 300e 0603 5504 0b13
-0755 6e6b 6e6f 776e 3113 3011 0603 5504
-0313 0a70 6163 346a 2d64 656d 6f30 8201
-2230 0d06 092a 8648 86f7 0d01 0101 0500
-0382 010f 0030 8201 0a02 8201 0100 9be4
-deb8 3647 6b80 91f6 765a 088f d928 f8c4
-69b9 e497 4618 34df 9ade ae17 653f 5dc0
-fe88 0554 512c 319c 27f9 29f3 3a42 0ceb
-0626 bf0e 438b cc6c 8e63 8e62 c65d f3c6
-d88b 5c32 84a7 3294 120b 508f 74f3 4787
-1077 b8a2 fe26 0b57 7505 9041 cfef 92ea
-5f3c a6d8 9915 aa3d 647c 9cf9 e180 547f
-a2e4 6a1d 15dd 1ee1 63d4 2e68 1b9c 0b6c
-aa5d 2352 42da 2a70 edb0 531b c219 51f3
-faa7 ae13 2bb5 a2f3 f47c aecd c50d 0a2f
-d06f e617 0d6b 2204 b2f2 9c2f a900 46c1
-a9b7 ee20 6d5e a91e 55a9 702e 75c7 ac52
-b3f1 17b8 f172 80ed 9854 a8d9 2a4c 1a9f
-0842 ff54 5637 3598 4ea0 31ee a257 f997
-0f48 4953 670e 3b88 a83a a026 b49f 20a0
-5ad5 f534 2132 dd46 ce97 f8bb a25d 0203
-0100 0130 0d06 092a 8648 86f7 0d01 0105
-0500 0382 0101 0092 d2be 2f53 d12c 044e
-7eca 984a e38e cacc d897 7ba3 de9c 11d6
-5e94 8a03 f66a 4833 3988 ec2e a2a8 cdba
-76f1 ea1e 33af ae35 13a9 faa4 b238 7b8d
-2914 81a4 33d7 0607 749a cb73 fd02 9789
-b735 a0ab ae0d 4862 e070 fac3 55d7 755b
-b6cf 0eaf 7072 d108 6fdc 852f 6d5c cbcb
-6656 f9eb 8530 bba9 63b5 2bf1 f08d 2223
-a6af d754 512a 22c2 45cf 01da c274 7913
-271c 58de bc02 56a6 3674 97cf 8dbf 4013
-e569 0a68 93d5 52b9 873a 7e67 6f66 b190
-8030 dbd3 92ef bbe4 44f7 c1de 0088 11ab
-791e 294c d8d5 4ac1 f924 4fb9 73ac af17
-5732 8647 9b22 bf10 c34e 7d08 c50d ccc8
-763a b75c 8e79 e17b da14 b050 adae 5775
-a316 5d76 83d4 ae22 367b 3b21 06b2 3883
-0ad5 1f64 bebb a270 991c cb9f 1fd5 1984
-f85c ab97 b93a dc38 cea7 fb
-#+END_SRC
+

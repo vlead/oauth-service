@@ -65,10 +65,20 @@
             <version>${pac4j.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-core</artifactId>
+            <version>${pac4j.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apereo.cas</groupId>
                 <artifactId>cas-server-support-pac4j</artifactId>
                 <version>${cas.version}</version>
-            </dependency>
+        </dependency>
+        <dependency>
+            <groupId>org.apereo.cas</groupId>
+             <artifactId>cas-server-support-pac4j-core</artifactId>
+            <version>${cas.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.pac4j</groupId>
             <artifactId>pac4j-saml</artifactId>
@@ -116,7 +126,9 @@
     </build>
 
     <properties>
-        <pac4j.version>3.0.0</pac4j.version>
+        <pac4j.version>1.9.4</pac4j.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
     </properties>
 
 </project>
