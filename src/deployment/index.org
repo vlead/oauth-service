@@ -79,7 +79,8 @@ sudo apt-get install openjdk-8-source systemd maven
 #+END_SRC
 
 * Install Tomcat
-To install tomcat we must have to add it as a group user 
+** To install tomcat 
+We must have to add it as a group user 
 #+name: install_tomcat
 #+BEGIN_SRC deployment
 sudo groupadd tomcat
@@ -149,9 +150,15 @@ sudo systemctl enable tomcat
 
 ** Update the cache size
    As CAS is a large application make sure to update the CAS cache size
+   Go to /opt/conf/context.xml ({catlina_base}/conf/context.xml) 
    #+BEGIN_SRC 
-   
+   <?xml version='1.0' encoding='utf-8'?>
+<Context>
+	<Resources cachingAllowed="true" cacheMaxSize="81920" />
+</Context>
    #+END_SRC
+** SSL creation 
+   For configuration of tickets : [[https://tomcat.apache.org/tomcat-8.0-doc/ssl-howto.html]]
 * Pull the Repo and make it 
 #+name: make_emacs
 #+BEGIN_SRC deployment
