@@ -489,10 +489,12 @@ casuser=casuser,ROLE_ADMIN
   "serviceId" : "^https?://localhost.*",
   "name" : "CasClient",
   "id" : 2,
-  "description" : "Allows only localhost services"
+  "description" : "Allows only localhost services",
+  "attributeReleasePolicy" : {
+    "@class" : "org.apereo.cas.services.ReturnAllAttributeReleasePolicy"
+  }
 
 }
-
 #+END_SRC
 
 ** LDS Dashboard
