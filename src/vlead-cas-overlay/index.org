@@ -120,10 +120,10 @@
     cp ../../../src/vlead-cas-overlay/vlead-cas-server/src/main/resources/truststore.jks vlead-cas-server/src/main/resources/
 
 
-    sudo fuser -k 8443/tcp
-    sudo fuser -k 8081/tcp
+    fuser -k 8443/tcp
+    fuser -k 8081/tcp
 
-    mvn clean package
+    mvn -Djava.net.useSystemProxies=true clean package
    
     java -jar -Djava.net.useSystemProxies=true vlead-cas-server/target/cas.war
    #+END_SRC
