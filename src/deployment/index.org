@@ -12,11 +12,9 @@
 
 * Starting the virtual environment
   We will use the vagrant box provided by VLEAD to set up the server
-  The link to set up the box is given [[https://github.com/vlead/vlead-onboarding/blob/master/src/set-up-vlead-dev-vagrant-box.org][here]]
-
-  After setting up the vagrant box, uncomment the config for *public
-  network* (line 34) to link the vagrant box to a seprate IP.
+  The link to set up the box is given [[https://github.com/vlead/setup-ovpl-centos/blob/develop/user-docs/run-ads-using-vagrant-box.org][here]]
   
+  We will be using ADS to auto deploy our service.
   Current password : =vargrant=
 
 * Set up the proxy
@@ -78,6 +76,11 @@ sudo -E add-apt-repository ppa:openjdk-r/ppa
 sudo apt-get update
 sudo apt-get upgrade
 sudo apt-get install openjdk-8-source systemd maven
+#+END_SRC
+*** More than 1 version of java
+If you have more than 1 version of java use
+#+BEGIN_SRC 
+sudo update-alternatives --config java
 #+END_SRC
 
 * Install Tomcat
@@ -145,7 +148,7 @@ Once tomcat is added and the permisssions are set, start tomcat and if
 the status is =running=, enable it so we dont have to start it after
 every time we boot
    #+BEGIN_SRC 
-   sudo systemctl start tomcat
+sudo systemctl start tomcat
 sudo systemctl status tomcat
 sudo systemctl enable tomcat
    #+END_SRC
@@ -171,6 +174,7 @@ sudo systemctl enable tomcat
 #+name: make_emacs
 #+BEGIN_SRC deployment
 cd ~/oauth-service
+cp -r src/vlead-cas-overlay/vlead-cas-server/src/main/webapp/WEB-INF/templates build/code/vlead-cas-overlay/vlead-cas-server/src/main/resources/
 cd build/code/vlead-cas-overlay
 chmod +x run.sh 
 ./run.sh

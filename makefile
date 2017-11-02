@@ -14,7 +14,7 @@ init:
 
 build: init
 	make -f tangle-make -k all
-	cp -r src/vlead-cas-overlay/vlead-cas-server/src/main/webapp/WEB-INF/templates build/code/vlead-cas-overlay/vlead-cas-server/src/main/resources/
+
 
 install-pep:
 	sudo pip install pep8
