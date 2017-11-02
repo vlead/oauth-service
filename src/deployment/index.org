@@ -170,10 +170,7 @@ sudo systemctl enable tomcat
 * Pull the Repo and make it 
 #+name: make_emacs
 #+BEGIN_SRC deployment
-cd 
-git clone https://github.com/shubhMaheshwari/oauth-service.git
-cd oauth-service
-make
+cd ~/oauth-service
 cd build/code/vlead-cas-overlay
 chmod +x run.sh 
 ./run.sh
