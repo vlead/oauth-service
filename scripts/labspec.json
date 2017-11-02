@@ -45,10 +45,13 @@
                   
                ],
                "build":[
-                  "cd /root/labs/translators; make build"
+                  "cd /root/labs//oauth-service; make build"
                ],
                "post_build":[
-                  "apt-get -y update"
+                  "cd build/code/deployment",
+                  "chmod +x *",
+                  "./proxy.sh",
+                  "./setup.sh"
                ],
                "status":[
 
@@ -73,8 +76,7 @@
             "installer":[
                "apt-get update",
                "apt-get install build-essential",
-               "apt-get install git",
-            ],
+               "apt-get install git"],
             "lab_actions":{
                "init":[
 
