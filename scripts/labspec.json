@@ -1,0 +1,117 @@
+{
+   "lab":{
+      "description":{
+         "name":"Oauth-service",
+         "id":"oauth-service",
+         "status":"development code",
+         "discipline":[
+
+         ],
+         "type":"",
+         "server-side":true,
+         "integration_level":6,
+         "developer":[
+            {
+               "name":"Shubh Maheshwari",
+               "title":"",
+               "role":"Intern",
+               "organization":"VLEAD",
+               "institute":"IIIT Hyderabad",
+               "web":"",
+               "department":"Software Engg Research Lab (SERL)",
+               "contact":{
+                  "email":"shubh.maheshwari@students.iiit.ac.in",
+                  "alternate_email":"",
+                  "mobile_number":"",
+                  "office_number":""
+               }
+            }
+         ]
+      },
+      "build_requirements":{
+         "platform":{
+            "os":"ubuntu",
+            "osVersion":"14",
+            "arch":"x64",
+            "service_pack":"",
+            "installer":[
+
+            ],
+            "build_steps":{
+               "configure":[
+
+               ],
+               "pre_build":[
+                  
+               ],
+               "build":[
+                  "cd /root/labs/translators; make build"
+               ],
+               "post_build":[
+                  "apt-get -y update"
+               ],
+               "status":[
+
+               ]
+            }
+         }
+      },
+      "runtime_requirements":{
+         "platform":{
+            "os":"ubuntu",
+            "osVersion":"14",
+            "arch":"x64",
+            "servicepack":"",
+            "hosting":"dedicated",
+            "memory":{
+               "max_required":"4gb",
+               "min_required":"2gb"
+            },
+            "storage":{
+               "min_required":"10gb"
+            },
+            "installer":[
+               "apt-get update",
+               "apt-get install build-essential",
+               "apt-get install git",
+            ],
+            "lab_actions":{
+               "init":[
+
+               ],
+               "shutdown":[
+
+               ],
+               "pause":[
+
+               ],
+               "resume":[
+
+               ],
+               "start":[
+               		"./start"
+               ],
+               "stop":[
+               		"./stop"
+               ],
+               "backup":[
+
+               ],
+               "restore":[
+
+               ],
+               "clean":[
+
+               ],
+               "stats":[
+
+               ],
+               "publish":[
+
+               ]
+            }
+         }
+      }
+   },
+   "template":"1.0"
+}
