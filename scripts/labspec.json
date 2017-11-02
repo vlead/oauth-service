@@ -76,8 +76,7 @@
             "installer":[
                "apt-get update",
                "apt-get install build-essential",
-               "apt-get install git",
-            ],
+               "apt-get install git"],
             "lab_actions":{
                "init":[
 
