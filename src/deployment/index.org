@@ -22,7 +22,7 @@
 * Set up the proxy
 ** Basic setup on .bashrc
   Export the following variables
-  #+name: barshrc
+  #+name: bashrc
   #+BEGIN_EXAMPLE proxy
   export HTTP_PROXY=http://proxy.iiit.ac.in:8080/
   export http_proxy=http://proxy.iiit.ac.in:8080/
