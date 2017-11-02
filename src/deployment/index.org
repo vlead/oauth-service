@@ -22,7 +22,8 @@
 * Set up the proxy
 ** Basic setup on .bashrc
   Export the following variables
-  #+BEGIN_EXAMPLE :eval no :tangle set_proxy.sh
+  #+name: barshrc
+  #+BEGIN_EXAMPLE proxy
   export HTTP_PROXY=http://proxy.iiit.ac.in:8080/
   export http_proxy=http://proxy.iiit.ac.in:8080/
   export FTP_PROXY=http://proxy.iiit.ac.in:8080/
@@ -36,9 +37,10 @@
 
 ** Apt-get 
    Add the following lines to /etc/apt/apt.conf
-   #+BEGIN_SRC 
-   Acquire::http::proxy "http://proxy.iiit.ac.in:8080/";
-   Acquire::https::proxy "https://proxy.iiit.ac.in:8080/";
+   #+name: apt
+   #+BEGIN_SRC proxy 
+   echo Acquire::http::proxy \"http://proxy.iiit.ac.in:8080/\"\; >> /etc/apt/apt.conf
+   echo Acquire::https::proxy \"https://proxy.iiit.ac.in:8080/\"\; >> /etc/apt/apt.conf
    #+END_SRC
    
 * Install JDK-8, systemd, maven 
@@ -186,4 +188,9 @@ chmod +x run.sh
 <<installation>>
 <<install_tomcat>>
 <<make_emacs>>
+#+END_SRC
+
+#+BEGIN_SRC proxy :tangle proxy.sh :eval no :noweb yes
+<<bashrc>>
+<<apt>>
 #+END_SRC
