@@ -196,17 +196,7 @@ sudo systemctl enable tomcat
     For twitter we just need the Id and Secret from their site, their
     is no need to setup callback url. 
     Replace those with the one present [[../vlead-cas-overlay/vlead-cas-server/src/main/resources/deployerConfigContext.xml][here]]
-** Copy the configurations to the build directory 
-   Once everything is setup we will have to copy the configurations
-   #+name: copy_files
-   #+BEGIN_SRC deployment
-   cd ~/oauth-service
-   sudo mkdir -p /etc/cas/
-   sudo cp -r src/vlead-cas-overlay/etc/cas/* /etc/cas/*
-   cp -r src/vlead-cas-overlay/vlead-cas-server/src/main/resources/deployerConfigContext.xml build/code/vlead-cas-overlay/vlead-cas-server/src/main/resources/
-   cp -r src/vlead-cas-overlay/vlead-cas-server/src/main/resources/log4j2.xml build/code/vlead-cas-overlay/vlead-cas-server/src/main/resources/
-   cp -r src/vlead-cas-overlay/vlead-cas-server/src/main/webapp/WEB-INF/templates build/code/vlead-cas-overlay/vlead-cas-server/src/main/resources/
-   #+END_SRC
+
    
 * Pull the Repo and make it 
 
@@ -214,7 +204,9 @@ sudo systemctl enable tomcat
 #+BEGIN_SRC deployment
 
 cd build/code/vlead-cas-overlay
+chmod +x copy.sh
 chmod +x run.sh 
+./copy.sh
 ./run.sh
 
 #+END_SRC
@@ -228,7 +220,6 @@ chmod +x run.sh
 <<installation>>
 <<install_tomcat>>
 <<add_keys>>
-<<copy_files>>
 <<make_emacs>>
 #+END_SRC
 

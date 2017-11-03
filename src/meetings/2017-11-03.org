@@ -1,0 +1,27 @@
+#+TITLE: CAS Frontend and Identity Providers 
+#+AUTHOR: VLEAD
+#+DATE: [2017-09-22 Friday]
+#+SETUPFILE: ../org-templates/level-1.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+* Introduction 
+  In todays meeting we want to discuss:
+  
+1. R2 on 9-10th November
+2. Addition of the 3 Identity Provider
+   1. Google 
+      This was the most recuired oauth as all the vlead services are using it 
+   2. Facebook 
+      Most peopl use it for Login
+   3. Twitter
+   4. More providers like linkedin, iiit cas system, github can also be added if wanted 
+
+3. Addition of VLEAD Logo and changes to the frontend
+
+
+     
+* Plan for next week
+  1. The last task of integrating cas with diffrenent VLEAD services like LDS, Outreach, Ads. 
+  2. Adding a management server for easy workflow   

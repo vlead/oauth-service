@@ -14,18 +14,11 @@ init:
 
 build: init
 	make -f tangle-make -k all
-
-
-install-pep:
-	sudo pip install pep8
-
+	export OAUTH_SERVICE=${PWD}
 lint:  install-pep
 	pep8 --ignore=E302 ${PWD}/${CODE_DIR} > ${LINT_FILE};
 
 build-with-lint: build lint
-
-run-py-tests:
-	export PYTHONPATH=${PWD}/${CODE_DIR}; find ${PWD}/${CODE_DIR} -name '*test_*.py' -exec python '{}' \;
 
 clean:	
 	make -f tangle-make clean
