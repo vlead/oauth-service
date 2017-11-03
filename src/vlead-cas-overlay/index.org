@@ -111,15 +111,12 @@
 </project>
 #+END_SRC
 
-
-* Script to start the server
+   
+* Script to run the server
     For easy startup of the server we can use run.sh. 
     * It requires the root access *
    #+BEGIN_SRC  :eval no :tangle run.sh 
-    cp ../../../src/vlead-cas-overlay/public_private_keys/thekeystore public_private_keys/thekeystore   
-    sudo -s
-    cp public_private_keys/thekeystore /etc/cas/thekeystore
-    exit
+   
     cp ../../../src/vlead-cas-overlay/vlead-cas-server/src/main/resources/truststore.jks vlead-cas-server/src/main/resources/
 
     fuser -k 8443/tcp

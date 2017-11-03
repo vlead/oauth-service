@@ -1,8 +1,8 @@
 {
   "@class" : "org.apereo.cas.services.RegexRegisteredService",
-  "serviceId" : "^https?://localhost.*",
-  "name" : "CasClient",
-  "id" : 2,
+  "serviceId" : "^https?://localhost:8081*",
+  "name" : "Management",
+  "id" : 10,
   "description" : "Allows only localhost services",
   "attributeReleasePolicy" : {
     "@class" : "org.apereo.cas.services.ReturnAllAttributeReleasePolicy"

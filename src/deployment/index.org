@@ -162,22 +162,61 @@ sudo systemctl enable tomcat
 	<Resources cachingAllowed="true" cacheMaxSize="81920" />
 </Context>
    #+END_SRC
-** SSL creation 
-   For configuration of tickets : [[https://tomcat.apache.org/tomcat-8.0-doc/ssl-howto.html]]
-* Changes in /etc/cas/
-  1. If the directory is not created create one using sudo 
-  2. Add the keystore genrated in the above step to this dir.
-     #+BEGIN_EXAMPLE
-     cp {Path to the key} /etc/cas/thekeystore
-     #+END_EXAMPLE
+* Script to stepup the server
+  For giving the basic configuration to the cas we need to the take the following steps
+** Generate new certificates and save them
+*** Use existing keys
+    Copy the thekeystore file to /etc/cas
+   #+name: add_keys
+   #+BEGIN_SRC deployment
+    mkdir -p /etc/cas/
+   cp ../../../src/vlead-cas-overlay/public_private_keys/thekeystore /etc/cas/
+   #+END_SRC
+*** Generate new keys
+    To generate new keys, make a keystore, export a cert, and then import them to /jre/security/cacerts
+    [[https://apereo.github.io/cas/developer/Build-Process.html#configure-ssl][Link]] to give a better understanding 
+  
+  #+BEGIN_EXAMPLE
+  sudo keytool -genkey -alias cas -keyalg RSA -validity 999 -keystore /etc/cas/thekeystore -ext san=dns:$REPLACE_WITH_FULL_MACHINE_NAME
+  # Export the certificate into a file
+  sudo keytool -export -file /etc/cas/config/cas.crt -keystore /etc/cas/thekeystore -alias cas
+
+  # Import the certificate into the global keystore
+  sudo keytool -import -file /etc/cas/config/cas.crt -alias cas -keystore $JAVA_HOME/jre/lib/security/cacerts
+  #+END_EXAMPLE
+
+** Update the App Id and secret 
+*** [[./google_oauth_configuration.org][Goolge Setup]]
+    
+*** Facebook Setup 
+    Follow the guide:https://developers.facebook.com/docs/facebook-login/
+    Replace the values present [[../vlead-cas-overlay/vlead-cas-server/src/main/resources/deployerConfigContext.xml][here]]
+    After successful setup enable the app: https://stackoverflow.com/questions/21775198/facebook-api-this-app-is-in-development-mode
+*** Twitter Setup 
+    For twitter we just need the Id and Secret from their site, their
+    is no need to setup callback url. 
+    Replace those with the one present [[../vlead-cas-overlay/vlead-cas-server/src/main/resources/deployerConfigContext.xml][here]]
+** Copy the configurations to the build directory 
+   Once everything is setup we will have to copy the configurations
+   #+name: copy_files
+   #+BEGIN_SRC deployment
+   cd ~/oauth-service
+   sudo mkdir -p /etc/cas/
+   sudo cp -r src/vlead-cas-overlay/etc/cas/* /etc/cas/*
+   cp -r src/vlead-cas-overlay/vlead-cas-server/src/main/resources/deployerConfigContext.xml build/code/vlead-cas-overlay/vlead-cas-server/src/main/resources/
+   cp -r src/vlead-cas-overlay/vlead-cas-server/src/main/resources/log4j2.xml build/code/vlead-cas-overlay/vlead-cas-server/src/main/resources/
+   cp -r src/vlead-cas-overlay/vlead-cas-server/src/main/webapp/WEB-INF/templates build/code/vlead-cas-overlay/vlead-cas-server/src/main/resources/
+   #+END_SRC
+   
 * Pull the Repo and make it 
+
 #+name: make_emacs
 #+BEGIN_SRC deployment
-cd ~/oauth-service
-cp -r src/vlead-cas-overlay/vlead-cas-server/src/main/webapp/WEB-INF/templates build/code/vlead-cas-overlay/vlead-cas-server/src/main/resources/
+
 cd build/code/vlead-cas-overlay
 chmod +x run.sh 
 ./run.sh
+
 #+END_SRC
 
 
@@ -188,6 +227,8 @@ chmod +x run.sh
 #+BEGIN_SRC deployment  :tangle setup.sh :eval no :noweb yes
 <<installation>>
 <<install_tomcat>>
+<<add_keys>>
+<<copy_files>>
 <<make_emacs>>
 #+END_SRC
 

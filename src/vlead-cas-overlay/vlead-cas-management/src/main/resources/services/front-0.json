@@ -1,3 +1,4 @@
+
 {
   "@class" : "org.apereo.cas.services.RegexRegisteredService",
   "serviceId" : "^https?://front.*",

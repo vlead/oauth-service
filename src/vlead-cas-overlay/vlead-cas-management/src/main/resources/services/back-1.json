@@ -1,3 +1,4 @@
+
 {
   "@class" : "org.apereo.cas.services.RegexRegisteredService",
   "serviceId" : "^https?://back.*",
@@ -14,3 +15,5 @@
     "authorizedToReleaseProxyGrantingTicket" : false
   }
 }
+
+   

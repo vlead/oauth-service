@@ -1,7 +1,7 @@
-#+TITLE: Oauth Configuration
+#+TITLE: Oauth Google Configuration
 #+AUTHOR: VLEAD
 #+DATE: [2017-06-14 WED]
-#+SETUPFILE: ../org-templates/level-0.org
+#+SETUPFILE: ../org-templates/level-1.org
 #+TAGS: boilerplate(b)
 #+EXCLUDE_TAGS: boilerplate
 #+OPTIONS: ^:nil
@@ -30,3 +30,5 @@
         + Note down =CLIENT ID= and =CLIENT SECRET=
 	+ Note: Do add the name of your project or else it Google OAuth might throw 
 	  some errors like =oauth not found=
+    
+    - Replace the =CLIENT ID= and =CLIENT SECRET= of google given [[../vlead-cas-overlay/vlead-cas-server/src/main/resources/deployerConfigContext.xml][here]]   

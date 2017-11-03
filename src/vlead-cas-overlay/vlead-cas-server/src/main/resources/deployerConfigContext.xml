@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/lang
+       http://www.springframework.org/schema/lang/spring-lang.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd">
+    
+
+
+<bean id="primaryAuthenticationHandler" 
+    class="org.apereo.cas.integration.pac4j.authentication.handler.support.UsernamePasswordWrapperAuthenticationHandler" />
+
+<bean id="facebook1" class="org.pac4j.oauth.client.FacebookClient">
+  <property name="key" value="306839079777827" />
+  <property name="secret" value="da1a82ccba02b41d369ba684a530d943" />
+  <property name="scope"
+    value="email" />
+  <property name="fields"
+    value="id,name,link" />
+  <property name="callbackUrl" value="https://localhost:8443/cas/login" />  
+</bean>
+
+<bean id="google1" class="org.pac4j.oauth.client.Google2Client">
+  <property name="key" value="958298972386-erh9adropte1c0qre6hnnjcolc5gem7u.apps.googleusercontent.com" />
+  <property name="secret" value="WDyqHw76WLyXk7JRj5VVln2H" />
+  <property name="callbackUrl" value="https://localhost:8443/cas/login" />  
+</bean>
+
+<bean id="twitter1" class="org.pac4j.oauth.client.TwitterClient">
+  <property name="key" value="OPEWaSoTuAe49K4dSoRvNw" />
+  <property name="secret" value="aKmvleltXAmLKcnlMgzRjTsCnhV3QVMVDh153xJttCo" />
+  <property name="callbackUrl" value="https://localhost:8443/cas/login" />  
+</bean>
+
+<bean id="clients" class="org.pac4j.core.client.Clients">
+  <property name="callbackUrl" value="https://localhost:8443/cas/login" />
+  <property name="clients">
+    <list>
+      <ref bean="facebook1" />
+      <ref bean="twitter1" />
+      <ref bean="google1" />
+    </list>
+  </property>
+</bean>
+
+</beans>
