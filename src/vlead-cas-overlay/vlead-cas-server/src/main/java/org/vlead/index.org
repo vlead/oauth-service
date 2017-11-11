@@ -1,0 +1,33 @@
+Here we have defined all the Classes explicitaly used by VLEAD CAS Server in java
+
+* Print Saml Metadata is used to configure SAML protocols 
+  Print SAML Metadata on the server logs
+#+BEGIN_SRC :eval no :tangle PrintSamlMetadata.java
+package org.vlead;
+
+import org.pac4j.saml.client.SAML2Client;
+import org.pac4j.saml.client.SAML2ClientConfiguration;
+import org.pac4j.core.profile.ProfileHelper;
+import org.pac4j.oauth.profile.facebook.FacebookProfile;
+import org.pac4j.oauth.profile.twitter.TwitterProfile;
+// import org.apereo.cas.authentication.principal.;
+import org.jasig.cas.client.authentication.AttributePrincipal;
+import java.io.File;
+import java.util.*;  
+
+
+public class PrintSamlMetadata {
+
+    public static void main(final String[] args) {
+
+        // final AttributePrincipal principal = assertion.getPrincipal();
+        // final String id = principal.getName();
+        // final Map<String, Object> attributes = principal.getAttributes();
+
+        // final FacebookProfile rebuiltProfileOnCasClientSideFacebook = (FacebookProfile) ProfileHelper.buildProfile(id, attributes);
+
+        // final TwitterProfile rebuiltProfileOnCasClientSideTwitter = (TwitterProfile) ProfileHelper.buildProfile(id, attributes);    
+    }
+
+}
+#+END_SRC

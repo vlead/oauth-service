@@ -25,12 +25,21 @@
       outreach portal, and from outreach portal, when the
       user navigates to Vlabs analytics dashboard, the user
       should not be prompted for login.
-   2. VLEAD does not want to maintain passwords which means
-      VLEAD likes to use gmail authentication. 
 
-   
+   2. Also once signed-out the user no longer should be able to access
+      respective VLEAD portals.
+
+   3. VLEAD does not want to maintain passwords which means
+      VLEAD likes to use gmail authentication. 
 
 ** COMMENT Common authentication between services
    Once the user logs in, he must be able to access all the
    services without authenticating again.
 		
+
+
+* System Requirements/Implementation
+  Hence to build this portal we have decided to build in it *SPRING
+  FRAMEWORK* using *MAVEN( PROJECT MANAGEMENT TOOL)* and *TOMCAT(
+  Container)*. For buildig the relational model we have used ALLOY
+  (FORMAL MODELLING TOOL).

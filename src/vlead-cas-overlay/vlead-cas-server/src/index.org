@@ -1,0 +1,15 @@
+#+TITLE: The Demo CAS Server application
+#+AUTHOR: Shubh
+#+DATE: [2017-06-05 Mon]
+#+SETUPFILE: ../../../org-templates/level-3.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+The source file contains the main module and the testing module.
+
+[[./main/index.org][Main ]]
+
+[[./test/index.org][Test]]
+
+

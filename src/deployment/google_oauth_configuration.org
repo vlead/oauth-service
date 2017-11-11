@@ -1,7 +1,7 @@
-x#+TITLE: Google Oauth Configuration
+#+TITLE: Oauth Google Configuration
 #+AUTHOR: VLEAD
 #+DATE: [2017-06-14 WED]
-#+SETUPFILE: ../org-templates/level-0.org
+#+SETUPFILE: ../org-templates/level-1.org
 #+TAGS: boilerplate(b)
 #+EXCLUDE_TAGS: boilerplate
 #+OPTIONS: ^:nil
@@ -24,9 +24,11 @@ x#+TITLE: Google Oauth Configuration
 	+ Configure =Authorised redirect URIs= as below if you are
           running application in =localhost=
 	  #+BEGIN_EXAMPLE
-	  https://localhost:5000/gCallback
+	  https://localhost:8443/cas/login
 	  #+END_EXAMPLE
         + Click on =Create=
         + Note down =CLIENT ID= and =CLIENT SECRET=
 	+ Note: Do add the name of your project or else it Google OAuth might throw 
 	  some errors like =oauth not found=
+    
+    - Replace the =CLIENT ID= and =CLIENT SECRET= of google given [[../vlead-cas-overlay/vlead-cas-server/src/main/resources/deployerConfigContext.xml][here]]   

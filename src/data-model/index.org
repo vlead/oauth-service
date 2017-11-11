@@ -13,93 +13,34 @@
   between these entities; and operations that entail a change in the state of
   the system.
 
-* Authenticating with Google  
-  We have successfully modelled the SAML flow between the Google and our Oauth Server in the Alloy Models.
-  [[./Alloy_Models][Alloy Model]]
+* Relational Model  
+ 
+ In your implementation CAS use SAML work-flow
+ 
 
-* Autherizing microservices 
-** Work Flow  
-   1.User opens in a microservice
-   2.As the user isn't authenticated with the service he is redirected to the Oauth Server
-   3.The User Authenticates is redirected to the microService
-   4.The User uses the Micro Service(S1) and then decides to use the Second MicroService(S2)
-   5.S2 checks with the Oauth Service whether the user is authenticated.
-   6.As the User is Authenticated he is allowed to use the S2
-   
-   [[./WorkFlowOauth.xml][WorkFlow]]
-  
+**  We can divide the authentication into 3 steps. 
+     Redirection to the CAS Server In this section we observe the
+     request to service provider aka =VLEAD Portal= by the user.
 
-* Notation
-  The system is defined as the data model.  There is a certain notation that is
-  used defining the data model. 
+#+BEGIN_HTML
+<img src="./alloyModels/PreCORPStateS0.png" />
+#+END_HTML
 
-** Sets, cardinality and relations
+      Now the user is redirected to the identity provider aka =CAS
+      Server= who loads the form and takes the username and password
+      as its parameters.
 
-If =A= is a set, then
-    1. =A!= denotes exactly one element of =A=.
-    2. =A?= denotes at most one element of =A=.
-    3. =A+= denotes  one or more elements of =A=
-    4. =A*=  denotes at zero or more elements of =A=.  Often
-       abbreviated as =A=.
-    5. =A > B= denotes a relation /from/ =A= /to/ =B=.
 
-** Relations and their cardinality type
+#+BEGIN_HTML
+<img src="./alloyModels/PreCORPStateS1.png" />
+#+END_HTML
 
-A relation =r:A > B= could relate each element of =A= to
-zero, one or more elements of =B=.
+       If the user is successfully authenticated by the service he is
+       redirected back to the =VLEAD Portal=
 
-|--------------------------------+-----------+---+---|
-| Cardinality of B               | Notation  |   |   |
-|--------------------------------+-----------+---+---|
-| at least zero elements of =B=. | r: A > B  |   |   |
-|--------------------------------+-----------+---+---|
-| at most one element of =B=     | r: A > B? |   |   |
-|--------------------------------+-----------+---+---|
-| at least one element of =B=    | r: A > B+ |   |   |
-|--------------------------------+-----------+---+---|
-| exactly one element of =B=     | r: A > B! |   |   |
-|--------------------------------+-----------+---+---|
 
-** Example of Entity Relationship notation
-    
-#+begin_example
- [email, user] : User? > Email!
-#+end_example
+#+BEGIN_HTML
+<img src="./alloyModels/PreCORPStateS2.png" />
+#+END_HTML
 
-Encodes the following items of information:
 
- - =email= is a relation /from/ the set =User= /to/ the set
-   =Email=.
-
- - =User= is called the /domain/ of the relation =email=.
-
- - =Email= is called the /codomain/ of the relation =email=.
-
- - The relation =email= relates each element of =User= to
-   /exactly one/ element of =Email=.  This is written as 
-
- #+begin_example
- email: User > Email!
- #+end_example
-
- - =user= is a relation /from/ the set =Email= /to/ the set
-   =User=.
-
- - =Email= is called the /domain/ of the relation =user=.
-
- - =User= is called the /codomain/ of the relation =user=.
-
- - The relation =user= relates each element of =Email= to
-   /at most one/ element of =User=.  This is written as 
-
- #+begin_example
- user: Email > User?
- #+end_example
-
-* Abstract Entity Types
-#+BEGIN_SRC spec :tangle spec.txt
-TYPE User
-TYPE Role (admin + guest)
-TYPE Session
-
-#+END_SRC
