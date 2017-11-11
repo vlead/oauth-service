@@ -41,5 +41,7 @@
 * System Requirements/Implementation
   Hence to build this portal we have decided to build in it *SPRING
   FRAMEWORK* using *MAVEN( PROJECT MANAGEMENT TOOL)* and *TOMCAT(
-  Container)*. For buildig the relational model we have used ALLOY
-  (FORMAL MODELLING TOOL).
+  Container)*. We are using *emacs* as our IDE for documenting all
+  steps taken for deploying this service. We have also used VLEAD's
+  *Vagrant Box* as our virtual environment. For buildig the relational
+  model we have used ALLOY (FORMAL MODELLING TOOL).

@@ -35,7 +35,13 @@
 
 6. [[./deployment/index.org][Deployment]]
    
-* Future Work
+
+* Completed Tasks
+** Milestone-I
+   1. Find a software which can solve the problem 
+   2. Implement and document the procedure to deploy it 
+   3. Integrate it with the VLEAD vagrant box 
+
 ** Milestone-II
   Now instead of signing in through the credentials, the user should
   be able to sign in through omniauths such as google or facebook.
@@ -50,6 +56,8 @@
   Devlop several new packages for different VLEAD portals for easy
   integration with CAS.
 
+
+As we have completed all 3 milestones we have successfully completed the project assigned to us.
 
 * Tangle                                       :boilerplate:
 #+BEGIN_SRC python :eval no :tangle __init__.py

@@ -22,4 +22,4 @@ firefox ./build/docs/index.html
 
 ** Changes in VLEAD microservices code
 	We have created a demo application in flask to show how to setup microservices for CAS.
-	Visit  [[./src/client/index.org][link]] to understand the diffrence in the implementation
+	Visit  [[./src/client/index.org][link]] to understand the diffrence in the implementation.

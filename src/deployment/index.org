@@ -189,20 +189,24 @@ sudo systemctl enable tomcat
   sudo keytool -import -file /etc/cas/config/cas.crt -alias cas -keystore $JAVA_HOME/jre/lib/security/cacerts
   #+END_EXAMPLE
 
-** Update the App Id and secret 
-*** [[./google_oauth_configuration.org][Goolge Setup]]
+* Update the App Id and secret 
+** [[./google_oauth_configuration.org][Goolge Setup]]
     
-*** Facebook Setup 
+** Facebook Setup 
     Follow the guide:https://developers.facebook.com/docs/facebook-login/
     Replace the values present [[../vlead-cas-overlay/vlead-cas-server/src/main/resources/deployerConfigContext.xml][here]]
     After successful setup enable the app: https://stackoverflow.com/questions/21775198/facebook-api-this-app-is-in-development-mode
-*** Twitter Setup 
+** Twitter Setup 
     For twitter we just need the Id and Secret from their site, their
     is no need to setup callback url. 
     Replace those with the one present [[../vlead-cas-overlay/vlead-cas-server/src/main/resources/deployerConfigContext.xml][here]]
 
-   
-* Pull the Repo and make it 
+
+** Add the keys and secret to deployerConfiguration.xml
+   Link to the directory [[../vlead-cas-overlay/vlead-cas-server/src/main/resources][here]] Open the deployerConfiguration.xml and
+   add the Keys and secret of diiferent Identity Providers. Also set
+   the Callback Url to /cas/login
+* Pull the Repo and run the server 
 
 #+name: make_emacs
 #+BEGIN_SRC deployment
@@ -215,7 +219,11 @@ chmod +x run.sh
 
 #+END_SRC
 
-
+* Key note
+  All the important configurations are stored in
+  src/vlead-cas-overlay/vlead-cas-server/src/main/resources Hence in
+  the code make changes to this file followed by compiling the
+  application using maven.
 
     
 * Tangle                                                        :boilerplate:

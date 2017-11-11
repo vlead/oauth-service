@@ -148,9 +148,8 @@ spring.jmx.default-domain=server
 
 #+END_SRC
 
-* [[./deployerConfigContext.xml][Deployer Configuration]] 
-  The file contains Beans for CAS to define the various identity providers
-
+* Deployer Configuration
+  The file whih stores all the configurations on the Identity Providers
 * Logging errors and files
   Log Configuration file [[./log4j2.xml]]
   This documents the file which stores the configuration of logging the server
