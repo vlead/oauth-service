@@ -1,0 +1,262 @@
+#+TITLE: The Demo CAS Server application
+#+AUTHOR: Shubh
+#+DATE: [2017-06-05 Mon]
+#+SETUPFILE: ../../../../../org-templates/level-5.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+
+* Introduction
+
+  Resources contains the configurations of your server, it is the most important directory for CAS applications
+  
+* Application Properties
+  The Configurations are stored here: 
+  Currently the following things have been set up,
+   1.port:8443, 
+   2.ssl-functionality, 
+   3.initial-users list with their password,
+#+BEGIN_SRC :eval no :tangle application.properties
+# CAS Server Context Configuration
+#
+server.name=https://localhost:8443
+server.context-path=/cas
+server.port=8443
+cas.server.http.enabled=false
+cas.tgc.secure=false
+
+cas.ticket.st.timeToKillInSeconds=600
+
+server.max-http-header-size=2097152
+server.max-http-post-size=2097152
+#server.use-forward-headers=true
+
+cas.service.security=https://localhost:8443/cas/login
+
+# SSL
+server.ssl.enabled=true
+
+# Set the place of thekeystore
+server.ssl.key-store=file:/etc/cas/thekeystore
+server.ssl.key-store-password=changeit
+server.ssl.key-password=changeit
+
+# server.ssl.ciphers=
+# server.ssl.client-auth=
+# server.ssl.enabled=
+# server.ssl.key-alias=
+# server.ssl.key-store-provider=
+# server.ssl.key-store-type=
+# server.ssl.protocol=
+# server.ssl.trust-store=
+# server.ssl.trust-store-password=
+# server.ssl.trust-store-provider=
+# server.ssl.trust-store-type=
+        
+server.tomcat.basedir=build/tomcat
+server.tomcat.accesslog.enabled=true
+server.tomcat.accesslog.pattern=%t %a "%r" %s (%D ms)
+server.tomcat.accesslog.suffix=.log
+server.tomcat.max-threads=5
+server.tomcat.port-header=X-Forwarded-Port
+server.tomcat.protocol-header=X-Forwarded-Proto
+# server.tomcat.protocol-header-https-value=https
+server.tomcat.remote-ip-header=X-FORWARDED-FOR
+server.tomcat.uri-encoding=UTF-8
+        
+spring.http.encoding.charset=UTF-8
+spring.http.encoding.enabled=true
+spring.http.encoding.force=true
+
+spring.cloud.bus.enabled=false
+
+endpoints.enabled=true
+endpoints.sensitive=true
+management.context-path=/status
+endpoints.restart.enabled=false
+endpoints.shutdown.enabled=false
+
+
+##
+# CAS Web Application Session Configuration
+#
+server.session.timeout=300
+server.session.cookie.http-only=true
+server.session.tracking-modes=COOKIE
+
+##
+# CAS Thymeleaf View Configuration
+#
+spring.thymeleaf.encoding=UTF-8
+spring.thymeleaf.cache=false
+
+##
+# CAS Log4j Configuration
+#
+# logging.config=file:/etc/cas/log4j2.xml
+server.context-parameters.isLog4jAutoInitializationDisabled=true
+
+##
+# CAS AspectJ Configuration
+#
+spring.aop.auto=true
+spring.aop.proxy-target-class=true
+
+##
+# CAS Authentication Credentials
+#
+cas.authn.accept.users=jleleu::jleleu,leleuj::leleuj,vlead::vlead,shubh::maheshwari,casuser::notused
+
+##
+# CAS Authentication Attributes
+#
+cas.authn.attributeRepository.attributes.uid=uid
+cas.authn.attributeRepository.attributes.displayName=displayName
+cas.authn.attributeRepository.attributes.cn=commonName
+cas.authn.attributeRepository.attributes.affiliation=groupMembership
+#+END_SRC
+
+* BootStrap Properties
+  As in an operating system, bootstrap file is used to initialize and start the server
+#+BEGIN_SRC :eval no :tangle bootstrap.properties
+##
+# CAS Spring Cloud Config Client
+#
+# Name of the application for which environment settings and properties should be fetched.
+# This should map to a cas.yml or cas.properties file.
+spring.application.name=cas
+spring.cloud.config.fail-fast=true
+        
+## 
+# CAS Embedded Cloud Config Server
+#
+# Native profile in the Config Server that doesn't use Git, but just loads the 
+# config files from the local classpath or file system.
+#
+spring.profiles.active=native
+spring.cloud.config.server.native.searchLocations=file:///etc/cas/config
+        
+# spring.profiles.active=default
+# spring.cloud.config.server.git.uri=https://github.com/repoName/config
+# spring.cloud.config.server.git.uri=file://${user.home}/config
+# spring.cloud.config.server.git.username=
+# spring.cloud.config.server.git.password=
+spring.cloud.config.server.bootstrap=true
+spring.cloud.config.server.prefix=/configserver
+spring.jmx.default-domain=server
+
+#+END_SRC
+
+* [[./deployerConfigContext.xml][Deployer Configuration]] 
+  The file contains Beans for CAS to define the various identity providers
+
+* Logging errors and files
+  Log Configuration file [[./log4j2.xml]]
+  This documents the file which stores the configuration of logging the server
+  
+  In case of following error =[Fatal Error] log4j2.xml:2:6: The processing instruction target matching "[xX][mM][lL]" is not allowed.=
+  Remove the space created in the log4j2.xml file after building the cas-server
+
+* User Properties
+  The general user properties, the various types of user, eg: Admin are stored here
+#+BEGIN_SRC :eval no :tangle user-details.properties
+# This file lists the set of users that are allowed access to the CAS sensitive/admin endpoints.
+#
+# The syntax of each entry should be in the form of:
+# 
+# username=password,grantedAuthority[,grantedAuthority][,enabled|disabled]
+
+# Example:
+casuser=casuser,ROLE_ADMIN
+
+
+#+END_SRC
+* Services
+  Various Clients of VLEAD are stored in the form of JSON. The domain
+  under which a service is defined is stated using regex. Examples are shown below:
+
+** Front Server Example 
+   This takes all care of all the json files starting with =https://front=
+#+BEGIN_SRC :eval no :tangle services/front-0.json
+{
+  "@class" : "org.apereo.cas.services.RegexRegisteredService",
+  "serviceId" : "^https?://front.*",
+  "name" : "front",
+  "id" : 0,
+  "description" : "Allows only front services",
+  "logoutType" : "FRONT_CHANNEL"
+}
+
+#+END_SRC
+** Back Server Example
+   This is used for all the back services
+   #+BEGIN_SRC :eval no :tangle services/back-1.json
+{
+  "@class" : "org.apereo.cas.services.RegexRegisteredService",
+  "serviceId" : "^https?://back.*",
+  "name" : "back",
+  "id" : 1,
+  "description" : "Allows only back services",
+  "logoutType" : "BACK_CHANNEL",
+  "attributeReleasePolicy" : {
+    "@class" : "org.apereo.cas.services.ReturnAllowedAttributeReleasePolicy",
+    "principalAttributesRepository" : {
+      "@class" : "org.apereo.cas.authentication.principal.DefaultPrincipalAttributesRepository"
+    },
+    "authorizedToReleaseCredentialPassword" : false,
+    "authorizedToReleaseProxyGrantingTicket" : false
+  }
+}
+
+   
+   #+END_SRC
+   
+** Localhost Server Example
+   All localhost, services come under this service
+#+BEGIN_SRC :eval no :tangle services/CasClient-2.json
+{
+  "@class" : "org.apereo.cas.services.RegexRegisteredService",
+  "serviceId" : "^https?://localhost.*",
+  "name" : "CasClient",
+  "id" : 2,
+  "description" : "Allows only localhost services",
+  "attributeReleasePolicy" : {
+    "@class" : "org.apereo.cas.services.ReturnAllAttributeReleasePolicy"
+  }
+
+}
+#+END_SRC
+
+** LDS Dashboard
+   This is different from localhost Server because of =0.0.0.0= is
+   considered a seprate domian from localhost
+#+BEGIN_SRC :eval no :tangle services/LDS-3.json
+{
+  "@class" : "org.apereo.cas.services.RegexRegisteredService",
+  "serviceId" : "^https?://0.0.0.0.*",
+  "name" : "LDS-3",
+  "id" : 3,
+  "description" : "LDS DASHBOARD",
+  "attributeReleasePolicy" : {
+    "@class" : "org.apereo.cas.services.ReturnAllAttributeReleasePolicy"
+  }
+}
+#+END_SRC 
+
+
+** Management Service
+   CAS Management Service 
+#+BEGIN_SRC :eval no :tangle services/Management-10.json
+{
+  "@class" : "org.apereo.cas.services.RegexRegisteredService",
+  "serviceId" : "^https?://localhost:8081*",
+  "name" : "Management",
+  "id" : 10,
+  "description" : "Allows only localhost services",
+  "attributeReleasePolicy" : {
+    "@class" : "org.apereo.cas.services.ReturnAllAttributeReleasePolicy"
+  }
+
+}
+#+END_SRC 

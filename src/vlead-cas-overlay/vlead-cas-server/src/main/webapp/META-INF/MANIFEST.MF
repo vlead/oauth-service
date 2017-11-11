@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Implementation-Title: vlead-cas-server
+Implementation-Version: 5.0.0.RC1
+Start-Class: org.apereo.cas.web.CasWebApplication
+Spring-Boot-Classes: WEB-INF/classes/
+Spring-Boot-Lib: WEB-INF/lib/
+Implementation-Date: 2016-08-29T06:06:30.320-07:00[America/Phoenix]
+Spring-Boot-Version: 1.4.0.RELEASE
+Created-By: org.apereo.cas
+Implementation-Vendor: org.apereo.cas
+Main-Class: org.springframework.boot.loader.WarLauncher
+

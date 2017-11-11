@@ -1,4 +1,4 @@
-#+TITLE: Building the Oauth Service for VLEAD
+#+TITLE: Oauth Service for VLEAD
 #+AUTHOR: Shubh
 #+DATE: [2016-07-11 Fri]
 #+SETUPFILE: ./org-templates/level-0.org
@@ -6,22 +6,49 @@
 #+EXCLUDE_TAGS: boilerplate
 #+OPTIONS: ^:nil
 
+* Introduction
+** Team 
+   SSAD-57
+** Project Description
+   Building a Common Authentication System(CAS) for various VLEAD services.
+
+** Team Members
+         Himansh Sheoran (20161211)
+
+         Shubh Maheshwari (20161170)
+
+         Lovish Narang (20161158)
+
+
 * Application
   The =Oauth Service= authenticates and authorizes all the users using VLEAD(IIIT) microservices
 
-1. [[./requirements/index.org][Requirements]]
+1. [[./requirements/index.org][Problem Statement]]
 
 2. [[./design/index.org][Design]]
 
 3. [[./data-model/index.org][Data Model]]
 
-4. [[./runtime/index.org][Runtime]]
+4. [[./vlead-cas-overlay/index.org][CAS Server]]
 
-5. [[./deployment/index.org][Deployment]]
-
-6.[[./Client][Client]]
-
+5. [[./client/index.org][Demo Client Server]]
    
+* Future Work
+** Milestone-II
+  Now instead of signing in through the credentials, the user should
+  be able to sign in through omniauths such as google or facebook.
+
+  Once clicked onto the link the user should be redirected to Google
+  or Facebook login page and once successfully signed in should
+  redirect back to the respective VLEAD portal.
+
+** Milestone-III
+  Integrate the various VLEAD prortals eg.LDS dashboard.
+  
+  Devlop several new packages for different VLEAD portals for easy
+  integration with CAS.
+
+
 * Tangle                                       :boilerplate:
 #+BEGIN_SRC python :eval no :tangle __init__.py
 print "Oauth Service"

@@ -1,0 +1,259 @@
+#+TITLE: The Demo CAS Server application
+#+AUTHOR: Shubh
+#+DATE: [2017-06-05 Mon]
+#+SETUPFILE: ../../../../../org-templates/level-5.org
+#+TAGS: boilerplate(b)
+#+EXCLUDE_TAGS: boilerplate
+#+OPTIONS: ^:nil
+
+* Introduction 
+  All the Frontend related information, Javascript, css, templates and
+  even the web servlet to manage server path is stored here.
+
+* web.xml 
+  This file contains all the configurations to direct server to the servlet
+
+#+BEGIN_SRC :eval no :tangle WEB-INF/web.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         metadata-complete="true">
+    <display-name>vlead-cas-server</display-name>
+
+    <absolute-ordering/>
+
+    <servlet>
+        <servlet-name>dispatcher</servlet-name>
+        <servlet-class>
+            org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/cas-servlet.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:ApplicationContext.xml,classpath:securityContext.xml</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
+    <error-page>
+        <error-code>401</error-code>
+        <location>/templates/error/401.html</location>
+    </error-page>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/templates/error/404.html</location>
+    </error-page>
+
+    <error-page>
+        <error-code>500</error-code>
+        <location>/templates/error/500.html</location>
+    </error-page>
+
+    <error-page>
+        <exception-type>java.lang.Exception</exception-type >
+        <location>/templates/error/500.html</location>
+    </error-page>
+</web-app>
+#+END_SRC
+
+* webflow
+  The most important part of the server is to maintain the login-logout flow
+  The configuration is stored in login.xml and logout.xml
+
+** Login Flow
+
+#+BEGIN_SRC :eval no :tangle WEB-INF/webflow/login/login-webflow.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.springframework.org/schema/webflow"
+      xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow.xsd">
+
+    
+    <on-start>
+        <evaluate expression="initialFlowSetupAction"/>
+    </on-start>
+
+    <action-state id="initialAuthenticationRequestValidationCheck">
+        <evaluate expression="initialAuthenticationRequestValidationAction"/>
+        <transition on="authenticationFailure" to="handleAuthenticationFailure"/>
+        <transition on="error" to="initializeLoginForm"/>
+        <transition on="success" to="ticketGrantingTicketCheck"/>
+    </action-state>
+
+    <action-state id="ticketGrantingTicketCheck">
+        <evaluate expression="ticketGrantingTicketCheckAction"/>
+        <transition on="notExists" to="gatewayRequestCheck"/>
+        <transition on="invalid" to="terminateSession"/>
+        <transition on="valid" to="hasServiceCheck"/>
+    </action-state>
+        
+    <action-state id="initializeLoginForm">
+        <evaluate expression="initializeLoginAction" />
+        <transition on="success" to="viewLoginForm"/>
+    </action-state>
+
+    <view-state id="viewLoginForm" view="casLoginView" model="credential">
+        <binder>
+            <binding property="username" required="true"/>
+            <binding property="password" required="true"/>
+        </binder>
+        <!--
+        <on-entry>
+            <evaluate expression="samlMetadataUIParserAction" />
+        </on-entry>
+        -->
+        <transition on="submit" bind="true" validate="true" to="realSubmit"/>
+    </view-state>
+
+    <action-state id="realSubmit">
+        <evaluate expression="authenticationViaFormAction"/>
+        <transition on="warn" to="warn"/>
+        <!--
+        To enable AUP workflows, replace the 'success' transition with the following:
+        <transition on="success" to="acceptableUsagePolicyCheck" />
+        -->
+        <transition on="success" to="sendTicketGrantingTicket"/>
+        <transition on="successWithWarnings" to="showMessages"/>
+        <transition on="authenticationFailure" to="handleAuthenticationFailure"/>
+        <transition on="error" to="initializeLoginForm"/>
+    </action-state>
+
+    <view-state id="showMessages" view="casLoginMessageView">
+        <on-entry>
+            <evaluate expression="sendTicketGrantingTicketAction"/>
+            <set name="requestScope.messages" value="messageContext.allMessages"/>
+        </on-entry>
+        <transition on="proceed" to="serviceCheck"/>
+    </view-state>
+
+    <action-state id="handleAuthenticationFailure">
+        <evaluate expression="authenticationExceptionHandler.handle(currentEvent.attributes.error, messageContext)"/>
+        <transition on="AccountDisabledException" to="casAccountDisabledView"/>
+        <transition on="AccountLockedException" to="casAccountLockedView"/>
+        <transition on="AccountPasswordMustChangeException" to="casMustChangePassView"/>
+        <transition on="CredentialExpiredException" to="casExpiredPassView"/>
+        <transition on="InvalidLoginLocationException" to="casBadWorkstationView"/>
+        <transition on="InvalidLoginTimeException" to="casBadHoursView"/>
+        <transition on="FailedLoginException" to="initializeLoginForm"/>
+        <transition on="AccountNotFoundException" to="initializeLoginForm"/>
+        <transition on="UnauthorizedServiceForPrincipalException" to="initializeLoginForm" />
+        <transition on="UnsatisfiedAuthenticationPolicyException" to="initializeLoginForm"/>
+        <transition on="UnauthorizedAuthenticationException" to="casAuthenticationBlockedView"/>
+        <transition to="initializeLoginForm"/>
+    </action-state>
+
+    <action-state id="sendTicketGrantingTicket">
+        <evaluate expression="sendTicketGrantingTicketAction"/>
+        <transition to="serviceCheck"/>
+    </action-state>
+ 
+    <action-state id="generateServiceTicket">
+        <evaluate expression="generateServiceTicketAction"/>
+        <transition on="success" to="warn"/>
+        <transition on="authenticationFailure" to="handleAuthenticationFailure"/>
+        <transition on="error" to="initializeLoginForm"/>
+        <transition on="gateway" to="gatewayServicesManagementCheck"/>
+    </action-state>
+
+    <action-state id="gatewayServicesManagementCheck">
+        <evaluate expression="gatewayServicesManagementCheck"/>
+        <transition on="success" to="redirect"/>
+    </action-state>
+
+    <action-state id="redirect">
+        <evaluate expression="flowScope.service.getResponse(requestScope.serviceTicketId)"
+                  result-type="org.apereo.cas.authentication.principal.Response" result="requestScope.response"/>
+        <transition to="postRedirectDecision"/>
+    </action-state>
+
+    <action-state id="clientAction">
+        <evaluate expression="clientAction" />
+        <transition on="success" to="sendTicketGrantingTicket" />
+        <transition on="error" to="ticketGrantingTicketCheck" />
+        <transition on="stop" to="stopWebflow" />
+    </action-state>
+
+    <end-state id="postView" view="protocol/casPostResponseView">
+        <on-entry>
+            <set name="requestScope.parameters" value="requestScope.response.attributes"/>
+            <set name="requestScope.originalUrl" value="flowScope.service.id"/>
+        </on-entry>
+    </end-state>
+</flow>
+#+END_SRC
+
+
+** Logout Flow
+#+BEGIN_SRC :eval no :tangle WEB-INF/webflow/logout/logout-webflow.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow.xsd">
+
+    <action-state id="terminateSession">
+        <evaluate expression="terminateSessionAction"/>
+        <transition to="doLogout"/>
+    </action-state>
+
+    <action-state id="doLogout">
+        <evaluate expression="logoutAction"/>
+        <transition on="finish" to="finishLogout"/>
+        <transition on="front" to="frontLogout"/>
+    </action-state>
+
+    <action-state id="frontLogout">
+        <evaluate expression="frontChannelLogoutAction"/>
+        <transition on="finish" to="finishLogout"/>
+        <transition on="propagate" to="propagateLogoutRequests"/>
+    </action-state>
+
+    <end-state id="propagateLogoutRequests" view="casPropagateLogoutView"/>
+
+    <decision-state id="finishLogout">
+        <if test="flowScope.logoutRedirectUrl != null" then="redirectView" else="logoutView"/>
+    </decision-state>
+
+    <end-state id="redirectView" view="externalRedirect:#{flowScope.logoutRedirectUrl}"/>
+    <end-state id="logoutView" view="casLogoutView"/>
+
+</flow>
+
+#+END_SRC
+
+
+* META-INF
+#+BEGIN_SRC :eval no :tangle META-INF/MANIFEST.MF
+Manifest-Version: 1.0
+Implementation-Title: vlead-cas-server
+Implementation-Version: 5.0.0.RC1
+Start-Class: org.apereo.cas.web.CasWebApplication
+Spring-Boot-Classes: WEB-INF/classes/
+Spring-Boot-Lib: WEB-INF/lib/
+Implementation-Date: 2016-08-29T06:06:30.320-07:00[America/Phoenix]
+Spring-Boot-Version: 1.4.0.RELEASE
+Created-By: org.apereo.cas
+Implementation-Vendor: org.apereo.cas
+Main-Class: org.springframework.boot.loader.WarLauncher 
+#+END_SRC
