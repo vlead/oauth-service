@@ -32,6 +32,8 @@
 4. [[./vlead-cas-overlay/index.org][CAS Server]]
 
 5. [[./client/index.org][Demo Client Server]]
+
+6. [[./deployment/index.org][Deployment]]
    
 * Future Work
 ** Milestone-II

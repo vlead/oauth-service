@@ -1,17 +1,25 @@
-Oauth Serivce
+* Oauth Serivce
 
 Aim is to create a service which can provide authorization between
 microservices at VLEAD and can potentially provide authentication of the user.
+
+We have used CAS(Common Authentication System) to create this service.
+
+* Setup 
+For getting started do:
+#+BEGIN_EXAMPLE
+make readtheorg=true -k all
+firefox ./build/docs/index.html
+#+END_EXAMPLE
     
+* Important links
 ** Run application on developement environment
-   Use [[./src/deployment/run-oauth-in-development-environment.org][Documentation]] to setup and run the application on
+   Use [[./src/deployment/index.org][Documentation]] to setup and run the application on
    local/development environment.
+
 ** API documentation
-   Visit [[./src/runtime/rest/api.org][link]] for API documentation
+   Visit [[./src/vlead-cas-overlay/index.org][link]] for API documentation
 
-** Change in microservices code
-	Visit  [[./src/runtime/rest/api.org][link]] to understand the diffrence in the implementation
-
-** Client Server 
-	It is a small API which represents VLEAD microservices using oauth-server for authentication and  authorization.
-	The implementation can be found [[./src/client/index.org][here]] 	 
+** Changes in VLEAD microservices code
+	We have created a demo application in flask to show how to setup microservices for CAS.
+	Visit  [[./src/client/index.org][link]] to understand the diffrence in the implementation
