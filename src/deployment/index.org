@@ -9,6 +9,8 @@
 * Introduction
   This document will illustrate installation of all the dependencies required
   for setting up the CAS application for the deployment phase.
+  
+  I have also made a small script which is tangled out and can be run to do the whole setup
 
 * Starting the virtual environment
   We will use the vagrant box provided by VLEAD to set up the server
@@ -167,11 +169,13 @@ sudo systemctl enable tomcat
 ** Generate new certificates and save them
 *** Use existing keys
     Copy the thekeystore file to /etc/cas
+
    #+name: add_keys
    #+BEGIN_SRC deployment
     mkdir -p /etc/cas/
    cp ../../../src/vlead-cas-overlay/public_private_keys/thekeystore /etc/cas/
    #+END_SRC
+
 *** Generate new keys
     To generate new keys, make a keystore, export a cert, and then import them to /jre/security/cacerts
     [[https://apereo.github.io/cas/developer/Build-Process.html#configure-ssl][Link]] to give a better understanding 
