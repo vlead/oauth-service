@@ -111,20 +111,33 @@
 </project>
 #+END_SRC
 
-   
+
+* Copy the configurations to the build directory 
+   Once everything is setup we will have to copy the configurations
+   #+BEGIN_SRC deployment :eval no :tangle copy.sh
+   cd ~/oauth-service
+   sudo mkdir -p /etc/cas/
+   sudo cp -r src/vlead-cas-overlay/etc/cas/* /etc/cas/
+   cp -r src/vlead-cas-overlay/vlead-cas-server/src/main/resources/deployerConfigContext.xml build/code/vlead-cas-overlay/vlead-cas-server/src/main/resources/
+   cp -r src/vlead-cas-overlay/vlead-cas-server/src/main/resources/log4j2.xml build/code/vlead-cas-overlay/vlead-cas-server/src/main/resources/
+   cp -r src/vlead-cas-overlay/vlead-cas-server/src/main/webapp/WEB-INF/templates build/code/vlead-cas-overlay/vlead-cas-server/src/main/resources/
+   cp -r src/vlead-cas-overlay/vlead-cas-server/src/main/resources/static build/code/vlead-cas-overlay/vlead-cas-server/src/main/resources 
+   #+END_SRC   
+
+
 * Script to run the server
     For easy startup of the server we can use run.sh. 
     * It requires the root access *
    #+BEGIN_SRC  :eval no :tangle run.sh 
-   
-    cp ../../../src/vlead-cas-overlay/vlead-cas-server/src/main/resources/truststore.jks vlead-cas-server/src/main/resources/
-
+    
     fuser -k 8443/tcp
     fuser -k 8081/tcp
 
     mvn -Djava.net.useSystemProxies=true clean package
+
    
-    java -jar -Djava.net.useSystemProxies=true vlead-cas-server/target/cas.war
+    java -jar -Djava.net.useSystemProxies=true vlead-cas-server/target/cas.war 
+    # java -jar -Djava.net.useSystemProxies=true vlead-cas-management/target/cas-management.war 
    #+END_SRC
 
 
